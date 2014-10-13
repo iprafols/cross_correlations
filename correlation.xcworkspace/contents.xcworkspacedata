@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "container:main_correlation.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:main_plates.cpp">
+   </FileRef>
+   <Group
+      location = "container:../../Library/Autosave Information"
+      name = "classes">
+      <FileRef
+         location = "group:../../cross_correlations/code2/astro_object.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/astro_object_dataset.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/correlation_plate.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/correlation_results.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/dataset.cpp">
+      </FileRef>
+      <FileRef
+         location = "container:global_variables.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/interpolation_map.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_pixel.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_spectra_dataset.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_spectrum.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plate.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plate_neighbours.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plots_object.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/sphere_point.cpp">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:../../Library/Autosave Information"
+      name = "funcitons">
+      <FileRef
+         location = "container:function_to_str.hpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/function_split.hpp">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:../../Library/Autosave Information"
+      name = "headers">
+      <FileRef
+         location = "container:astro_object.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/astro_object_dataset.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/correlation_plate.h">
+      </FileRef>
+      <FileRef
+         location = "container:correlation_results.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/dataset.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/global_variables.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/interpolation_map.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_pixel.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_spectra_dataset.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/lya_spectrum.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plate.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plate_neighbours.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/plots_object.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/sphere_point.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/defines.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/typedefs.h">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:esquema.rtf">
+   </FileRef>
+   <FileRef
+      location = "group:preguntes.rtf">
+   </FileRef>
+   <FileRef
+      location = "group:makefile">
+   </FileRef>
+</Workspace>

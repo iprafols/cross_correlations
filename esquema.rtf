@@ -1,0 +1,89 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+
+\f0\fs22 \cf0 EXPLANATION:\
+Compute the cross correlation of the Lyman-alpha forest and quasars\
+\
+PROGRAM SCHEME:\
+\
+\outl\strokewidth60 1. load time control variables\
+\outl0\strokewidth0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\tx18080\pardirnatural
+\cf0 \outl\strokewidth60 \strokec0 2. load global variables\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \
+3. load plate list\
+\outl0\strokewidth0 \
+\outl\strokewidth60 4. load quasar dataset\outl0\strokewidth0 \
+\
+\outl\strokewidth60 5. load spectra dataset\outl0\strokewidth0 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \outl\strokewidth60 \strokec0 6. compute distances to the objects (in Mpc/h)\
+\
+	6.1 Compute a table that is going to be used to interpolate\
+\
+	6.2 Compute the distances by using linear interpolation\
+\
+		6.2.1 compute the distances of AstroObjects\
+\
+		6.2.2 compute the distance of spectra\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \outl0\strokewidth0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \outl\strokewidth60 \strokec0 7. compute the cross-correlation\
+\
+	7.1 set the results to zero\
+\
+	7.2 loop over AstroObjects\
+\
+		7.2.1 loop over quasars\
+\
+			7.2.1.1 compute angular distance of the pair\
+			\
+			7.2.1.2 check if there is at least one pixel contributing to the cross-\
+					correlation measurement\
+		\
+			7.2.1.3 loop over pixels\
+                \
+				7.2.1.3.1 compute pi, sigma\
+\
+				7.2.1.3.2 locate pi, sigma bin\
+\
+				7.2.1.3.3 add to cross-correlation in the corresponding sky region\
+\
+				7.2.1.3.4 store pixel-AstroObject pair information\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \outl0\strokewidth0 \
+	\outl\strokewidth60 \strokec0 7.3. save the cross-correlation results\outl0\strokewidth0 \
+    \
+\
+8. compute covariance matrix\
+\
+	8.1 loop over cross-correlation bins\
+\
+		8.1.1 load pixel list 1\
+         \
+		8.1.2 loop over other cross-correlation bins\
+            \
+			8.1.2.1 load pixel list 2\
+              \
+			8.1.2.2 do N times:\
+\
+				8.1.2.2.1 randomly select item from pixel_list1\
+ \
+				8.1.2.2.2 retrieve plate neighbors of the selected item's plate\
+                    \
+				8.1.2.2.3 randomly select item from the subset of pixel_list2 comprised of all the neighboring plates\
+\
+				8.1.2.2.4 add to covariance matrix\
+                \
+	8.2. save the covariance matrix results\
+    \
+     \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
+\cf0 \outl\strokewidth60 \strokec0 9. display time required to run the program\outl0\strokewidth0 \
+    }
