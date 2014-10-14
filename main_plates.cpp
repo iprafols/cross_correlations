@@ -92,9 +92,9 @@ int main(){
     }
     
     // show contents
-    for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
+    /*for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
         std::cout << "plate " << (*it).first << " contains " << (*it).second.number_of_objects() << " objects; ra = " << (*it).second.angle().ra() << "; dec = " << (*it).second.angle().dec() << std::endl; 
-    }
+    }*/
 
     // normalize contents
     std::cout << "Normalizing mean right ascension and declination for the different plates" << std::endl;
@@ -103,9 +103,9 @@ int main(){
     }
     
     // show contents
-    for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
+    /*for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
         std::cout << "plate " << (*it).first << " : ra = " << (*it).second.angle().ra() << "; dec = " << (*it).second.angle().dec() << std::endl; 
-    }
+    }*/
     
     // load empty neighbours map
     std::cout << "Creating neighbours map" << std::endl;
@@ -113,16 +113,16 @@ int main(){
     
     // every plate is considered a neighbour of itself
     for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
-        std::cout << "inserting plate " << (*it).first;
+        //std::cout << "inserting plate " << (*it).first;
         neighbours_list.AddPlate((*it).second);
-        std::cout << "; neigbours list size is " << neighbours_list.plates().size() << std::endl;
+        //std::cout << "; neigbours list size is " << neighbours_list.plates().size() << std::endl;
     }
     
     // show contents
-    PlatesMapVector<Plate>::map neighbours_plates = neighbours_list.plates();
+    /*PlatesMapVector<Plate>::map neighbours_plates = neighbours_list.plates();
     for (PlatesMapVector<Plate>::map::iterator it = neighbours_plates.begin(); it != neighbours_plates.end(); it ++){
         std::cout << "found plate " << (*it).first << std::endl; 
-    }
+    }*/
 
     
     // look for neighbours
@@ -133,7 +133,7 @@ int main(){
                 continue;
             }
             
-            std::cout << "checking plates " << (*it).first << " and " << (*it2).first << std::endl;
+            //std::cout << "checking plates " << (*it).first << " and " << (*it2).first << std::endl;
             // if they are neigbours
             if ((*it).second.IsNeighbour((*it2).second,kNeighboursMaxDistance)){
                 neighbours_list.AddNeighbours((*it).second,(*it2).second);
@@ -143,7 +143,7 @@ int main(){
     }
     
     // print results
-    PlatesMapVector<Plate>::map neighbours_plates2 = neighbours_list.plates();
+    /*PlatesMapVector<Plate>::map neighbours_plates2 = neighbours_list.plates();
     for (PlatesMapVector<Plate>::map::iterator it = neighbours_plates2.begin(); it != neighbours_plates2.end(); it ++){
         
         std::cout << "plate " << (*it).first << " has the following neighbours:" << std::endl; 
@@ -153,7 +153,7 @@ int main(){
             std::cout << v[i] << " ";
         }
         std::cout << std::endl;
-    }
+    }*/
     
     // save results
     neighbours_list.Save(kGlobalVariables.plate_neighbours());
