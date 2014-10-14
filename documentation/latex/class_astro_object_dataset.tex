@@ -1,0 +1,374 @@
+\hypertarget{class_astro_object_dataset}{\section{Astro\-Object\-Dataset Class Reference}
+\label{class_astro_object_dataset}\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}}
+}
+
+
+{\ttfamily \#include $<$astro\-\_\-object\-\_\-dataset.\-h$>$}
+
+Inheritance diagram for Astro\-Object\-Dataset\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_astro_object_dataset}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_astro_object_dataset_aa75a72ea1b6dc3d9809cfac1b6c99f0a}{Astro\-Object\-Dataset} ()
+\item 
+\hyperlink{class_astro_object_dataset_a6962f42add89f7350a962324ac59ed89}{Astro\-Object\-Dataset} (const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables)
+\item 
+\hyperlink{struct_plates_map_vector}{Plates\-Map\-Vector}$<$ \hyperlink{class_astro_object}{Astro\-Object} $>$\-::map \hyperlink{class_astro_object_dataset_a02751cdfdbd16f9d3a4d10a4f7e5173b}{list} () const 
+\item 
+std\-::vector$<$ \hyperlink{class_astro_object}{Astro\-Object} $>$ \hyperlink{class_astro_object_dataset_a87661176688f8709b08d5b950ed3d200}{list} (int plate\-\_\-number) const 
+\item 
+\hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_astro_object_dataset_a02d9f63962fefac8c89d29d9932c5e2b}{list} (int plate\-\_\-number, size\-\_\-t pos) const 
+\item 
+void \hyperlink{class_astro_object_dataset_a6dbee08285bbd1fba5b900e637ce5b2d}{Give\-R\-A\-D\-E\-C} (std\-::ostream \&out) const 
+\item 
+void \hyperlink{class_astro_object_dataset_a98c5a1ebf074c2589ed1e924bf5899bc}{Give\-Z} (std\-::ostream \&out) const 
+\item 
+void \hyperlink{class_astro_object_dataset_a7769e025efd79c249abcfc67bd653673}{Load} (const double \&z\-\_\-min, const double \&z\-\_\-max, const std\-::string \&object\-\_\-list)
+\item 
+void \hyperlink{class_astro_object_dataset_a4fe526d8aaf1f7e0182d5f30f82dcc60}{Set\-Distances} (const \hyperlink{class_interpolation_map}{Interpolation\-Map} \&redshift\-\_\-distance\-\_\-map)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{dataset_8h}{dataset.\-h} Purpose\-: This file defines the class \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset}. This class contains the variables necessary to store a object dataset. This class is a specialization of the c\-Dataset class
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 07/25/2014 
+\end{DoxyVersion}
+
+
+Definition at line 37 of file astro\-\_\-object\-\_\-dataset.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_astro_object_dataset_aa75a72ea1b6dc3d9809cfac1b6c99f0a}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Astro\-Object\-Dataset@{Astro\-Object\-Dataset}}
+\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Astro\-Object\-Dataset}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Astro\-Object\-Dataset\-::\-Astro\-Object\-Dataset} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_dataset_aa75a72ea1b6dc3d9809cfac1b6c99f0a}
+
+
+Definition at line 44 of file astro\-\_\-object\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a6962f42add89f7350a962324ac59ed89}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Astro\-Object\-Dataset@{Astro\-Object\-Dataset}}
+\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Astro\-Object\-Dataset}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Astro\-Object\-Dataset\-::\-Astro\-Object\-Dataset} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables}
+\end{DoxyParamCaption}
+)}}\label{class_astro_object_dataset_a6962f42add89f7350a962324ac59ed89}
+\hyperlink{astro__object__dataset_8cpp}{astro\-\_\-object\-\_\-dataset.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{astro__object__dataset_8h}{astro\-\_\-object\-\_\-dataset.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 08/08/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} instance and loads a catalog of Astro\-Objects into it
+
+I\-N\-P\-U\-T\-S\-: k\-Global\-Varialbes -\/ object of type \hyperlink{class_global_variables}{Global\-Variables}
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \hyperlink{class_global_variables}{Global\-Variables}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 13 of file astro\-\_\-object\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                             {
+    name_ = kGlobalVariables.objects_catalog_name();
+    Load(kGlobalVariables.z_min(), kGlobalVariables.z_max(), kGlobalVariables.
+      objects_catalog());
+    
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_astro_object_dataset_a6dbee08285bbd1fba5b900e637ce5b2d}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}}
+\index{Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Give\-R\-A\-D\-E\-C}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Astro\-Object\-Dataset\-::\-Give\-R\-A\-D\-E\-C} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_astro_object_dataset_a6dbee08285bbd1fba5b900e637ce5b2d}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Adds the objects' R\-A-\/\-D\-E\-C values to out
+
+I\-N\-P\-U\-T\-S\-: out -\/ an ostream to add the objects' R\-A-\/\-D\-E\-C values to
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_a5867a14c1554b50ce062bdacd36460af}{Dataset}.
+
+
+
+Definition at line 37 of file astro\-\_\-object\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                       {
+    for (PlatesMapVector<AstroObject>::map::const_iterator it = list_.begin(); 
+      it != list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            out << (*it).second[i].angle() << std::endl;
+        }
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a98c5a1ebf074c2589ed1e924bf5899bc}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Give\-Z@{Give\-Z}}
+\index{Give\-Z@{Give\-Z}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Give\-Z}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Astro\-Object\-Dataset\-::\-Give\-Z} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_astro_object_dataset_a98c5a1ebf074c2589ed1e924bf5899bc}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Adds the objects' redshift values to out
+
+I\-N\-P\-U\-T\-S\-: out -\/ an ostream to add the objects' redshift values to
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_aae82d78ec374da243c22a96236b39465}{Dataset}.
+
+
+
+Definition at line 64 of file astro\-\_\-object\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                   {
+    for (PlatesMapVector<AstroObject>::map::const_iterator it = list_.begin(); 
+      it != list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            out << (*it).second[i].z() << std::endl;
+        }
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a02751cdfdbd16f9d3a4d10a4f7e5173b}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!list@{list}}
+\index{list@{list}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Vector}$<${\bf Astro\-Object}$>$\-::map {\bf Astro\-Object\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_dataset_a02751cdfdbd16f9d3a4d10a4f7e5173b}
+
+
+Definition at line 53 of file astro\-\_\-object\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return list_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a87661176688f8709b08d5b950ed3d200}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!list@{list}}
+\index{list@{list}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<${\bf Astro\-Object}$>$ {\bf Astro\-Object\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-number}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_dataset_a87661176688f8709b08d5b950ed3d200}
+
+
+Definition at line 54 of file astro\-\_\-object\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return (*list_.find(plate_number)).second;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a02d9f63962fefac8c89d29d9932c5e2b}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!list@{list}}
+\index{list@{list}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Astro\-Object} {\bf Astro\-Object\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-number, }
+\item[{size\-\_\-t}]{pos}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_dataset_a02d9f63962fefac8c89d29d9932c5e2b}
+
+
+Definition at line 55 of file astro\-\_\-object\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return (*list_.find(plate_number)).second[pos];}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a7769e025efd79c249abcfc67bd653673}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Load@{Load}}
+\index{Load@{Load}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Load}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Astro\-Object\-Dataset\-::\-Load} (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{z\-\_\-min, }
+\item[{const double \&}]{z\-\_\-max, }
+\item[{const std\-::string \&}]{object\-\_\-list}
+\end{DoxyParamCaption}
+)}}\label{class_astro_object_dataset_a7769e025efd79c249abcfc67bd653673}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Loads the object dataset from a catalog file
+
+I\-N\-P\-U\-T\-S\-: z\-\_\-min -\/ minimum redshift to accept \hyperlink{class_astro_object}{Astro\-Object} into the dataset z\-\_\-max -\/ maximum redshift to accept \hyperlink{class_astro_object}{Astro\-Object} into the dataset objects\-\_\-catalog -\/ name of the catalog file
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 91 of file astro\-\_\-object\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                              {
+    // setting the catalog columns to be read
+    std::vector<std::string> fields(8);
+    fields[0] = "PLATE";
+    fields[1] = "MJD";
+    fields[2] = "FIBERID";
+    fields[3] = "RA";
+    fields[4] = "DEC";
+    fields[5] = "Z_VI";
+    fields[6] = "PSFMAG";
+    fields[7] = "SPECPRIMARY";
+    
+    // construct fits object
+    std::auto_ptr<CCfits::FITS> pInfile; 
+    
+    try{
+        
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(objects_catalog,
+      CCfits::Read,1,true,fields));
+        
+    } catch(CCfits::FITS::CantOpen x) {
+        
+        throw "Error occured in AstroObjectDataset constructor: couldn't open
+       catalog file: " + objects_catalog;
+    }
+    CCfits::ExtHDU& data = pInfile->extension(1);
+    
+    // number of lines in the file
+    long NAXIS2 = data.axis(1);
+    size_t nobj = NAXIS2;
+    
+    // this will store the information
+    std::valarray<int> plate,mjd,fiber;
+    std::valarray<double> ra,dec,z;
+    std::vector<valarray<double> > psf_mag;
+    std::valarray<bool> boss_target1_flag,specprimary_flag;
+    
+    // reading data
+    data.column(fields[0]).read(plate,1,nobj); // plate
+    data.column(fields[1]).read(mjd,1,nobj); // mjd
+    data.column(fields[2]).read(fiber,1,nobj); // fiber
+    data.column(fields[3]).read(ra,1,nobj); // ra
+    data.column(fields[4]).read(dec,1,nobj); // dec
+    data.column(fields[5]).read(z,1,nobj); // z
+    data.column(fields[6]).readArrays(psf_mag,1,nobj); // magnitudes
+    data.column(fields[7]).read(specprimary_flag,1,nobj); // specprimary
+    
+    // setting size to zero and creating entries in list_ map
+    size_ = 0;
+    for (int i=0;i<nobj;i++){
+        // this is to avoid repeated objects
+        if (specprimary_flag[i] > 0){            
+            
+            if (list_.find(plate[i]) == list_.end()){
+                std::vector<AstroObject> v;
+                list_[plate[i]] = v;
+                num_objects_in_plate_[plate[i]] = 0;
+            }
+            
+        }
+    }
+    
+    // adding objects to list_ and to list_by_plate
+    for (int i=0;i<nobj;i++){
+        // this is to avoid repeated objects
+        if ((specprimary_flag[i] > 0) and (z_min <= z[i] and z[i] <= z_max) and
+       not (ra[i] == 0.0 and dec[i] == 0.0)){
+            
+            // create AstroObject
+            AstroObject object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i],
+       false);
+            
+            // adding object to list_
+            (*list_.find(plate[i])).second.push_back(object);
+            
+            // updating size_
+            size_ ++;
+            
+            // updating number_of_objects_in_plate
+            (*num_objects_in_plate_.find(plate[i])).second ++;
+            
+        }
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_astro_object_dataset_a4fe526d8aaf1f7e0182d5f30f82dcc60}{\index{Astro\-Object\-Dataset@{Astro\-Object\-Dataset}!Set\-Distances@{Set\-Distances}}
+\index{Set\-Distances@{Set\-Distances}!AstroObjectDataset@{Astro\-Object\-Dataset}}
+\subsubsection[{Set\-Distances}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Astro\-Object\-Dataset\-::\-Set\-Distances} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Interpolation\-Map} \&}]{redshift\-\_\-distance\-\_\-map}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_astro_object_dataset_a4fe526d8aaf1f7e0182d5f30f82dcc60}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Sets the distance to every object in the dataset
+
+I\-N\-P\-U\-T\-S\-: redshif\-\_\-distance\-\_\-map -\/ a \hyperlink{class_interpolation_map}{Interpolation\-Map} instance with the redshift-\/distance relation
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \hyperlink{class_interpolation_map}{Interpolation\-Map}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_a76dbae8574850da55a3b88149ccbe3f9}{Dataset}.
+
+
+
+Definition at line 193 of file astro\-\_\-object\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+         {
+    for (PlatesMapVector<AstroObject>::map::iterator it = list_.begin(); it != 
+      list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            (*it).second[i].SetDistance(redshift_distance_map);
+        }
+    }
+        
+}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{astro__object__dataset_8h}{astro\-\_\-object\-\_\-dataset.\-h}\item 
+\hyperlink{astro__object__dataset_8cpp}{astro\-\_\-object\-\_\-dataset.\-cpp}\end{DoxyCompactItemize}

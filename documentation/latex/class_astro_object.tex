@@ -1,0 +1,305 @@
+\hypertarget{class_astro_object}{\section{Astro\-Object Class Reference}
+\label{class_astro_object}\index{Astro\-Object@{Astro\-Object}}
+}
+
+
+{\ttfamily \#include $<$astro\-\_\-object.\-h$>$}
+
+Inheritance diagram for Astro\-Object\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_astro_object}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_astro_object_a1802093595c886ac1e0f972829382c61}{Astro\-Object} ()
+\item 
+\hyperlink{class_astro_object_af5ff221d0cc120501f4e2c8b1c5ccfec}{Astro\-Object} (double \&ra, double \&dec, const int \&\hyperlink{class_astro_object_a2ebf8d94adab8f2f828a9209b1dc795e}{plate}, const int \&\hyperlink{class_astro_object_ab10c73e293654f21e73fcc344cf7d866}{fiber}, const int \&\hyperlink{class_astro_object_a4c54c4d7ad2f41eba2ff759c4fa3689b}{mjd}, const double \&\hyperlink{class_astro_object_a48a7db2aa513109f6cb662a44c36b3d3}{z}, const bool radians=true)
+\item 
+\hyperlink{class_sphere_point}{Sphere\-Point} \hyperlink{class_astro_object_a82d16c84459cdaab764205749660130b}{angle} () const 
+\item 
+double \hyperlink{class_astro_object_acb0a49a6cf2dc41076063a3b15b59b0f}{dist} () const 
+\item 
+int \hyperlink{class_astro_object_ab10c73e293654f21e73fcc344cf7d866}{fiber} () const 
+\item 
+int \hyperlink{class_astro_object_a4c54c4d7ad2f41eba2ff759c4fa3689b}{mjd} () const 
+\item 
+int \hyperlink{class_astro_object_a2ebf8d94adab8f2f828a9209b1dc795e}{plate} () const 
+\item 
+double \hyperlink{class_astro_object_a48a7db2aa513109f6cb662a44c36b3d3}{z} () const 
+\item 
+virtual void \hyperlink{class_astro_object_a7addd0f108191b1ca35db6e16e45ed72}{Set\-Distance} (const \hyperlink{class_interpolation_map}{Interpolation\-Map} \&redshift\-\_\-distance\-\_\-map)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_sphere_point}{Sphere\-Point} \hyperlink{class_astro_object_a78ea0158bd580946e621b534419bcd8f}{angle\-\_\-}
+\item 
+double \hyperlink{class_astro_object_a3644701bfa2f9de2343242e5fca7df86}{dist\-\_\-}
+\item 
+int \hyperlink{class_astro_object_a0f2dfed713d41bf6403b55ded214e044}{fiber\-\_\-}
+\item 
+int \hyperlink{class_astro_object_ac39bfb302dba24582e9f48147a30a320}{mjd\-\_\-}
+\item 
+int \hyperlink{class_astro_object_ac0b8a9a01565519345047fae0d6fe659}{plate\-\_\-}
+\item 
+double \hyperlink{class_astro_object_a07239818f3076c2a4ff0a3af0222b5e1}{z\-\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{astro__object_8h}{astro\-\_\-object.\-h} Purpose\-: This file defines the class \hyperlink{class_astro_object}{Astro\-Object}. This class contains the basic properties of any astronomical object and also some useful computation related with this properties
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 25 of file astro\-\_\-object.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_astro_object_a1802093595c886ac1e0f972829382c61}{\index{Astro\-Object@{Astro\-Object}!Astro\-Object@{Astro\-Object}}
+\index{Astro\-Object@{Astro\-Object}!AstroObject@{Astro\-Object}}
+\subsubsection[{Astro\-Object}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Astro\-Object\-::\-Astro\-Object} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_a1802093595c886ac1e0f972829382c61}
+
+
+Definition at line 32 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_astro_object_af5ff221d0cc120501f4e2c8b1c5ccfec}{\index{Astro\-Object@{Astro\-Object}!Astro\-Object@{Astro\-Object}}
+\index{Astro\-Object@{Astro\-Object}!AstroObject@{Astro\-Object}}
+\subsubsection[{Astro\-Object}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Astro\-Object\-::\-Astro\-Object} (
+\begin{DoxyParamCaption}
+\item[{double \&}]{ra, }
+\item[{double \&}]{dec, }
+\item[{const int \&}]{plate, }
+\item[{const int \&}]{fiber, }
+\item[{const int \&}]{mjd, }
+\item[{const double \&}]{z, }
+\item[{const bool}]{radians = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_astro_object_af5ff221d0cc120501f4e2c8b1c5ccfec}
+\hyperlink{astro__object_8cpp}{astro\-\_\-object.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{astro__object_8h}{astro\-\_\-object.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_astro_object}{Astro\-Object} instance
+
+I\-N\-P\-U\-T\-S\-: ra -\/ astronomical object's right ascension (in radians) dec -\/ astronomical object's declination (in radians) plate -\/ astronomical object's plate fiber -\/ astronomical object's fiber mjd -\/ astronomical object's Modified Jullian Date z -\/ astronomical object's redshift radians -\/ a boolean that specifies if the angles are given in radias -\/ defaul = True
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file astro\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                                               {
+    if (not radians){
+        ra *= acos(-1)/180.0;
+        dec *= acos(-1)/180.0;
+    }
+    SpherePoint angle(ra, dec);
+    angle_ = angle;
+    plate_ = plate;
+    fiber_ = fiber;
+    mjd_ = mjd;
+    z_ = z;
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_astro_object_a82d16c84459cdaab764205749660130b}{\index{Astro\-Object@{Astro\-Object}!angle@{angle}}
+\index{angle@{angle}!AstroObject@{Astro\-Object}}
+\subsubsection[{angle}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point} {\bf Astro\-Object\-::angle} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_a82d16c84459cdaab764205749660130b}
+
+
+Definition at line 41 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return angle_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_acb0a49a6cf2dc41076063a3b15b59b0f}{\index{Astro\-Object@{Astro\-Object}!dist@{dist}}
+\index{dist@{dist}!AstroObject@{Astro\-Object}}
+\subsubsection[{dist}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Astro\-Object\-::dist} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_acb0a49a6cf2dc41076063a3b15b59b0f}
+
+
+Definition at line 44 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return dist_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_ab10c73e293654f21e73fcc344cf7d866}{\index{Astro\-Object@{Astro\-Object}!fiber@{fiber}}
+\index{fiber@{fiber}!AstroObject@{Astro\-Object}}
+\subsubsection[{fiber}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::fiber} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_ab10c73e293654f21e73fcc344cf7d866}
+
+
+Definition at line 47 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return fiber_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_a4c54c4d7ad2f41eba2ff759c4fa3689b}{\index{Astro\-Object@{Astro\-Object}!mjd@{mjd}}
+\index{mjd@{mjd}!AstroObject@{Astro\-Object}}
+\subsubsection[{mjd}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::mjd} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_a4c54c4d7ad2f41eba2ff759c4fa3689b}
+
+
+Definition at line 50 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return mjd_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_a2ebf8d94adab8f2f828a9209b1dc795e}{\index{Astro\-Object@{Astro\-Object}!plate@{plate}}
+\index{plate@{plate}!AstroObject@{Astro\-Object}}
+\subsubsection[{plate}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::plate} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_a2ebf8d94adab8f2f828a9209b1dc795e}
+
+
+Definition at line 53 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return plate_;}
+\end{DoxyCode}
+\hypertarget{class_astro_object_a7addd0f108191b1ca35db6e16e45ed72}{\index{Astro\-Object@{Astro\-Object}!Set\-Distance@{Set\-Distance}}
+\index{Set\-Distance@{Set\-Distance}!AstroObject@{Astro\-Object}}
+\subsubsection[{Set\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Astro\-Object\-::\-Set\-Distance} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Interpolation\-Map} \&}]{redshift\-\_\-distance\-\_\-map}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_astro_object_a7addd0f108191b1ca35db6e16e45ed72}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Sets the distance to object
+
+I\-N\-P\-U\-T\-S\-: redshif\-\_\-distance\-\_\-map -\/ a \hyperlink{class_interpolation_map}{Interpolation\-Map} instance with the redshift-\/distance relation
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Reimplemented in \hyperlink{class_lya_spectrum_a5aed91d841c38e3c399e2b84b05fd2d3}{Lya\-Spectrum}.
+
+
+
+Definition at line 48 of file astro\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                          {
+    dist_ = redshift_distance_map.LinearInterpolation(z_);
+    
+}
+\end{DoxyCode}
+\hypertarget{class_astro_object_a48a7db2aa513109f6cb662a44c36b3d3}{\index{Astro\-Object@{Astro\-Object}!z@{z}}
+\index{z@{z}!AstroObject@{Astro\-Object}}
+\subsubsection[{z}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Astro\-Object\-::z} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_astro_object_a48a7db2aa513109f6cb662a44c36b3d3}
+
+
+Definition at line 56 of file astro\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return z_;}
+\end{DoxyCode}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_astro_object_a78ea0158bd580946e621b534419bcd8f}{\index{Astro\-Object@{Astro\-Object}!angle\-\_\-@{angle\-\_\-}}
+\index{angle\-\_\-@{angle\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{angle\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point} {\bf Astro\-Object\-::angle\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_a78ea0158bd580946e621b534419bcd8f}
+
+
+Definition at line 70 of file astro\-\_\-object.\-h.
+
+\hypertarget{class_astro_object_a3644701bfa2f9de2343242e5fca7df86}{\index{Astro\-Object@{Astro\-Object}!dist\-\_\-@{dist\-\_\-}}
+\index{dist\-\_\-@{dist\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{dist\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Astro\-Object\-::dist\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_a3644701bfa2f9de2343242e5fca7df86}
+
+
+Definition at line 73 of file astro\-\_\-object.\-h.
+
+\hypertarget{class_astro_object_a0f2dfed713d41bf6403b55ded214e044}{\index{Astro\-Object@{Astro\-Object}!fiber\-\_\-@{fiber\-\_\-}}
+\index{fiber\-\_\-@{fiber\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{fiber\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::fiber\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_a0f2dfed713d41bf6403b55ded214e044}
+
+
+Definition at line 76 of file astro\-\_\-object.\-h.
+
+\hypertarget{class_astro_object_ac39bfb302dba24582e9f48147a30a320}{\index{Astro\-Object@{Astro\-Object}!mjd\-\_\-@{mjd\-\_\-}}
+\index{mjd\-\_\-@{mjd\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{mjd\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::mjd\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_ac39bfb302dba24582e9f48147a30a320}
+
+
+Definition at line 79 of file astro\-\_\-object.\-h.
+
+\hypertarget{class_astro_object_ac0b8a9a01565519345047fae0d6fe659}{\index{Astro\-Object@{Astro\-Object}!plate\-\_\-@{plate\-\_\-}}
+\index{plate\-\_\-@{plate\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{plate\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Astro\-Object\-::plate\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_ac0b8a9a01565519345047fae0d6fe659}
+
+
+Definition at line 82 of file astro\-\_\-object.\-h.
+
+\hypertarget{class_astro_object_a07239818f3076c2a4ff0a3af0222b5e1}{\index{Astro\-Object@{Astro\-Object}!z\-\_\-@{z\-\_\-}}
+\index{z\-\_\-@{z\-\_\-}!AstroObject@{Astro\-Object}}
+\subsubsection[{z\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Astro\-Object\-::z\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_astro_object_a07239818f3076c2a4ff0a3af0222b5e1}
+
+
+Definition at line 85 of file astro\-\_\-object.\-h.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{astro__object_8h}{astro\-\_\-object.\-h}\item 
+\hyperlink{astro__object_8cpp}{astro\-\_\-object.\-cpp}\end{DoxyCompactItemize}

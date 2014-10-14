@@ -1,0 +1,209 @@
+\hypertarget{class_interpolation_map}{\section{Interpolation\-Map Class Reference}
+\label{class_interpolation_map}\index{Interpolation\-Map@{Interpolation\-Map}}
+}
+
+
+{\ttfamily \#include $<$interpolation\-\_\-map.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_interpolation_map_aa0ad25410dcf13311c924efe5c89279d}{Interpolation\-Map} ()
+\item 
+\hyperlink{class_interpolation_map_abd3dd531704a6cfae73f6ec03341d669}{Interpolation\-Map} (const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables)
+\item 
+std\-::map$<$ double, double $>$ \hyperlink{class_interpolation_map_adc226eb42a78f6a2c271ed9cca173ba6}{interpolation\-\_\-map} () const 
+\item 
+double \hyperlink{class_interpolation_map_a7de7636948886560d9872a42a616c45b}{interpolation\-\_\-map} (double first) const 
+\item 
+double \hyperlink{class_interpolation_map_abeb81577ae71d6a6bfd0cbe1225b7e44}{interpolation\-\_\-map} (std\-::map$<$ double, double $>$\-::iterator it) const 
+\item 
+double \hyperlink{class_interpolation_map_a3a13f78a411bd200ff1a4094252c23a3}{Linear\-Interpolation} (const double \&z) const 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+interpolation\-\_\-table.\-h Purpose\-: This file defines the class Interpolation\-Table. This class contains the variables necessary to store an interpolation table.
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/30/2014 
+\end{DoxyVersion}
+
+
+Definition at line 25 of file interpolation\-\_\-map.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_interpolation_map_aa0ad25410dcf13311c924efe5c89279d}{\index{Interpolation\-Map@{Interpolation\-Map}!Interpolation\-Map@{Interpolation\-Map}}
+\index{Interpolation\-Map@{Interpolation\-Map}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{Interpolation\-Map}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Interpolation\-Map\-::\-Interpolation\-Map} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_interpolation_map_aa0ad25410dcf13311c924efe5c89279d}
+
+
+Definition at line 32 of file interpolation\-\_\-map.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_interpolation_map_abd3dd531704a6cfae73f6ec03341d669}{\index{Interpolation\-Map@{Interpolation\-Map}!Interpolation\-Map@{Interpolation\-Map}}
+\index{Interpolation\-Map@{Interpolation\-Map}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{Interpolation\-Map}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Interpolation\-Map\-::\-Interpolation\-Map} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables}
+\end{DoxyParamCaption}
+)}}\label{class_interpolation_map_abd3dd531704a6cfae73f6ec03341d669}
+interpolation\-\_\-table.\-cpp Purpose\-: This files contains the body for the functions defined in interpolation\-\_\-table.\-h
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/30/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_interpolation_map}{Interpolation\-Map} instance and initializes its variables
+
+I\-N\-P\-U\-T\-S\-: k\-Global\-Varialbes -\/ object of type \hyperlink{class_global_variables}{Global\-Variables}
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_global_variables}{Global\-Variables} \hyperlink{class_interpolation_map}{Interpolation\-Map}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file interpolation\-\_\-map.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                         {
+    double interpolation_step,z_max_interpolation,z_min_interpolation;
+    
+    z_max_interpolation = kGlobalVariables.z_max_interpolation();
+    z_min_interpolation = kGlobalVariables.z_min_interpolation();
+    interpolation_step = (z_max_interpolation-z_min_interpolation)/double(
+      kGlobalVariables.num_points_interpolation());
+    
+    // setting initial and auxiliar variables
+    double z = 0,dist = 0; // setting initial values for the integral
+    double aux = kGlobalVariables.c()/100.0; // =c/H0*h (auxiliar variable to
+       speed up the computation)
+    double wm = kGlobalVariables.wm(); // Omega_matter (auxiliar variable to
+       speed up the computation)
+    double wv = 1.0-wm; // Omega_vacuum (auxiliar variable to speed up the
+       computation)
+    double z_plus1 = 1.0-interpolation_step*0.5; // =1+z at mid_interval
+       (auxiliar variable to speed up the computation)
+    
+    // integrating from z = 0 to z_max_interpolation; midpoint rule
+    while (z <= z_max_interpolation) {
+        // integration step
+        z += interpolation_step;
+        z_plus1 += interpolation_step;
+        dist += aux/sqrt(wv+wm*z_plus1*z_plus1*z_plus1)*interpolation_step; //
+       in Mpc/h
+        
+        // if redshift is between z_min_interp and z_max_interp, saves values
+       in the map
+        if (z >= z_min_interpolation) { 
+            interpolation_map_[z] = dist;
+        }
+    }
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_interpolation_map_adc226eb42a78f6a2c271ed9cca173ba6}{\index{Interpolation\-Map@{Interpolation\-Map}!interpolation\-\_\-map@{interpolation\-\_\-map}}
+\index{interpolation\-\_\-map@{interpolation\-\_\-map}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{interpolation\-\_\-map}]{\setlength{\rightskip}{0pt plus 5cm}std\-::map$<$double,double$>$ {\bf Interpolation\-Map\-::interpolation\-\_\-map} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_interpolation_map_adc226eb42a78f6a2c271ed9cca173ba6}
+
+
+Definition at line 41 of file interpolation\-\_\-map.\-h.
+
+
+\begin{DoxyCode}
+{return interpolation_map_;}
+\end{DoxyCode}
+\hypertarget{class_interpolation_map_a7de7636948886560d9872a42a616c45b}{\index{Interpolation\-Map@{Interpolation\-Map}!interpolation\-\_\-map@{interpolation\-\_\-map}}
+\index{interpolation\-\_\-map@{interpolation\-\_\-map}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{interpolation\-\_\-map}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Interpolation\-Map\-::interpolation\-\_\-map} (
+\begin{DoxyParamCaption}
+\item[{double}]{first}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_interpolation_map_a7de7636948886560d9872a42a616c45b}
+
+
+Definition at line 42 of file interpolation\-\_\-map.\-h.
+
+
+\begin{DoxyCode}
+{return (*interpolation_map_.find(first)).second;}
+\end{DoxyCode}
+\hypertarget{class_interpolation_map_abeb81577ae71d6a6bfd0cbe1225b7e44}{\index{Interpolation\-Map@{Interpolation\-Map}!interpolation\-\_\-map@{interpolation\-\_\-map}}
+\index{interpolation\-\_\-map@{interpolation\-\_\-map}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{interpolation\-\_\-map}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Interpolation\-Map\-::interpolation\-\_\-map} (
+\begin{DoxyParamCaption}
+\item[{std\-::map$<$ double, double $>$\-::iterator}]{it}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_interpolation_map_abeb81577ae71d6a6bfd0cbe1225b7e44}
+
+
+Definition at line 43 of file interpolation\-\_\-map.\-h.
+
+
+\begin{DoxyCode}
+{return (*it).second;}
+\end{DoxyCode}
+\hypertarget{class_interpolation_map_a3a13f78a411bd200ff1a4094252c23a3}{\index{Interpolation\-Map@{Interpolation\-Map}!Linear\-Interpolation@{Linear\-Interpolation}}
+\index{Linear\-Interpolation@{Linear\-Interpolation}!InterpolationMap@{Interpolation\-Map}}
+\subsubsection[{Linear\-Interpolation}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Interpolation\-Map\-::\-Linear\-Interpolation} (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{z}
+\end{DoxyParamCaption}
+) const}}\label{class_interpolation_map_a3a13f78a411bd200ff1a4094252c23a3}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Compute the distances corresponding to the given redshift by using linear interpolation
+
+I\-N\-P\-U\-T\-S\-: z -\/ a double with the redshift value
+
+O\-U\-T\-P\-U\-T\-S\-: dist -\/ the associated distance
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_interpolation_map}{Interpolation\-Map}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 56 of file interpolation\-\_\-map.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                 {
+    std::map<double,double>::const_iterator it,it2;
+
+    it = interpolation_map_.lower_bound(z);
+    // no interpolation needed if distance is already computed for the given
+       redshift
+    if ((*it).first == z){
+        return (*it).second;
+    } else{
+        it2 = interpolation_map_.lower_bound(z);
+        it2 --;
+        return ((*it).second-(*it2).second)/((*it).first-(*it2).first)*(z-(*it)
+      .first)+(*it).second;
+    }
+}\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{interpolation__map_8h}{interpolation\-\_\-map.\-h}\item 
+\hyperlink{interpolation__map_8cpp}{interpolation\-\_\-map.\-cpp}\end{DoxyCompactItemize}

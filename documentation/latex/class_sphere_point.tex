@@ -1,0 +1,331 @@
+\hypertarget{class_sphere_point}{\section{Sphere\-Point Class Reference}
+\label{class_sphere_point}\index{Sphere\-Point@{Sphere\-Point}}
+}
+
+
+{\ttfamily \#include $<$sphere\-\_\-point.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_sphere_point_aab342d9f5d383bd1c01682180406dbe4}{Sphere\-Point} ()
+\item 
+\hyperlink{class_sphere_point_a4814f6bb371d345f321787ee1529d94b}{Sphere\-Point} (const double \&\hyperlink{class_sphere_point_a2c2098bee7c7771eaa6d3a5392e71aad}{ra}, const double \&\hyperlink{class_sphere_point_a680d76795d9c86ac904a91ade67c7b56}{dec})
+\item 
+double \hyperlink{class_sphere_point_a537fb1d152d6c3cdb1d7eb0dbe16566e}{cos\-\_\-dec} () const 
+\item 
+double \hyperlink{class_sphere_point_a680d76795d9c86ac904a91ade67c7b56}{dec} () const 
+\item 
+double \hyperlink{class_sphere_point_a2c2098bee7c7771eaa6d3a5392e71aad}{ra} () const 
+\item 
+double \hyperlink{class_sphere_point_ab44441b07cc0eba98514c5218000e7d4}{sin\-\_\-dec} () const 
+\item 
+double \hyperlink{class_sphere_point_a516f68aeeaa8df8c94e8ad7a3d84be7c}{Cos\-Angular\-Distance} (const \hyperlink{class_sphere_point}{Sphere\-Point} \&angle)
+\item 
+double \hyperlink{class_sphere_point_a91b2a8b3bc3b8c747146ad68dc4e2588}{Angular\-Distance} (const \hyperlink{class_sphere_point}{Sphere\-Point} \&angle)
+\item 
+\hyperlink{class_sphere_point}{Sphere\-Point} \hyperlink{class_sphere_point_aa7e036d410c76118134b8320aee4431e}{operator+} (const \hyperlink{class_sphere_point}{Sphere\-Point} \&angle)
+\item 
+void \hyperlink{class_sphere_point_aecd9b37a60a43e49a97018ec604824cd}{operator+=} (const \hyperlink{class_sphere_point}{Sphere\-Point} \&angle)
+\item 
+\hyperlink{class_sphere_point}{Sphere\-Point} \hyperlink{class_sphere_point_a66ff84e328e53f0c0af62c03dc59d962}{operator/} (const double \&div)
+\item 
+void \hyperlink{class_sphere_point_adeea8f6e508c5100397aae9f395fd52c}{operator/=} (const double \&div)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{sphere__point_8h}{sphere\-\_\-point.\-h} Purpose\-: This file defines the class \hyperlink{class_sphere_point}{Sphere\-Point}. This class represents a position in the sky and knows how to compute angular distances and shuch
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 25 of file sphere\-\_\-point.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_sphere_point_aab342d9f5d383bd1c01682180406dbe4}{\index{Sphere\-Point@{Sphere\-Point}!Sphere\-Point@{Sphere\-Point}}
+\index{Sphere\-Point@{Sphere\-Point}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{Sphere\-Point}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point\-::\-Sphere\-Point} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_aab342d9f5d383bd1c01682180406dbe4}
+
+
+Definition at line 32 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a4814f6bb371d345f321787ee1529d94b}{\index{Sphere\-Point@{Sphere\-Point}!Sphere\-Point@{Sphere\-Point}}
+\index{Sphere\-Point@{Sphere\-Point}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{Sphere\-Point}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point\-::\-Sphere\-Point} (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{ra, }
+\item[{const double \&}]{dec}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_a4814f6bb371d345f321787ee1529d94b}
+\hyperlink{sphere__point_8cpp}{sphere\-\_\-point.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{sphere__point_8h}{sphere\-\_\-point.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/17/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_sphere_point}{Sphere\-Point} instance
+
+I\-N\-P\-U\-T\-S\-: ra -\/ astronomical object's right ascension (in radians) dec -\/ astronomical object's declination (in radians)
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                           {
+    ra_ = ra;
+    dec_ = dec;
+    sin_dec_ = sin(dec_);
+    cos_dec_ = cos(dec_);
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_sphere_point_a91b2a8b3bc3b8c747146ad68dc4e2588}{\index{Sphere\-Point@{Sphere\-Point}!Angular\-Distance@{Angular\-Distance}}
+\index{Angular\-Distance@{Angular\-Distance}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{Angular\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::\-Angular\-Distance} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Sphere\-Point} \&}]{angle}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_a91b2a8b3bc3b8c747146ad68dc4e2588}
+
+
+Definition at line 59 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{return acos(CosAngularDistance(angle));}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a537fb1d152d6c3cdb1d7eb0dbe16566e}{\index{Sphere\-Point@{Sphere\-Point}!cos\-\_\-dec@{cos\-\_\-dec}}
+\index{cos\-\_\-dec@{cos\-\_\-dec}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{cos\-\_\-dec}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::cos\-\_\-dec} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_a537fb1d152d6c3cdb1d7eb0dbe16566e}
+
+
+Definition at line 41 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{return cos_dec_;}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a516f68aeeaa8df8c94e8ad7a3d84be7c}{\index{Sphere\-Point@{Sphere\-Point}!Cos\-Angular\-Distance@{Cos\-Angular\-Distance}}
+\index{Cos\-Angular\-Distance@{Cos\-Angular\-Distance}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{Cos\-Angular\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::\-Cos\-Angular\-Distance} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Sphere\-Point} \&}]{angle}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_a516f68aeeaa8df8c94e8ad7a3d84be7c}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Computes the angluar distance to antoher \hyperlink{class_sphere_point}{Sphere\-Point} instance
+
+I\-N\-P\-U\-T\-S\-: angle -\/ \hyperlink{class_sphere_point}{Sphere\-Point} instance to compute the angular distance with
+
+O\-U\-T\-P\-U\-T\-S\-: d -\/ cosine of the angular distance
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 37 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                              {
+    return sin_dec_*angle.sin_dec()+cos_dec_*angle.cos_dec()*cos(ra_-angle.ra()
+      );
+}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a680d76795d9c86ac904a91ade67c7b56}{\index{Sphere\-Point@{Sphere\-Point}!dec@{dec}}
+\index{dec@{dec}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{dec}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::dec} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_a680d76795d9c86ac904a91ade67c7b56}
+
+
+Definition at line 44 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{return dec_;}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_aa7e036d410c76118134b8320aee4431e}{\index{Sphere\-Point@{Sphere\-Point}!operator+@{operator+}}
+\index{operator+@{operator+}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{operator+}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point} Sphere\-Point\-::operator+ (
+\begin{DoxyParamCaption}
+\item[{const {\bf Sphere\-Point} \&}]{angle}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_aa7e036d410c76118134b8320aee4431e}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the + operator. Returns a c\-Sphere\-Point instance with the ra\-\_\- and dec\-\_\- values incremented by the ra and dec values found in angle
+
+I\-N\-P\-U\-T\-S\-: angle -\/ a \hyperlink{class_sphere_point}{Sphere\-Point} instance whose angles will be added
+
+O\-U\-T\-P\-U\-T\-S\-: temp -\/ a \hyperlink{class_sphere_point}{Sphere\-Point} instance with ra\-\_\- and dec\-\_\- divided by n
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 58 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                           {
+    double ra = ra_ + angle.ra();
+    double dec = dec_ + angle.dec();
+    
+    SpherePoint temp(ra,dec);
+    
+    return temp;
+}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_aecd9b37a60a43e49a97018ec604824cd}{\index{Sphere\-Point@{Sphere\-Point}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{operator+=}]{\setlength{\rightskip}{0pt plus 5cm}void Sphere\-Point\-::operator+= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Sphere\-Point} \&}]{angle}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_aecd9b37a60a43e49a97018ec604824cd}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the += operator. Updates the ra\-\_\- and dec\-\_\- values by addign those in angle. Recomputes sin\-\_\-dec\-\_\- and cos\-\_\-dec\-\_\-
+
+I\-N\-P\-U\-T\-S\-: angle -\/ a c\-Sphere\-Point instance whose angles will be added
+
+O\-U\-T\-P\-U\-T\-S\-: temp -\/ a c\-Sphere\-Point instance with ra\-\_\- and dec\-\_\- divided by n
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 84 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                     {
+    ra_ += angle.ra();
+    dec_ += angle.dec();
+    sin_dec_ = sin(dec_);
+    cos_dec_ = cos(dec_);
+    
+}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a66ff84e328e53f0c0af62c03dc59d962}{\index{Sphere\-Point@{Sphere\-Point}!operator/@{operator/}}
+\index{operator/@{operator/}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{operator/}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point} Sphere\-Point\-::operator/ (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{div}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_a66ff84e328e53f0c0af62c03dc59d962}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the / operator. Returns a c\-Sphere\-Point instance with the ra\-\_\- and dec\-\_\- values divided by div
+
+I\-N\-P\-U\-T\-S\-: div -\/ double number by which to divide
+
+O\-U\-T\-P\-U\-T\-S\-: temp -\/ a \hyperlink{class_sphere_point}{Sphere\-Point} instance with ra\-\_\- and dec\-\_\- divided by n
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 108 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                    {
+    double ra = ra_ / div;
+    double dec = dec_ / div;
+
+    SpherePoint temp(ra, dec);
+    
+    return temp;
+}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_adeea8f6e508c5100397aae9f395fd52c}{\index{Sphere\-Point@{Sphere\-Point}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{operator/=}]{\setlength{\rightskip}{0pt plus 5cm}void Sphere\-Point\-::operator/= (
+\begin{DoxyParamCaption}
+\item[{const double \&}]{div}
+\end{DoxyParamCaption}
+)}}\label{class_sphere_point_adeea8f6e508c5100397aae9f395fd52c}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the /= operator. Updates the ra\-\_\- and dec\-\_\- values by dividing them by div. Recomputes sin\-\_\-dec\-\_\- and cos\-\_\-dec\-\_\-
+
+I\-N\-P\-U\-T\-S\-: div -\/ double number by which to divide
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 133 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                              {
+    ra_ /= div;
+    dec_ /= div;
+    sin_dec_ = sin(dec_);
+    cos_dec_ = cos(dec_);    
+}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_a2c2098bee7c7771eaa6d3a5392e71aad}{\index{Sphere\-Point@{Sphere\-Point}!ra@{ra}}
+\index{ra@{ra}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{ra}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::ra} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_a2c2098bee7c7771eaa6d3a5392e71aad}
+
+
+Definition at line 47 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{return ra_;}
+\end{DoxyCode}
+\hypertarget{class_sphere_point_ab44441b07cc0eba98514c5218000e7d4}{\index{Sphere\-Point@{Sphere\-Point}!sin\-\_\-dec@{sin\-\_\-dec}}
+\index{sin\-\_\-dec@{sin\-\_\-dec}!SpherePoint@{Sphere\-Point}}
+\subsubsection[{sin\-\_\-dec}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Sphere\-Point\-::sin\-\_\-dec} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_sphere_point_ab44441b07cc0eba98514c5218000e7d4}
+
+
+Definition at line 50 of file sphere\-\_\-point.\-h.
+
+
+\begin{DoxyCode}
+{return sin_dec_;}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{sphere__point_8h}{sphere\-\_\-point.\-h}\item 
+\hyperlink{sphere__point_8cpp}{sphere\-\_\-point.\-cpp}\end{DoxyCompactItemize}

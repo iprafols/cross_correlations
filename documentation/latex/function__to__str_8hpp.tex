@@ -1,0 +1,50 @@
+\hypertarget{function__to__str_8hpp}{\section{function\-\_\-to\-\_\-str.\-hpp File Reference}
+\label{function__to__str_8hpp}\index{function\-\_\-to\-\_\-str.\-hpp@{function\-\_\-to\-\_\-str.\-hpp}}
+}
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename T $>$ }\\std\-::string \hyperlink{function__to__str_8hpp_a93b38d205f38b14a7e6dbb03cbd5e091}{To\-Str} (T i)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{function__to__str_8hpp_a93b38d205f38b14a7e6dbb03cbd5e091}{\index{function\-\_\-to\-\_\-str.\-hpp@{function\-\_\-to\-\_\-str.\-hpp}!To\-Str@{To\-Str}}
+\index{To\-Str@{To\-Str}!function_to_str.hpp@{function\-\_\-to\-\_\-str.\-hpp}}
+\subsubsection[{To\-Str}]{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T $>$ std\-::string {\bf To\-Str} (
+\begin{DoxyParamCaption}
+\item[{T}]{i}
+\end{DoxyParamCaption}
+)}}\label{function__to__str_8hpp_a93b38d205f38b14a7e6dbb03cbd5e091}
+function\-\_\-to\-\_\-str.\-cpp Purpose\-: This files contains the function \hyperlink{function__to__str_8hpp_a93b38d205f38b14a7e6dbb03cbd5e091}{To\-Str()}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 26 of file function\-\_\-to\-\_\-str.\-hpp.
+
+
+\begin{DoxyCode}
+                    {
+    /*
+     EXPLANATION:
+     transforms variable into string
+     INPUTS:
+     i - variable to be transformed
+     OUTPUTS:
+     string version of i
+     */
+    
+    std::stringstream convert;
+    convert << i;
+    return convert.str();
+    
+}
+\end{DoxyCode}

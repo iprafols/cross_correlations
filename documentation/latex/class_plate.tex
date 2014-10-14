@@ -1,0 +1,321 @@
+\hypertarget{class_plate}{\section{Plate Class Reference}
+\label{class_plate}\index{Plate@{Plate}}
+}
+
+
+{\ttfamily \#include $<$plate.\-h$>$}
+
+Inheritance diagram for Plate\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_plate}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_plate_aaa77995d1d6acb3f0a9437b8685d5294}{Plate} ()
+\item 
+\hyperlink{class_plate_a898513f63d991c44add2f1b3e0d771d7}{Plate} (const std\-::string \&filename)
+\item 
+\hyperlink{class_sphere_point}{Sphere\-Point} \hyperlink{class_plate_a3ca2ca2397d5754d7f599e828d6428ae}{angle} () const 
+\item 
+double \hyperlink{class_plate_ab350a5bd0d3334e435b2bd52b125cc6e}{number\-\_\-of\-\_\-objects} () const 
+\item 
+int \hyperlink{class_plate_a74d31939a29286c82ecd8fc7daf075ed}{plate\-\_\-number} () const 
+\item 
+void \hyperlink{class_plate_a369d3b556e0cb3a7e5bb0cdb9fab6766}{set\-\_\-plate\-\_\-number} (int number)
+\item 
+bool \hyperlink{class_plate_a1c5e1122f86590fa18551e4874df9603}{Is\-Neighbour} (const \hyperlink{class_plate}{Plate} \&plate, const double \&neighbours\-\_\-max\-\_\-distance)
+\item 
+void \hyperlink{class_plate_af8c7b2cbadfd5359e7464f6015cbf21c}{Normalize} ()
+\item 
+void \hyperlink{class_plate_ab7b0d84a37d69bb228331d2f0b482c34}{Update\-R\-A\-D\-E\-C\-Values} (const \hyperlink{class_plate}{Plate} \&plate)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_plate_a3ff23f95b9f615a470a315cadc2b8940}{plate\-\_\-number\-\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{plate_8h}{plate.\-h} Purpose\-: This file defines the class \hyperlink{class_plate}{Plate}. This class contains number of the plate and its mean values of right ascension and declination
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/26/2014 
+\end{DoxyVersion}
+
+
+Definition at line 30 of file plate.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_plate_aaa77995d1d6acb3f0a9437b8685d5294}{\index{Plate@{Plate}!Plate@{Plate}}
+\index{Plate@{Plate}!Plate@{Plate}}
+\subsubsection[{Plate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plate\-::\-Plate} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_aaa77995d1d6acb3f0a9437b8685d5294}
+
+
+Definition at line 37 of file plate.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_plate_a898513f63d991c44add2f1b3e0d771d7}{\index{Plate@{Plate}!Plate@{Plate}}
+\index{Plate@{Plate}!Plate@{Plate}}
+\subsubsection[{Plate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plate\-::\-Plate} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{filename}
+\end{DoxyParamCaption}
+)}}\label{class_plate_a898513f63d991c44add2f1b3e0d771d7}
+\hyperlink{plate_8cpp}{plate.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{plate_8h}{plate.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/26/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_plate}{Plate} instance and initializes all its variables
+
+I\-N\-P\-U\-T\-S\-: filename -\/ string containing the full path of the fits file containing the object
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_plate}{Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                     {
+    // constructs fits object
+    std::auto_ptr<CCfits::FITS> pInfile;//std::unique_ptr<FITS> pInfile;
+    
+    try{
+        
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(filename, 
+      CCfits::Read));//std::unique_ptr<FITS>(new FITS(filename, Read));
+        
+    } catch(CCfits::FITS::CantOpen x) {
+        
+        throw "cPlate::cPlate(" + filename + ") failed";
+    }
+
+    // define a reference for clarity
+    CCfits::ExtHDU& data = (*pInfile).extension(1);
+    
+    // reading header
+    data.readAllKeys();
+    
+    // extract right ascension
+    std::string sra("RA");
+    double ra;
+    data.keyWord(sra).value(ra);
+    
+    // extract declination
+    std::string sdec("DEC");
+    double dec;
+    data.keyWord(sdec).value(dec);
+    
+    // extract plate number
+    std::string spmf("PMF");
+    std::string pmf;
+    data.keyWord(spmf).value(pmf);
+    
+    // set plate number
+    plate_number_ = atoi(strtok((char*)pmf.c_str(),"-"));
+    
+    // set number of averaged objects to 1
+    number_of_objects_ = 1.0;
+    
+    // set position angle
+    SpherePoint angle(ra, dec);
+    angle_ = angle;
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_plate_a3ca2ca2397d5754d7f599e828d6428ae}{\index{Plate@{Plate}!angle@{angle}}
+\index{angle@{angle}!Plate@{Plate}}
+\subsubsection[{angle}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Sphere\-Point} {\bf Plate\-::angle} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_a3ca2ca2397d5754d7f599e828d6428ae}
+
+
+Definition at line 45 of file plate.\-h.
+
+
+\begin{DoxyCode}
+{return angle_;}
+\end{DoxyCode}
+\hypertarget{class_plate_a1c5e1122f86590fa18551e4874df9603}{\index{Plate@{Plate}!Is\-Neighbour@{Is\-Neighbour}}
+\index{Is\-Neighbour@{Is\-Neighbour}!Plate@{Plate}}
+\subsubsection[{Is\-Neighbour}]{\setlength{\rightskip}{0pt plus 5cm}bool {\bf Plate\-::\-Is\-Neighbour} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plate} \&}]{plate, }
+\item[{const double \&}]{neighbours\-\_\-max\-\_\-distance}
+\end{DoxyParamCaption}
+)}}\label{class_plate_a1c5e1122f86590fa18551e4874df9603}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Returns true if the given plate is a neighbour plate and false otherwise
+
+I\-N\-P\-U\-T\-S\-: plate -\/ plate to check neighbourhood with dist -\/ maximum angular separation for a couple of plates to be considered neighbours (in radians)
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_plate}{Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 73 of file plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+      {
+    return angle_.AngularDistance(plate.angle()) <= neighbours_max_distance;
+}
+\end{DoxyCode}
+\hypertarget{class_plate_af8c7b2cbadfd5359e7464f6015cbf21c}{\index{Plate@{Plate}!Normalize@{Normalize}}
+\index{Normalize@{Normalize}!Plate@{Plate}}
+\subsubsection[{Normalize}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-::\-Normalize} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_plate_af8c7b2cbadfd5359e7464f6015cbf21c}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Normalizes angle\-\_\- by dividing it by number\-\_\-of\-\_\-objects\-\_\-. Then it sets number\-\_\-of\-\_\-objects\-\_\- to 0 and updates sin\-\_\-dec\-\_\- and cos\-\_\-dec\-\_\-
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_plate}{Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Reimplemented in \hyperlink{class_correlation_plate_a6e26de4b826cfd2b96d9d2d510f1e8e5}{Correlation\-Plate}.
+
+
+
+Definition at line 95 of file plate.\-cpp.
+
+
+\begin{DoxyCode}
+                     {
+    // check that the plate has not already been normalized
+    if (number_of_objects_ == _NORM_){
+        std::cout << "Error: plate has already been normalized; skipping
+       normalization" << std::endl;
+        return;
+    }
+    angle_ /= number_of_objects_;
+    number_of_objects_ = _NORM_;
+}
+\end{DoxyCode}
+\hypertarget{class_plate_ab350a5bd0d3334e435b2bd52b125cc6e}{\index{Plate@{Plate}!number\-\_\-of\-\_\-objects@{number\-\_\-of\-\_\-objects}}
+\index{number\-\_\-of\-\_\-objects@{number\-\_\-of\-\_\-objects}!Plate@{Plate}}
+\subsubsection[{number\-\_\-of\-\_\-objects}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Plate\-::number\-\_\-of\-\_\-objects} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_ab350a5bd0d3334e435b2bd52b125cc6e}
+
+
+Definition at line 48 of file plate.\-h.
+
+
+\begin{DoxyCode}
+{return number_of_objects_;}
+\end{DoxyCode}
+\hypertarget{class_plate_a74d31939a29286c82ecd8fc7daf075ed}{\index{Plate@{Plate}!plate\-\_\-number@{plate\-\_\-number}}
+\index{plate\-\_\-number@{plate\-\_\-number}!Plate@{Plate}}
+\subsubsection[{plate\-\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Plate\-::plate\-\_\-number} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_a74d31939a29286c82ecd8fc7daf075ed}
+
+
+Definition at line 51 of file plate.\-h.
+
+
+\begin{DoxyCode}
+{return plate_number_;}
+\end{DoxyCode}
+\hypertarget{class_plate_a369d3b556e0cb3a7e5bb0cdb9fab6766}{\index{Plate@{Plate}!set\-\_\-plate\-\_\-number@{set\-\_\-plate\-\_\-number}}
+\index{set\-\_\-plate\-\_\-number@{set\-\_\-plate\-\_\-number}!Plate@{Plate}}
+\subsubsection[{set\-\_\-plate\-\_\-number}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-::set\-\_\-plate\-\_\-number} (
+\begin{DoxyParamCaption}
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_a369d3b556e0cb3a7e5bb0cdb9fab6766}
+
+
+Definition at line 57 of file plate.\-h.
+
+
+\begin{DoxyCode}
+{plate_number_ = number;}
+\end{DoxyCode}
+\hypertarget{class_plate_ab7b0d84a37d69bb228331d2f0b482c34}{\index{Plate@{Plate}!Update\-R\-A\-D\-E\-C\-Values@{Update\-R\-A\-D\-E\-C\-Values}}
+\index{Update\-R\-A\-D\-E\-C\-Values@{Update\-R\-A\-D\-E\-C\-Values}!Plate@{Plate}}
+\subsubsection[{Update\-R\-A\-D\-E\-C\-Values}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-::\-Update\-R\-A\-D\-E\-C\-Values} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plate} \&}]{plate}
+\end{DoxyParamCaption}
+)}}\label{class_plate_ab7b0d84a37d69bb228331d2f0b482c34}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Adds the ra\-\_\- and dec\-\_\- values of another c\-Plate object and increases number\-\_\-of\-\_\-objects\-\_\- by the corresponding value
+
+I\-N\-P\-U\-T\-S\-: plate -\/ plate instace with the same plate number
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_plate}{Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 122 of file plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                               {
+    // check that the plate numbers are indeed the same
+    if (plate_number_ != plate.plate_number()){
+        std::cout << "Error: plates numbers are not the same; skipping addition
+       of ra and dec values" << std::endl;
+        return;
+    }
+    angle_ += plate.angle();
+    number_of_objects_ += plate.number_of_objects();
+}
+\end{DoxyCode}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_plate_a3ff23f95b9f615a470a315cadc2b8940}{\index{Plate@{Plate}!plate\-\_\-number\-\_\-@{plate\-\_\-number\-\_\-}}
+\index{plate\-\_\-number\-\_\-@{plate\-\_\-number\-\_\-}!Plate@{Plate}}
+\subsubsection[{plate\-\_\-number\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Plate\-::plate\-\_\-number\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_plate_a3ff23f95b9f615a470a315cadc2b8940}
+
+
+Definition at line 77 of file plate.\-h.
+
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{plate_8h}{plate.\-h}\item 
+\hyperlink{plate_8cpp}{plate.\-cpp}\end{DoxyCompactItemize}

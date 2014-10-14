@@ -1,0 +1,663 @@
+\hypertarget{class_correlation_plate}{\section{Correlation\-Plate Class Reference}
+\label{class_correlation_plate}\index{Correlation\-Plate@{Correlation\-Plate}}
+}
+
+
+{\ttfamily \#include $<$correlation\-\_\-plate.\-h$>$}
+
+Inheritance diagram for Correlation\-Plate\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_correlation_plate}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_correlation_plate_a425183f37cd223a0cde0526e391b0558}{Correlation\-Plate} ()
+\item 
+\hyperlink{class_correlation_plate_a428b1a22cb7ed092b02546a89af1d8d1}{Correlation\-Plate} (const int \hyperlink{class_plate_a74d31939a29286c82ecd8fc7daf075ed}{plate\-\_\-number}, const size\-\_\-t \hyperlink{class_correlation_plate_a703ed8022866d1bbcc68bb5ae10ddbc3}{num\-\_\-bins}, const std\-::string \&\hyperlink{class_correlation_plate_a9af909d0d17ea8942c17b41e9379743c}{results}, const std\-::string \&\hyperlink{class_correlation_plate_a4b3fd30943868fb7c7e05bcad76d4e64}{pairs\-\_\-file\-\_\-name}, const std\-::vector$<$ int $>$ \&\hyperlink{class_correlation_plate_a197a4335cc4fbd6dab5b2da7431cbadc}{plate\-\_\-neighbours})
+\item 
+std\-::vector$<$ double $>$ \hyperlink{class_correlation_plate_a48f2550680d56a55bb7cf719a4ce65b2}{mean\-\_\-pi} () const 
+\item 
+double \hyperlink{class_correlation_plate_ab4c4d46291bfc8b7297e9fc2ac58512c}{mean\-\_\-pi} (size\-\_\-t index) const 
+\item 
+std\-::vector$<$ double $>$ \hyperlink{class_correlation_plate_aa1bbce0db890d496b7b60dd1e44d2894}{mean\-\_\-sigma} () const 
+\item 
+double \hyperlink{class_correlation_plate_a5344fb456d3b2a2172772c6d5b7dc777}{mean\-\_\-sigma} (size\-\_\-t index) const 
+\item 
+size\-\_\-t \hyperlink{class_correlation_plate_a703ed8022866d1bbcc68bb5ae10ddbc3}{num\-\_\-bins} () const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_correlation_plate_a9289ae56b96c65653388ab10074c29ee}{num\-\_\-averaged\-\_\-pairs} () const 
+\item 
+int \hyperlink{class_correlation_plate_ada9afe5f09d005fb9d0bf0f4787321fc}{num\-\_\-averaged\-\_\-pairs} (size\-\_\-t index) const 
+\item 
+std\-::string \hyperlink{class_correlation_plate_a4b3fd30943868fb7c7e05bcad76d4e64}{pairs\-\_\-file\-\_\-name} () const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_correlation_plate_a197a4335cc4fbd6dab5b2da7431cbadc}{plate\-\_\-neighbours} () const 
+\item 
+std\-::string \hyperlink{class_correlation_plate_a9af909d0d17ea8942c17b41e9379743c}{results} () const 
+\item 
+std\-::vector$<$ double $>$ \hyperlink{class_correlation_plate_a32f5eecab20e5e16c0782c8ba1769ea5}{weight} () const 
+\item 
+double \hyperlink{class_correlation_plate_a42507a70df5dd9f258ea626df83c578c}{weight} (size\-\_\-t index) const 
+\item 
+std\-::vector$<$ double $>$ \hyperlink{class_correlation_plate_ab3c49e88f49bb59fc6ee7f40c4b4fb66}{xi} () const 
+\item 
+double \hyperlink{class_correlation_plate_aa32ca0acce6b0562802f12400df1d13b}{xi} (size\-\_\-t index) const 
+\item 
+void \hyperlink{class_correlation_plate_a5a7760172439f8103abe425376d8415c}{Compute\-Cross\-Correlation} (const \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \&object\-\_\-list, const \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} \&spectra\-\_\-list, const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables)
+\item 
+std\-::string \hyperlink{class_correlation_plate_a3a6bfbe0c65cc4bb46ce4b4b43dc8d4e}{Info} (size\-\_\-t bin)
+\item 
+void \hyperlink{class_correlation_plate_a6e26de4b826cfd2b96d9d2d510f1e8e5}{Normalize} ()
+\item 
+void \hyperlink{class_correlation_plate_ac1d606757bd81c92e7c88387c59f5a1d}{operator+=} (const \hyperlink{class_correlation_plate}{Correlation\-Plate} \&other)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static std\-::string \hyperlink{class_correlation_plate_acefd722604a86e782cc773f80ef30bc9}{Info\-Header} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{correlation__plate_8h}{correlation\-\_\-plate.\-h} Purpose\-: This file defines the class \hyperlink{class_correlation_plate}{Correlation\-Plate}. This class contains the variables necessary to store the measurement of the cross-\/correlation in a single plate
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 10/02/2014 
+\end{DoxyVersion}
+
+
+Definition at line 37 of file correlation\-\_\-plate.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_correlation_plate_a425183f37cd223a0cde0526e391b0558}{\index{Correlation\-Plate@{Correlation\-Plate}!Correlation\-Plate@{Correlation\-Plate}}
+\index{Correlation\-Plate@{Correlation\-Plate}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Correlation\-Plate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Plate\-::\-Correlation\-Plate} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a425183f37cd223a0cde0526e391b0558}
+
+
+Definition at line 44 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a428b1a22cb7ed092b02546a89af1d8d1}{\index{Correlation\-Plate@{Correlation\-Plate}!Correlation\-Plate@{Correlation\-Plate}}
+\index{Correlation\-Plate@{Correlation\-Plate}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Correlation\-Plate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Plate\-::\-Correlation\-Plate} (
+\begin{DoxyParamCaption}
+\item[{const int}]{plate\-\_\-number, }
+\item[{const size\-\_\-t}]{num\-\_\-bins, }
+\item[{const std\-::string \&}]{results, }
+\item[{const std\-::string \&}]{pairs\-\_\-file\-\_\-name, }
+\item[{const std\-::vector$<$ int $>$ \&}]{plate\-\_\-neighbours}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_plate_a428b1a22cb7ed092b02546a89af1d8d1}
+\hyperlink{correlation__plate_8cpp}{correlation\-\_\-plate.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{correlation__plate_8h}{correlation\-\_\-plate.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 10/02/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_correlation_plate}{Correlation\-Plate} instance and initializes all its variables
+
+I\-N\-P\-U\-T\-S\-: plate\-\_\-number -\/ an integer with the plate number num\-\_\-bins -\/ an unsigned integer with the number of bins results -\/ a string with the path to the results directory (missing the bin number) pairs\-\_\-file\-\_\-name -\/ a string with the base name of the file storing the pairs information plate\-\_\-neighbours -\/ a vector containing the plate numbers of the neighbouring plates
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_plate}{Correlation\-Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: To\-Str
+
+Definition at line 11 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                                                                      
+                          {
+    plate_number_ = plate_number;
+    plate_neighbours_ = plate_neighbours;
+    num_bins_ = num_bins;
+    if (plate_number_ == _NORM_){
+        results_ = "";
+        pairs_file_name_ = pairs_file_name;
+    }
+    else{
+        results_ = results;
+        pairs_file_name_ = "/" + pairs_file_name + ToStr(plate_number_) + ".dat
+      ";
+    }
+    
+    xi_.resize(num_bins_,0.0);
+    mean_pi_.resize(num_bins_,0.0);
+    mean_sigma_.resize(num_bins_,0.0);
+    weight_.resize(num_bins_,0.0);
+    num_averaged_pairs_.resize(num_bins_,0);
+
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_correlation_plate_a5a7760172439f8103abe425376d8415c}{\index{Correlation\-Plate@{Correlation\-Plate}!Compute\-Cross\-Correlation@{Compute\-Cross\-Correlation}}
+\index{Compute\-Cross\-Correlation@{Compute\-Cross\-Correlation}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Compute\-Cross\-Correlation}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Correlation\-Plate\-::\-Compute\-Cross\-Correlation} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Astro\-Object\-Dataset} \&}]{object\-\_\-list, }
+\item[{const {\bf Lya\-Spectra\-Dataset} \&}]{spectra\-\_\-list, }
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_plate_a5a7760172439f8103abe425376d8415c}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Computes the cross-\/correlation
+
+I\-N\-P\-U\-T\-S\-: object\-\_\-list -\/ an \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} instance spectra\-\_\-list -\/ a \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} instance k\-Global\-Variables -\/ a \hyperlink{class_global_variables}{Global\-Variables} instance to load bin settings
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \hyperlink{class_correlation_plate}{Correlation\-Plate} G\-Lobal\-Variables \hyperlink{class_lya_pixel}{Lya\-Pixel} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} \hyperlink{class_lya_spectrum}{Lya\-Spectrum}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 83 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                                                                      
+          {
+    // load bin settings
+    double max_pi = kGlobalVariables.max_pi();
+    double max_sigma = kGlobalVariables.max_sigma();
+    double step_pi = kGlobalVariables.step_pi();
+    double step_sigma = kGlobalVariables.step_sigma();
+    double num_pi_bins = kGlobalVariables.num_pi_bins();
+    double num_sigma_bins = kGlobalVariables.num_sigma_bins();    
+    
+    size_t number_of_objects = object_list.num_objects_in_plate(plate_number_);
+    
+    //std::cout << "computing cross-correlation in plate " << plate_number_ <<
+       "; in this plate there are " << number_of_objects << " AstroObjects" <<
+       std::endl;
+
+    // loop over AstroObjects
+    for (size_t i = 0; i < number_of_objects; i ++){
+        AstroObject object = object_list.list(plate_number_, i);
+                
+        double sigma_aux_o = 2.0*object.dist(); // auxiliar variable to compute
+       sigma values
+        
+        // loop over neighbouring plates
+        for (size_t j = 0; j < plate_neighbours_.size(); j ++){
+            
+            size_t number_of_spectra = spectra_list.num_objects_in_plate(
+      plate_neighbours_[j]);
+            
+            // loop over LyaSpectra
+            for (size_t k = 0; k < number_of_spectra; k ++){
+
+                LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[
+      j], k);
+                std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
+                
+                // compute angular separation
+                double cos_theta = object.angle().CosAngularDistance(
+      lya_spectrum.angle());
+                
+                double sigma_aux = sigma_aux_o*(1.0-cos_theta); // auxiliar
+       variable to compute sigma values
+                
+                // check if all pixels in the spectrum are too far apart
+                double pair_min_sigma = sqrt(sigma_aux*spectrum[0].dist()); //
+       minimum distance obtained for lowest redshift pixel
+                if (pair_min_sigma > max_sigma){ // if the minimum value for
+       sigma (r_perp) is too large, the whole spectra is discarded
+                    //std::cout << "TEST: spectra rejected because min_sigma is
+       too large. value = " << pair_min_sigma << std::endl;
+                    //std::cout << "TEST: ra_object dec_object ra_spectra
+       dec_spectra cos_theta theta min_sigma" << std::endl;
+                    //std::cout << "TEST: " << object.angle() << " " <<
+       lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " <<
+       pair_min_sigma << std::endl;
+                    continue;
+                } 
+                
+                double pair_max_pi = object.dist()-spectrum[0].dist(); //
+       minimum distance obtained for lowest redshift pixel
+                if (pair_max_pi < -max_pi) { // if maximum value for pi (r_par)
+       is too small, the whole spectra is discarded
+                    //std::cout << "TEST: spectra rejected because min_pi is
+       too small" << std::endl;
+                    continue;
+                }
+                double pair_min_pi = object.dist()-spectrum.back().dist(); //
+       maximum distance obtained for highest redshift pixel
+                if (pair_min_pi>max_pi){ // if minimum value for pi (r_par) is
+       too high, the whole spectrum is discarded
+                    //std::cout << "TEST: spectra rejected because min_pi is
+       too large" << std::endl;
+                    continue;
+                }
+                
+                // loop over LyaPixels
+                for (int p = 0; p < spectrum.size(); p ++){
+                    
+                    // compute pi and sigma
+                    double sigma = sqrt(sigma_aux*spectrum[p].dist());
+                    if (sigma > max_sigma){ // if sigma (r_perp) is too large,
+       discard pixel
+                        continue;
+                    }
+                    double pi = object.dist()-spectrum[p].dist();
+                    if ((pi > max_pi) or (pi <- max_pi)){ // if pi (r_par) is
+       too large or too small, discard pixel
+                        continue;
+                    }
+                    
+                    //std::cout << "TEST: accepted pixel" << std::endl;
+                    // locate pi pixel (i_index)
+                    int i_index = int(pi/step_pi)+num_pi_bins/2;
+                    if (pi<0.0){
+                        i_index -= 1;
+                    }
+                    
+                    // locate sigma pixel (j_index)
+                    int j_index = int(sigma/step_sigma);
+                    
+                    // locate xi pixel (k)
+                    int k_index = i_index*num_sigma_bins+j_index;
+                    
+                    // add contribution to xi in the specified bin
+                    AddPair(k_index, spectrum[p], pi, sigma);
+                    
+                    // write down pair information in bin file
+                    SavePair(k_index, object, lya_spectrum, p, pi, sigma);
+                }
+            }
+        }
+    }
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a3a6bfbe0c65cc4bb46ce4b4b43dc8d4e}{\index{Correlation\-Plate@{Correlation\-Plate}!Info@{Info}}
+\index{Info@{Info}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Info}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Plate\-::\-Info} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{bin}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_plate_a3a6bfbe0c65cc4bb46ce4b4b43dc8d4e}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Returns a string with the information for the selected bin
+
+I\-N\-P\-U\-T\-S\-: bin -\/ an unsigned integral specifying the bin
+
+O\-U\-T\-P\-U\-T\-S\-: out -\/ a string with the information
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_plate}{Correlation\-Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: To\-Str
+
+Definition at line 199 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                          {
+    string out = "";
+    
+    out += ToStr(plate_number_) + " " + ToStr(xi_[bin]) + " " + ToStr(mean_pi_[
+      bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(
+      num_averaged_pairs_[bin]);
+    
+    return out;
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_acefd722604a86e782cc773f80ef30bc9}{\index{Correlation\-Plate@{Correlation\-Plate}!Info\-Header@{Info\-Header}}
+\index{Info\-Header@{Info\-Header}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Info\-Header}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Plate\-::\-Info\-Header} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}\label{class_correlation_plate_acefd722604a86e782cc773f80ef30bc9}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Returns a string with the columns information
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: a string with the information
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 223 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                      {
+    return "# plate xi mean_pi mean_sigma weight num_averaged_pairs";
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a48f2550680d56a55bb7cf719a4ce65b2}{\index{Correlation\-Plate@{Correlation\-Plate}!mean\-\_\-pi@{mean\-\_\-pi}}
+\index{mean\-\_\-pi@{mean\-\_\-pi}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{mean\-\_\-pi}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ {\bf Correlation\-Plate\-::mean\-\_\-pi} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a48f2550680d56a55bb7cf719a4ce65b2}
+
+
+Definition at line 53 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return mean_pi_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_ab4c4d46291bfc8b7297e9fc2ac58512c}{\index{Correlation\-Plate@{Correlation\-Plate}!mean\-\_\-pi@{mean\-\_\-pi}}
+\index{mean\-\_\-pi@{mean\-\_\-pi}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{mean\-\_\-pi}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Correlation\-Plate\-::mean\-\_\-pi} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_ab4c4d46291bfc8b7297e9fc2ac58512c}
+
+
+Definition at line 54 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return mean_pi_[index];}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_aa1bbce0db890d496b7b60dd1e44d2894}{\index{Correlation\-Plate@{Correlation\-Plate}!mean\-\_\-sigma@{mean\-\_\-sigma}}
+\index{mean\-\_\-sigma@{mean\-\_\-sigma}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{mean\-\_\-sigma}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ {\bf Correlation\-Plate\-::mean\-\_\-sigma} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_aa1bbce0db890d496b7b60dd1e44d2894}
+
+
+Definition at line 57 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return mean_sigma_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a5344fb456d3b2a2172772c6d5b7dc777}{\index{Correlation\-Plate@{Correlation\-Plate}!mean\-\_\-sigma@{mean\-\_\-sigma}}
+\index{mean\-\_\-sigma@{mean\-\_\-sigma}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{mean\-\_\-sigma}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Correlation\-Plate\-::mean\-\_\-sigma} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a5344fb456d3b2a2172772c6d5b7dc777}
+
+
+Definition at line 58 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return mean_sigma_[index];}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a6e26de4b826cfd2b96d9d2d510f1e8e5}{\index{Correlation\-Plate@{Correlation\-Plate}!Normalize@{Normalize}}
+\index{Normalize@{Normalize}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{Normalize}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Correlation\-Plate\-::\-Normalize} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_plate_a6e26de4b826cfd2b96d9d2d510f1e8e5}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Normalizes the cross correlation results
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_plate}{Correlation\-Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Reimplemented from \hyperlink{class_plate_af8c7b2cbadfd5359e7464f6015cbf21c}{Plate}.
+
+
+
+Definition at line 244 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                {
+    if (plate_number_ == _NORM_){
+        
+        for (size_t i = 0; i < num_bins_; i ++){
+            
+            if (weight_[i] == 0.0){
+                // if the weight is zero, complain and exit the function
+                std::cout << "Zero Division Error in Correlation::Normalize,
+       aborting..." << std::endl;
+                return;
+            }
+            // if the weight is 1.0, normalization is not needed
+            else if (weight_[i] != 1.0){
+                
+                xi_[i] /= weight_[i];
+                mean_pi_[i] /= weight_[i];
+                mean_sigma_[i] /= weight_[i];
+                weight_[i] = 1.0;
+            }
+            
+        }
+        
+    }
+    else{
+        // if plate number is not _NORM_, the instance is not supposed to
+       normalize
+        std::cout << "Warning: Plate number is not set to _NORM_. This
+       CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a9289ae56b96c65653388ab10074c29ee}{\index{Correlation\-Plate@{Correlation\-Plate}!num\-\_\-averaged\-\_\-pairs@{num\-\_\-averaged\-\_\-pairs}}
+\index{num\-\_\-averaged\-\_\-pairs@{num\-\_\-averaged\-\_\-pairs}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{num\-\_\-averaged\-\_\-pairs}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ {\bf Correlation\-Plate\-::num\-\_\-averaged\-\_\-pairs} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a9289ae56b96c65653388ab10074c29ee}
+
+
+Definition at line 64 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return num_averaged_pairs_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_ada9afe5f09d005fb9d0bf0f4787321fc}{\index{Correlation\-Plate@{Correlation\-Plate}!num\-\_\-averaged\-\_\-pairs@{num\-\_\-averaged\-\_\-pairs}}
+\index{num\-\_\-averaged\-\_\-pairs@{num\-\_\-averaged\-\_\-pairs}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{num\-\_\-averaged\-\_\-pairs}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Correlation\-Plate\-::num\-\_\-averaged\-\_\-pairs} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_ada9afe5f09d005fb9d0bf0f4787321fc}
+
+
+Definition at line 65 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return num_averaged_pairs_[index];}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a703ed8022866d1bbcc68bb5ae10ddbc3}{\index{Correlation\-Plate@{Correlation\-Plate}!num\-\_\-bins@{num\-\_\-bins}}
+\index{num\-\_\-bins@{num\-\_\-bins}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{num\-\_\-bins}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Correlation\-Plate\-::num\-\_\-bins} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a703ed8022866d1bbcc68bb5ae10ddbc3}
+
+
+Definition at line 61 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return num_bins_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_ac1d606757bd81c92e7c88387c59f5a1d}{\index{Correlation\-Plate@{Correlation\-Plate}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{operator+=}]{\setlength{\rightskip}{0pt plus 5cm}void Correlation\-Plate\-::operator+= (
+\begin{DoxyParamCaption}
+\item[{const {\bf Correlation\-Plate} \&}]{other}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_plate_ac1d606757bd81c92e7c88387c59f5a1d}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the += operator. Updates the xi\-\_\-, mean\-\_\-sigma, mean\-\_\-pi and weight\-\_\- values by adding those in other.
+
+I\-N\-P\-U\-T\-S\-: other -\/ a \hyperlink{class_correlation_plate}{Correlation\-Plate} instance to be added
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_plate}{Correlation\-Plate}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 333 of file correlation\-\_\-plate.\-cpp.
+
+
+\begin{DoxyCode}
+                                                               {
+    // check that both instances have the same number of bins
+    if (num_bins_ == other.num_bins()){
+        for (size_t i = 0; i < num_bins_; i ++){
+            xi_[i] += other.xi(i);
+            mean_pi_[i] += other.mean_pi(i);
+            mean_sigma_[i] += other.mean_sigma(i);
+            weight_[i] += other.weight(i);
+            num_averaged_pairs_[i] += other.num_averaged_pairs(i);
+        }
+        
+    }
+    // if they don't, complain
+    else{
+        std::cout << "Warning: Trying to add CorrelationPlates with different
+       number of bins. Ignoring..." << std::endl;
+    }
+    
+    
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a4b3fd30943868fb7c7e05bcad76d4e64}{\index{Correlation\-Plate@{Correlation\-Plate}!pairs\-\_\-file\-\_\-name@{pairs\-\_\-file\-\_\-name}}
+\index{pairs\-\_\-file\-\_\-name@{pairs\-\_\-file\-\_\-name}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{pairs\-\_\-file\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Plate\-::pairs\-\_\-file\-\_\-name} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a4b3fd30943868fb7c7e05bcad76d4e64}
+
+
+Definition at line 68 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return pairs_file_name_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a197a4335cc4fbd6dab5b2da7431cbadc}{\index{Correlation\-Plate@{Correlation\-Plate}!plate\-\_\-neighbours@{plate\-\_\-neighbours}}
+\index{plate\-\_\-neighbours@{plate\-\_\-neighbours}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{plate\-\_\-neighbours}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ {\bf Correlation\-Plate\-::plate\-\_\-neighbours} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a197a4335cc4fbd6dab5b2da7431cbadc}
+
+
+Definition at line 71 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return plate_neighbours_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a9af909d0d17ea8942c17b41e9379743c}{\index{Correlation\-Plate@{Correlation\-Plate}!results@{results}}
+\index{results@{results}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{results}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Plate\-::results} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a9af909d0d17ea8942c17b41e9379743c}
+
+
+Definition at line 74 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return results_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a32f5eecab20e5e16c0782c8ba1769ea5}{\index{Correlation\-Plate@{Correlation\-Plate}!weight@{weight}}
+\index{weight@{weight}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{weight}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ {\bf Correlation\-Plate\-::weight} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a32f5eecab20e5e16c0782c8ba1769ea5}
+
+
+Definition at line 77 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return weight_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_a42507a70df5dd9f258ea626df83c578c}{\index{Correlation\-Plate@{Correlation\-Plate}!weight@{weight}}
+\index{weight@{weight}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{weight}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Correlation\-Plate\-::weight} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_a42507a70df5dd9f258ea626df83c578c}
+
+
+Definition at line 78 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return weight_[index];}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_ab3c49e88f49bb59fc6ee7f40c4b4fb66}{\index{Correlation\-Plate@{Correlation\-Plate}!xi@{xi}}
+\index{xi@{xi}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{xi}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$double$>$ {\bf Correlation\-Plate\-::xi} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_ab3c49e88f49bb59fc6ee7f40c4b4fb66}
+
+
+Definition at line 81 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return xi_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_plate_aa32ca0acce6b0562802f12400df1d13b}{\index{Correlation\-Plate@{Correlation\-Plate}!xi@{xi}}
+\index{xi@{xi}!CorrelationPlate@{Correlation\-Plate}}
+\subsubsection[{xi}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf Correlation\-Plate\-::xi} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_plate_aa32ca0acce6b0562802f12400df1d13b}
+
+
+Definition at line 82 of file correlation\-\_\-plate.\-h.
+
+
+\begin{DoxyCode}
+{return xi_[index];}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{correlation__plate_8h}{correlation\-\_\-plate.\-h}\item 
+\hyperlink{correlation__plate_8cpp}{correlation\-\_\-plate.\-cpp}\end{DoxyCompactItemize}

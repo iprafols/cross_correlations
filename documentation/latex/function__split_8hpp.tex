@@ -1,0 +1,69 @@
+\hypertarget{function__split_8hpp}{\section{function\-\_\-split.\-hpp File Reference}
+\label{function__split_8hpp}\index{function\-\_\-split.\-hpp@{function\-\_\-split.\-hpp}}
+}
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\-::vector$<$ std\-::string $>$ \hyperlink{function__split_8hpp_a62be5d701b7d57fca5d3c9e85128279e}{Split} (const std\-::string \&line, const std\-::string \&delimiter)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{function__split_8hpp_a62be5d701b7d57fca5d3c9e85128279e}{\index{function\-\_\-split.\-hpp@{function\-\_\-split.\-hpp}!Split@{Split}}
+\index{Split@{Split}!function_split.hpp@{function\-\_\-split.\-hpp}}
+\subsubsection[{Split}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$std\-::string$>$ {\bf Split} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{line, }
+\item[{const std\-::string \&}]{delimiter}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{function__split_8hpp_a62be5d701b7d57fca5d3c9e85128279e}
+function\-\_\-split.\-cpp Purpose\-: This files contains the function \hyperlink{function__split_8hpp_a62be5d701b7d57fca5d3c9e85128279e}{Split()}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 27 of file function\-\_\-split.\-hpp.
+
+
+\begin{DoxyCode}
+                                                                               
+          {
+    /* 
+     EXPLANATION:
+     splits a string into a vector of char*, which are sequences of contiguous
+       characters separated by delimiter
+     INPUTS:
+     line - string to be splited
+     delimiter - string denoting the separation criteria
+     OUTPUTS:
+     cols - char* vector
+     GLOBAL VARIABLES USED:
+     NONE
+     CLASSES USED:
+     NONE
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // declaring variables
+    std::vector<std::string> cols;
+    char* col;
+    
+    // splitting string
+    col = strtok((char*)line.c_str(),delimiter.c_str());
+    while (col){
+        cols.push_back(col);
+        col = strtok(NULL,delimiter.c_str());
+    }
+    
+    return cols;
+}
+\end{DoxyCode}

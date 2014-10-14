@@ -1,0 +1,179 @@
+\hypertarget{class_dataset}{\section{Dataset Class Reference}
+\label{class_dataset}\index{Dataset@{Dataset}}
+}
+
+
+{\ttfamily \#include $<$dataset.\-h$>$}
+
+Inheritance diagram for Dataset\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_dataset}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\-::string \hyperlink{class_dataset_a7cacad140eadb450c4a0d6b1a9cd9ed0}{name} () const 
+\item 
+\hyperlink{struct_plates_map_simple}{Plates\-Map\-Simple}$<$ size\-\_\-t $>$\-::map \hyperlink{class_dataset_ab71a9a9e09ab029e37a7a69dbee63f2f}{num\-\_\-objects\-\_\-in\-\_\-plate} () const 
+\item 
+size\-\_\-t \hyperlink{class_dataset_a6b1f378ed9e786c2c7f60a82e4bbc834}{num\-\_\-objects\-\_\-in\-\_\-plate} (int plate\-\_\-number) const 
+\item 
+size\-\_\-t \hyperlink{class_dataset_ab28cc36ef5e2b5ba5fd055ba7d113c6d}{size} () const 
+\item 
+virtual void \hyperlink{class_dataset_a5867a14c1554b50ce062bdacd36460af}{Give\-R\-A\-D\-E\-C} (std\-::ostream \&out) const =0
+\item 
+virtual void \hyperlink{class_dataset_aae82d78ec374da243c22a96236b39465}{Give\-Z} (std\-::ostream \&out) const =0
+\item 
+virtual void \hyperlink{class_dataset_a76dbae8574850da55a3b88149ccbe3f9}{Set\-Distances} (const \hyperlink{class_interpolation_map}{Interpolation\-Map} \&redshift\-\_\-distance\-\_\-map)=0
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\-::string \hyperlink{class_dataset_a9e8765235cb821f6c4a43927aa60be9c}{name\-\_\-}
+\item 
+\hyperlink{struct_plates_map_simple}{Plates\-Map\-Simple}$<$ size\-\_\-t $>$\-::map \hyperlink{class_dataset_a42126d88c2da9941a94857fdd47f4186}{num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-}
+\item 
+size\-\_\-t \hyperlink{class_dataset_aa9b7df288645726976e883b45180d84d}{size\-\_\-}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{dataset_8h}{dataset.\-h} Purpose\-: This file defines the class \hyperlink{class_dataset}{Dataset}. This class contains the variables necessary to store a dataset
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 07/25/2014 
+\end{DoxyVersion}
+
+
+Definition at line 29 of file dataset.\-h.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_dataset_a5867a14c1554b50ce062bdacd36460af}{\index{Dataset@{Dataset}!Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}}
+\index{Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}!Dataset@{Dataset}}
+\subsubsection[{Give\-R\-A\-D\-E\-C}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf Dataset\-::\-Give\-R\-A\-D\-E\-C} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{class_dataset_a5867a14c1554b50ce062bdacd36460af}
+
+
+Implemented in \hyperlink{class_astro_object_dataset_a6dbee08285bbd1fba5b900e637ce5b2d}{Astro\-Object\-Dataset}, and \hyperlink{class_lya_spectra_dataset_a29aa2c3f113d6cbc9d10bfabad12362d}{Lya\-Spectra\-Dataset}.
+
+\hypertarget{class_dataset_aae82d78ec374da243c22a96236b39465}{\index{Dataset@{Dataset}!Give\-Z@{Give\-Z}}
+\index{Give\-Z@{Give\-Z}!Dataset@{Dataset}}
+\subsubsection[{Give\-Z}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf Dataset\-::\-Give\-Z} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{class_dataset_aae82d78ec374da243c22a96236b39465}
+
+
+Implemented in \hyperlink{class_astro_object_dataset_a98c5a1ebf074c2589ed1e924bf5899bc}{Astro\-Object\-Dataset}, and \hyperlink{class_lya_spectra_dataset_a859711c028a33cf935ca5a5a3fb480fd}{Lya\-Spectra\-Dataset}.
+
+\hypertarget{class_dataset_a7cacad140eadb450c4a0d6b1a9cd9ed0}{\index{Dataset@{Dataset}!name@{name}}
+\index{name@{name}!Dataset@{Dataset}}
+\subsubsection[{name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Dataset\-::name} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_dataset_a7cacad140eadb450c4a0d6b1a9cd9ed0}
+
+
+Definition at line 37 of file dataset.\-h.
+
+
+\begin{DoxyCode}
+{return name_;}
+\end{DoxyCode}
+\hypertarget{class_dataset_ab71a9a9e09ab029e37a7a69dbee63f2f}{\index{Dataset@{Dataset}!num\-\_\-objects\-\_\-in\-\_\-plate@{num\-\_\-objects\-\_\-in\-\_\-plate}}
+\index{num\-\_\-objects\-\_\-in\-\_\-plate@{num\-\_\-objects\-\_\-in\-\_\-plate}!Dataset@{Dataset}}
+\subsubsection[{num\-\_\-objects\-\_\-in\-\_\-plate}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Simple}$<$size\-\_\-t$>$\-::map {\bf Dataset\-::num\-\_\-objects\-\_\-in\-\_\-plate} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_dataset_ab71a9a9e09ab029e37a7a69dbee63f2f}
+
+
+Definition at line 40 of file dataset.\-h.
+
+
+\begin{DoxyCode}
+{return num_objects_in_plate_;}
+\end{DoxyCode}
+\hypertarget{class_dataset_a6b1f378ed9e786c2c7f60a82e4bbc834}{\index{Dataset@{Dataset}!num\-\_\-objects\-\_\-in\-\_\-plate@{num\-\_\-objects\-\_\-in\-\_\-plate}}
+\index{num\-\_\-objects\-\_\-in\-\_\-plate@{num\-\_\-objects\-\_\-in\-\_\-plate}!Dataset@{Dataset}}
+\subsubsection[{num\-\_\-objects\-\_\-in\-\_\-plate}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Dataset\-::num\-\_\-objects\-\_\-in\-\_\-plate} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-number}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_dataset_a6b1f378ed9e786c2c7f60a82e4bbc834}
+
+
+Definition at line 41 of file dataset.\-h.
+
+
+\begin{DoxyCode}
+{return (*num_objects_in_plate_.find(plate_number)).second;}
+\end{DoxyCode}
+\hypertarget{class_dataset_a76dbae8574850da55a3b88149ccbe3f9}{\index{Dataset@{Dataset}!Set\-Distances@{Set\-Distances}}
+\index{Set\-Distances@{Set\-Distances}!Dataset@{Dataset}}
+\subsubsection[{Set\-Distances}]{\setlength{\rightskip}{0pt plus 5cm}virtual void {\bf Dataset\-::\-Set\-Distances} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Interpolation\-Map} \&}]{redshift\-\_\-distance\-\_\-map}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}pure virtual\mbox{]}}}}\label{class_dataset_a76dbae8574850da55a3b88149ccbe3f9}
+
+
+Implemented in \hyperlink{class_astro_object_dataset_a4fe526d8aaf1f7e0182d5f30f82dcc60}{Astro\-Object\-Dataset}, and \hyperlink{class_lya_spectra_dataset_a444d22db8e799457aef351e74107802e}{Lya\-Spectra\-Dataset}.
+
+\hypertarget{class_dataset_ab28cc36ef5e2b5ba5fd055ba7d113c6d}{\index{Dataset@{Dataset}!size@{size}}
+\index{size@{size}!Dataset@{Dataset}}
+\subsubsection[{size}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Dataset\-::size} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_dataset_ab28cc36ef5e2b5ba5fd055ba7d113c6d}
+
+
+Definition at line 44 of file dataset.\-h.
+
+
+\begin{DoxyCode}
+{return size_;}
+\end{DoxyCode}
+
+
+\subsection{Member Data Documentation}
+\hypertarget{class_dataset_a9e8765235cb821f6c4a43927aa60be9c}{\index{Dataset@{Dataset}!name\-\_\-@{name\-\_\-}}
+\index{name\-\_\-@{name\-\_\-}!Dataset@{Dataset}}
+\subsubsection[{name\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Dataset\-::name\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_dataset_a9e8765235cb821f6c4a43927aa60be9c}
+
+
+Definition at line 62 of file dataset.\-h.
+
+\hypertarget{class_dataset_a42126d88c2da9941a94857fdd47f4186}{\index{Dataset@{Dataset}!num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-@{num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-}}
+\index{num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-@{num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-}!Dataset@{Dataset}}
+\subsubsection[{num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Simple}$<$size\-\_\-t$>$\-::map {\bf Dataset\-::num\-\_\-objects\-\_\-in\-\_\-plate\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_dataset_a42126d88c2da9941a94857fdd47f4186}
+
+
+Definition at line 65 of file dataset.\-h.
+
+\hypertarget{class_dataset_aa9b7df288645726976e883b45180d84d}{\index{Dataset@{Dataset}!size\-\_\-@{size\-\_\-}}
+\index{size\-\_\-@{size\-\_\-}!Dataset@{Dataset}}
+\subsubsection[{size\-\_\-}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Dataset\-::size\-\_\-}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}\label{class_dataset_aa9b7df288645726976e883b45180d84d}
+
+
+Definition at line 68 of file dataset.\-h.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{dataset_8h}{dataset.\-h}\end{DoxyCompactItemize}

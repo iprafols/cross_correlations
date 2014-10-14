@@ -1,0 +1,401 @@
+\hypertarget{class_plots_object}{\section{Plots\-Object Class Reference}
+\label{class_plots_object}\index{Plots\-Object@{Plots\-Object}}
+}
+
+
+{\ttfamily \#include $<$plots\-\_\-object.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_plots_object_a0fa021a139a27541cc86c6fd59d9e01b}{Plots\-Object} (std\-::string \hyperlink{class_plots_object_a1459f65b0e00e0fbfe4c4db86d30b9ce}{plots\-\_\-dir})
+\item 
+std\-::string \hyperlink{class_plots_object_a1459f65b0e00e0fbfe4c4db86d30b9ce}{plots\-\_\-dir} () const 
+\item 
+void \hyperlink{class_plots_object_ad13167224503d9656c01ff5290a1a5fc}{Plot\-Cross\-Correlation} (const \hyperlink{class_correlation_results}{Correlation\-Results} \&res, const bool update\-\_\-script=false) const 
+\item 
+void \hyperlink{class_plots_object_a263567522eff9110c743f3738d65ae59}{Plot\-R\-A\-D\-E\-C\-Dispersion} (\hyperlink{class_dataset}{Dataset} \&dataset, const bool update\-\_\-script=false) const 
+\item 
+void \hyperlink{class_plots_object_a255406482f2ee35c41c7349064cf6ade}{Plot\-Z\-Histogram} (\hyperlink{class_dataset}{Dataset} \&dataset, const bool update\-\_\-script=false) const 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{plots__object_8h}{plots\-\_\-object.\-h} Purpose\-: This file defines the class \hyperlink{class_plots_object}{Plots\-Object}. This class contains the functions required to build the ploting python scripts
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/25/2014 
+\end{DoxyVersion}
+
+
+Definition at line 29 of file plots\-\_\-object.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_plots_object_a0fa021a139a27541cc86c6fd59d9e01b}{\index{Plots\-Object@{Plots\-Object}!Plots\-Object@{Plots\-Object}}
+\index{Plots\-Object@{Plots\-Object}!PlotsObject@{Plots\-Object}}
+\subsubsection[{Plots\-Object}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plots\-Object\-::\-Plots\-Object} (
+\begin{DoxyParamCaption}
+\item[{std\-::string}]{plots\-\_\-dir}
+\end{DoxyParamCaption}
+)}}\label{class_plots_object_a0fa021a139a27541cc86c6fd59d9e01b}
+plots.\-cpp Purpose\-: This files contains the body for the functions defined in plots.\-h
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/25/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a Plots instance
+
+I\-N\-P\-U\-T\-S\-: pot\-\_\-dir -\/ a string containing the path where the plots will be stored
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: Plots
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file plots\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                           {
+    plots_dir_ = plots_dir;
+    
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_plots_object_ad13167224503d9656c01ff5290a1a5fc}{\index{Plots\-Object@{Plots\-Object}!Plot\-Cross\-Correlation@{Plot\-Cross\-Correlation}}
+\index{Plot\-Cross\-Correlation@{Plot\-Cross\-Correlation}!PlotsObject@{Plots\-Object}}
+\subsubsection[{Plot\-Cross\-Correlation}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plots\-Object\-::\-Plot\-Cross\-Correlation} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Correlation\-Results} \&}]{res, }
+\item[{const bool}]{update\-\_\-script = {\ttfamily false}}
+\end{DoxyParamCaption}
+) const}}\label{class_plots_object_ad13167224503d9656c01ff5290a1a5fc}
+
+
+Definition at line 32 of file plots\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                          {
+    /*
+     EXPLANATION:
+     Plots the correlation function
+     INPUTS:
+     res - object where the results are stored
+     OUTPUTS:
+     NONE
+     GLOBAL VARIABLES USED:
+     max_pi
+     max_sigma
+     N_pi
+     N_sigma
+     object_name
+     pwd
+     spectra_name
+     step_pi
+     step_sigma
+     CLASSES USED:
+     Results
+     FUNCTIONS USED:
+     NONE
+     */
+    
+    // set the name of the results and script file
+    std::string filename = "correlation_measurements";
+        
+    // checking if the script has to be rewriten
+    if (not update_script){
+        return;
+    }
+    
+    // opening file
+    std::ofstream script;
+    script.open((plots_dir_ + filename + ".py").c_str(),std::ofstream::trunc); 
+      // opens the file erasing the previous contents
+    if (script.is_open()){
+        script << "import numpy as np" << std::endl;
+        script << "import matplotlib.pyplot as plt" << std::endl;
+        script << "import matplotlib.colors" << std::endl;
+        script << "from matplotlib.colors import colorConverter" << std::endl;
+        script << std::endl;
+        script << "import matplotlib.ticker as ax" << std::endl;
+        script << "from matplotlib.ticker import MultipleLocator,
+       FormatStrFormatter, NullFormatter, ScalarFormatter" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "EXPLANATION:" << std::endl;
+        script << "    Plots the measured correlation function" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "# loading variables" << std::endl;
+        script << "num_sigma_bins = " << res.num_sigma_bins() << std::endl;
+        script << "plots_dir = '" << plots_dir_ << "'" << std::endl;
+        script << "filename = '" << res.normalized_correlation().pairs_file_name
+      () << "'" << std::endl;
+        script << "data = np.genfromtxt(filename, names = True)" << std::endl;
+        script << "for j in range (0, num_sigma_bins):" << std::endl;
+        script << "    x = [value for i,value in enumerate(data['mean_pi']) if
+       (i % num_sigma_bins == j)]" << std::endl;
+        script << "    y = [value for i,value in enumerate(data['xi']) if (i %
+       num_sigma_bins == j)]" << std::endl;
+        script << "    fig = plt.figure(figsize=(14,7))" << std::endl;
+        script << "    ax = fig.add_subplot(1,1,1)" << std::endl;
+        script << "    ax.set_xlabel(r'\\pi\\left(h^{-1}Mpc\\right)')" << 
+      std::endl;
+        script << "    ax.set_ylabel(r'\\xi\\left(\\pi, \\sigma\\right)')" << 
+      std::endl;
+        script << "    ax.plot(x,y)" << std::endl;
+        script << "    fig.savefig(plots_dir +
+       'correlation_measurements_sigma_bin_' + str(j) + '.eps')" << std::endl;
+        script << "    del fig # freeing memory" << std::endl;
+        
+        script.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << ".py" <
+      < std::endl;
+    }
+}
+\end{DoxyCode}
+\hypertarget{class_plots_object_a263567522eff9110c743f3738d65ae59}{\index{Plots\-Object@{Plots\-Object}!Plot\-R\-A\-D\-E\-C\-Dispersion@{Plot\-R\-A\-D\-E\-C\-Dispersion}}
+\index{Plot\-R\-A\-D\-E\-C\-Dispersion@{Plot\-R\-A\-D\-E\-C\-Dispersion}!PlotsObject@{Plots\-Object}}
+\subsubsection[{Plot\-R\-A\-D\-E\-C\-Dispersion}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plots\-Object\-::\-Plot\-R\-A\-D\-E\-C\-Dispersion} (
+\begin{DoxyParamCaption}
+\item[{{\bf Dataset} \&}]{dataset, }
+\item[{const bool}]{update\-\_\-script = {\ttfamily false}}
+\end{DoxyParamCaption}
+) const}}\label{class_plots_object_a263567522eff9110c743f3738d65ae59}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Plots the R\-A-\/\-D\-E\-C dispersion for the given objects
+
+I\-N\-P\-U\-T\-S\-: dataset -\/ a \hyperlink{class_dataset}{Dataset} instance from which to plot update\-\_\-script -\/ a boolean; if true, python script is updated, if false, it is not -\/ defaut = False
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} Plots
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 102 of file plots\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+            {
+    // set the name of the results and script file
+    std::string filename =  dataset.name() + "_RA_DEC_dispersion";
+    
+    // open results file
+    std::ofstream result;
+    result.open((plots_dir_ + filename + ".dat").c_str(),std::ofstream::trunc);
+       // opens the file erasing the previous contents
+    if (result.is_open()){
+        
+        result << "# data required to redo the '" << filename << ".png' plot.
+       All angles are in radians" << std::endl;
+        result << "# RA DEC" << std::endl;
+        
+        // load the AstroObject pointers
+        dataset.GiveRADEC(result);                
+        result.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << ".dat" 
+      << std::endl;
+    }
+    
+    // checking if the script has to be rewriten
+    if (not update_script){
+        return;
+    }
+    // open script file
+    std::ofstream script;
+    script.open((plots_dir_ + filename + ".py").c_str(),std::ofstream::trunc); 
+      // opens the file erasing the previous contents
+    if (script.is_open()){
+        script << "import numpy as np" << std::endl;
+        script << "import math" << std::endl;
+        script << "from math import acos" << std::endl;
+        script << "import matplotlib.pyplot as plt" << std::endl;
+        script << "import matplotlib.colors" << std::endl;
+        script << "from matplotlib.colors import colorConverter" << std::endl;
+        script << std::endl;
+        script << "import matplotlib.ticker as ax" << std::endl;
+        script << "from matplotlib.ticker import MultipleLocator,
+       FormatStrFormatter, NullFormatter, ScalarFormatter" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "EXPLANATION:" << std::endl;
+        script << "    Plots the RA - DEC dispersion of the " << dataset.name()
+       << " sample" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "# loading variables" << std::endl;
+        script << "plots_dir = '" << plots_dir_ << "'" << std::endl;
+        script << "filename = '" << filename << ".dat'" << std::endl;
+        script << "data = np.genfromtxt(plots_dir + filename, names = True,
+       skip_header = 1)" << std::endl;
+        script << std::endl;
+        script << "for i in range(0,len(data['RA'])):" << std::endl;
+        script << "    if data['RA'][i] < 1.0:" << std::endl;
+        script << "        data['RA'][i] += 2.0*acos(-1.0)" << std::endl;
+        script << std::endl;
+        script << "# plotting RA/DEC dispersion" << std::endl;
+        script << "fig = plt.figure(figsize=(18,9))" << std::endl;
+        script << "ax = fig.add_subplot(1,1,1)" << std::endl;
+        script << "
+      ax.tick_params(axis='both',which='major',labelsize=35,length=6,width=2)" << std::endl;
+        script << "
+      ax.tick_params(axis='both',which='minor',labelsize=35,length=4,width=1)" << std::endl;
+        script << "#ax.set_xticklabels(['
+       ',r'$0$',r'$50$',r'$100$',r'$150$',r'$200$',r'$250$',r'$300$'])" << std::endl;
+        script << "#ax.set_yticklabels(['
+       ',r'$0$',r'$10$',r'$20$',r'$30$',r'$40$',r'$50$',r'$60$',r'$70$'])" << std::endl;
+        script << "ax.set_xlabel('J2000 RA (rad)',fontsize=35)" << std::endl;
+        script << "ax.set_ylabel('J2000 DEC (rad)',fontsize=35)" << std::endl;
+        script << "ax.set_xlim(1,8)" << std::endl;
+        script << "ax.set_ylim(-0.2,1.2)" << std::endl;
+        script << "ax.plot(data['RA'],data['DEC'],'k.',alpha=0.5)" << std::endl
+      ;
+        script << "fig.savefig(plots_dir+'" << filename << ".png')" << 
+      std::endl;
+        script << "del plots_dir, fig # freeing memory" << std::endl;
+        
+        
+        script.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << ".py" <
+      < std::endl;
+    }
+}
+\end{DoxyCode}
+\hypertarget{class_plots_object_a1459f65b0e00e0fbfe4c4db86d30b9ce}{\index{Plots\-Object@{Plots\-Object}!plots\-\_\-dir@{plots\-\_\-dir}}
+\index{plots\-\_\-dir@{plots\-\_\-dir}!PlotsObject@{Plots\-Object}}
+\subsubsection[{plots\-\_\-dir}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Plots\-Object\-::plots\-\_\-dir} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plots_object_a1459f65b0e00e0fbfe4c4db86d30b9ce}
+
+
+Definition at line 42 of file plots\-\_\-object.\-h.
+
+
+\begin{DoxyCode}
+{return plots_dir_;}
+\end{DoxyCode}
+\hypertarget{class_plots_object_a255406482f2ee35c41c7349064cf6ade}{\index{Plots\-Object@{Plots\-Object}!Plot\-Z\-Histogram@{Plot\-Z\-Histogram}}
+\index{Plot\-Z\-Histogram@{Plot\-Z\-Histogram}!PlotsObject@{Plots\-Object}}
+\subsubsection[{Plot\-Z\-Histogram}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plots\-Object\-::\-Plot\-Z\-Histogram} (
+\begin{DoxyParamCaption}
+\item[{{\bf Dataset} \&}]{dataset, }
+\item[{const bool}]{update\-\_\-script = {\ttfamily false}}
+\end{DoxyParamCaption}
+) const}}\label{class_plots_object_a255406482f2ee35c41c7349064cf6ade}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Plots the redshift histogram for the given objects
+
+I\-N\-P\-U\-T\-S\-: dataset -\/ a \hyperlink{class_dataset}{Dataset} instance from which to plot update\-\_\-script -\/ a boolean; if true, python script is updated, if false, it is not -\/ defaut = False
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object} Plots
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 194 of file plots\-\_\-object.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+       {
+    // set the name of the results and script file
+    std::string filename =  dataset.name() + "_z_histogram";
+    
+    // open results file
+    std::ofstream result;
+    result.open((plots_dir_ + filename + ".dat").c_str(),std::ofstream::trunc);
+       // opens the file erasing the previous contents
+    if (result.is_open()){
+        
+        result << "# data required to redo the '" << filename << ".png' plot" <
+      < std::endl;
+        result << "# z" << std::endl;
+        
+        // load the AstroObject pointers
+        dataset.GiveZ(result);                
+        result.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << ".dat" 
+      << std::endl;
+    }
+    
+    // checking if the script has to be rewriten
+    if (not update_script){
+        return;
+    }
+    // open script file
+    std::ofstream script;
+    script.open((plots_dir_ + filename + ".py").c_str(),std::ofstream::trunc); 
+      // opens the file erasing the previous contents
+    if (script.is_open()){
+        script << "import numpy as np" << std::endl;
+        script << "import matplotlib.pyplot as plt" << std::endl;
+        script << "import matplotlib.colors" << std::endl;
+        script << "from matplotlib.colors import colorConverter" << std::endl;
+        script << std::endl;
+        script << "import matplotlib.ticker as ax" << std::endl;
+        script << "from matplotlib.ticker import MultipleLocator,
+       FormatStrFormatter, NullFormatter, ScalarFormatter" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "EXPLANATION:" << std::endl;
+        script << "    Plots the redshift histogram of the " << dataset.name() 
+      << " sample" << std::endl;
+        script << "\"\"\"" << std::endl;
+        script << "# loading variabes" << std::endl;
+        script << "plots_dir = '" << plots_dir_ << "'" << std::endl;
+        script << "filename = '" << filename << ".dat'" << std::endl;
+        script << "data = np.genfromtxt(plots_dir + filename)" << std::endl;
+        script << std::endl;
+        script << "# ploting redshift histogram" << std::endl;
+        script << "fig = plt.figure(figsize=(18,9))" << std::endl;
+        script << "ax = fig.add_subplot(1,1,1)" << std::endl;
+        script << "
+      ax.tick_params(axis='both',which='major',labelsize=35,length=6,width=2)" << std::endl;
+        script << "
+      ax.tick_params(axis='both',which='minor',labelsize=35,length=4,width=1)" << std::endl;
+        script << "
+      #ax.set_xticklabels(['$2.0$',r'$2.2$',r'$2.4$',r'$2.6$',r'$2.8$',r'$3.0$',r'$3.2$',r'$3.4$',r'$3.6$'])" << std::endl;
+        script << "#ax.set_yticklabels(['
+       ',r'$1000$',r'$2000$',r'$3000$',r'$4000$',r'$5000$',r'$6000$',r'$7000$',r'$8000$'])" << std::endl;
+        script << "ax.set_xlabel('z',fontsize=35)" << std::endl;
+        script << "ax.set_ylabel('number of objects',fontsize=20)" << std::endl
+      ;
+        script << "ax.hist(data,50,histtype='step',color='black')" << std::endl
+      ;
+        script << "fig.savefig(plots_dir+'" << filename << ".png')" << 
+      std::endl;
+        script << "del plots_dir,fig # freeing memory" << std::endl;
+        
+        script.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << ".py" <
+      < std::endl;
+    }
+}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{plots__object_8h}{plots\-\_\-object.\-h}\item 
+\hyperlink{plots__object_8cpp}{plots\-\_\-object.\-cpp}\end{DoxyCompactItemize}

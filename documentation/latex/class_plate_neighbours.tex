@@ -1,0 +1,317 @@
+\hypertarget{class_plate_neighbours}{\section{Plate\-Neighbours Class Reference}
+\label{class_plate_neighbours}\index{Plate\-Neighbours@{Plate\-Neighbours}}
+}
+
+
+{\ttfamily \#include $<$plate\-\_\-neighbours.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_plate_neighbours_a004ec26ae1addb3670495eb3d0c3fbd3}{Plate\-Neighbours} ()
+\item 
+\hyperlink{class_plate_neighbours_a8b4e4e50596436525e2ac49cb9c85e99}{Plate\-Neighbours} (const std\-::string \&k\-Plate\-Neighbours)
+\item 
+\hyperlink{struct_plates_map_vector}{Plates\-Map\-Vector}$<$ \hyperlink{class_plate}{Plate} $>$\-::map \hyperlink{class_plate_neighbours_ac6fa1d2d5e0568f4b4ee2cd7713a4c40}{plates} () const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_plate_neighbours_a4f82e69c6f250f74a0f965a59f2ed5a9}{Get\-Neighbours\-List} (int plate) const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_plate_neighbours_a2b04f29a3dd27fe9d0e7889dc41c53a9}{Get\-Neighbours\-List} (const \hyperlink{class_plate}{Plate} \&plate) const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_plate_neighbours_ab05099a51c50c60b2af9f60b1494e024}{Get\-Plates\-List} () const 
+\item 
+void \hyperlink{class_plate_neighbours_a8a2ec1853956c5db0e64cb4141b3105a}{Add\-Neighbours} (const \hyperlink{class_plate}{Plate} \&plate1, const \hyperlink{class_plate}{Plate} \&plate2)
+\item 
+void \hyperlink{class_plate_neighbours_acc3782d4bf8244397ab498c70981f06b}{Add\-Plate} (const \hyperlink{class_plate}{Plate} \&plate)
+\item 
+void \hyperlink{class_plate_neighbours_a48ff11a6c830d0a153179c41a4c5a7f9}{Save} (const std\-::string \&filename)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{plate__neighbours_8h}{plate\-\_\-neighbours.\-h} Purpose\-: This file defines the class \hyperlink{class_plate_neighbours}{Plate\-Neighbours}. This class contains the plates list and the corresponding neighbouring plates
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/26/2014 
+\end{DoxyVersion}
+
+
+Definition at line 34 of file plate\-\_\-neighbours.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_plate_neighbours_a004ec26ae1addb3670495eb3d0c3fbd3}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Plate\-Neighbours@{Plate\-Neighbours}}
+\index{Plate\-Neighbours@{Plate\-Neighbours}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Plate\-Neighbours}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plate\-Neighbours\-::\-Plate\-Neighbours} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_neighbours_a004ec26ae1addb3670495eb3d0c3fbd3}
+
+
+Definition at line 41 of file plate\-\_\-neighbours.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_a8b4e4e50596436525e2ac49cb9c85e99}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Plate\-Neighbours@{Plate\-Neighbours}}
+\index{Plate\-Neighbours@{Plate\-Neighbours}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Plate\-Neighbours}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plate\-Neighbours\-::\-Plate\-Neighbours} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{k\-Plate\-Neighbours}
+\end{DoxyParamCaption}
+)}}\label{class_plate_neighbours_a8b4e4e50596436525e2ac49cb9c85e99}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_plate_neighbours_a8a2ec1853956c5db0e64cb4141b3105a}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Add\-Neighbours@{Add\-Neighbours}}
+\index{Add\-Neighbours@{Add\-Neighbours}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Add\-Neighbours}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-Neighbours\-::\-Add\-Neighbours} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plate} \&}]{plate1, }
+\item[{const {\bf Plate} \&}]{plate2}
+\end{DoxyParamCaption}
+)}}\label{class_plate_neighbours_a8a2ec1853956c5db0e64cb4141b3105a}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: The two given plates are considered neighbours, add them to the respective neighbours list
+
+I\-N\-P\-U\-T\-S\-: plate1 -\/ a \hyperlink{class_plate}{Plate} object plate2 -\/ another \hyperlink{class_plate}{Plate} object
+
+O\-U\-T\-P\-U\-T\-S\-: plates -\/ a vector containg the list of used plates
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_plate}{Plate} P\-Late\-Neighbours
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: To\-Str
+
+Definition at line 68 of file plate\-\_\-neighbours.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                           {
+    // set second plate as neighbour of the first
+    std::map<int,std::vector<Plate> >::iterator it = plates_.find(plate1.
+      plate_number());
+    (*it).second.push_back(plate2);
+    
+    // set first plate as neighbour of the second
+    it = plates_.find(plate2.plate_number());
+    (*it).second.push_back(plate1);
+    
+}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_acc3782d4bf8244397ab498c70981f06b}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Add\-Plate@{Add\-Plate}}
+\index{Add\-Plate@{Add\-Plate}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Add\-Plate}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-Neighbours\-::\-Add\-Plate} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plate} \&}]{plate}
+\end{DoxyParamCaption}
+)}}\label{class_plate_neighbours_acc3782d4bf8244397ab498c70981f06b}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: If the given plate does not have an entry, then make a new entry
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: plates -\/ a vector containg the list of used plates
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: P\-Late\-Neighbours
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: To\-Str
+
+Definition at line 98 of file plate\-\_\-neighbours.\-cpp.
+
+
+\begin{DoxyCode}
+                                                {
+    // check whether or not the entry is already existing
+    if (plates_.find(plate.plate_number()) != plates_.end()){
+        std::cout << "The given plate is already included" << std::endl;
+        return;
+    }
+    
+    std::vector<Plate> v(1,plate);
+    plates_[plate.plate_number()] = v;
+
+}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_a4f82e69c6f250f74a0f965a59f2ed5a9}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Get\-Neighbours\-List@{Get\-Neighbours\-List}}
+\index{Get\-Neighbours\-List@{Get\-Neighbours\-List}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Get\-Neighbours\-List}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$ int $>$ {\bf Plate\-Neighbours\-::\-Get\-Neighbours\-List} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate}
+\end{DoxyParamCaption}
+) const}}\label{class_plate_neighbours_a4f82e69c6f250f74a0f965a59f2ed5a9}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Returns a vector conatining the plate number of all the neighbours of a specified plate
+
+I\-N\-P\-U\-T\-S\-: plate -\/ plate number of the plate from which the neighbours are recovered
+
+O\-U\-T\-P\-U\-T\-S\-: neighbours -\/ a vector containg the list of used plates
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: P\-Late\-Neighbours
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 127 of file plate\-\_\-neighbours.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                {
+    if (plate == _NORM_){
+        std::vector<int> neighbours;
+        return neighbours;
+    }
+    else{
+        // locate plate
+        PlatesMapVector<Plate>::map::const_iterator map_it = plates_.find(plate
+      );
+        
+        // create vector of neighbours with the correct size, fill it with
+       zeros
+        std::vector<int> neighbours((*map_it).second.size(),0);
+        
+        std::vector<int>::iterator vec_it1;
+        std::vector<Plate>::const_iterator vec_it2;
+        for (vec_it1 = neighbours.begin(), vec_it2 = (*map_it).second.begin(); 
+      vec_it1 != neighbours.end() and vec_it2 != (*map_it).second.end(); vec_it1 ++, 
+      vec_it2 ++){
+            
+            (*vec_it1) = (*vec_it2).plate_number();
+        }
+        
+        return neighbours;
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_a2b04f29a3dd27fe9d0e7889dc41c53a9}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Get\-Neighbours\-List@{Get\-Neighbours\-List}}
+\index{Get\-Neighbours\-List@{Get\-Neighbours\-List}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Get\-Neighbours\-List}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ {\bf Plate\-Neighbours\-::\-Get\-Neighbours\-List} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Plate} \&}]{plate}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_neighbours_a2b04f29a3dd27fe9d0e7889dc41c53a9}
+
+
+Definition at line 54 of file plate\-\_\-neighbours.\-h.
+
+
+\begin{DoxyCode}
+{return GetNeighboursList(plate.plate_number());}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_ab05099a51c50c60b2af9f60b1494e024}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Get\-Plates\-List@{Get\-Plates\-List}}
+\index{Get\-Plates\-List@{Get\-Plates\-List}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Get\-Plates\-List}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$ int $>$ {\bf Plate\-Neighbours\-::\-Get\-Plates\-List} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}}\label{class_plate_neighbours_ab05099a51c50c60b2af9f60b1494e024}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Returns a vector conatining the plate number of all the used plates
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: plates -\/ a vector containg the list of used plates
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: P\-Late\-Neighbours
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 168 of file plate\-\_\-neighbours.\-cpp.
+
+
+\begin{DoxyCode}
+                                                    {
+    //std::vector<int> plates_list(plates_.size(),0);
+    std::vector<int> plates_list;
+    plates_list.reserve(plates_.size());
+    
+    for (PlatesMapVector<Plate>::map::const_iterator it = plates_.begin(); it !
+      = plates_.end(); it ++){
+        plates_list.push_back((*it).first);
+    }
+    
+    return plates_list;
+}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_ac6fa1d2d5e0568f4b4ee2cd7713a4c40}{\index{Plate\-Neighbours@{Plate\-Neighbours}!plates@{plates}}
+\index{plates@{plates}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{plates}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Vector}$<${\bf Plate}$>$\-::map {\bf Plate\-Neighbours\-::plates} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_plate_neighbours_ac6fa1d2d5e0568f4b4ee2cd7713a4c40}
+
+
+Definition at line 50 of file plate\-\_\-neighbours.\-h.
+
+
+\begin{DoxyCode}
+{return plates_;}
+\end{DoxyCode}
+\hypertarget{class_plate_neighbours_a48ff11a6c830d0a153179c41a4c5a7f9}{\index{Plate\-Neighbours@{Plate\-Neighbours}!Save@{Save}}
+\index{Save@{Save}!PlateNeighbours@{Plate\-Neighbours}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Plate\-Neighbours\-::\-Save} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{filename}
+\end{DoxyParamCaption}
+)}}\label{class_plate_neighbours_a48ff11a6c830d0a153179c41a4c5a7f9}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Writes a list of plates and their neighbours into the specified file. Format is \char`\"{}plate neighbour1 neighbour2 ...\char`\"{}
+
+I\-N\-P\-U\-T\-S\-: filename -\/ name of the file in which to write the list
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: P\-Late\-Neighbours
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 197 of file plate\-\_\-neighbours.\-cpp.
+
+
+\begin{DoxyCode}
+                                                   {
+    std::cout << "Saving list of plates and neighbours" << std::endl;
+    
+    std::ofstream file(filename.c_str(),std::ofstream::trunc); 
+    if (file.is_open()){
+        
+        // write header in file
+        file << "# plate neighbour1 neighbour2 ..." << std::endl;        
+        
+        // make sure the map iterator points at the beginnning of the map
+        PlatesMapVector<Plate>::map::iterator plates_it = plates_.begin();
+        
+        while (plates_it != plates_.end()){
+            // write plate number
+            int plate = (*plates_it).first;
+            file << (*plates_it).first << " ";
+            
+            
+            for (std::vector<Plate>::iterator it = (*plates_it).second.begin();
+       it != (*plates_it).second.end(); it ++){ // loop over neighbours
+                
+                // write neighbour's plate number
+                file << (*it).plate_number() << " ";
+            }
+            
+            file << std::endl;
+            
+            plates_it ++;
+        }
+        
+        file.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << filename << 
+      std::endl;
+    }
+    
+}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{plate__neighbours_8h}{plate\-\_\-neighbours.\-h}\item 
+\hyperlink{plate__neighbours_8cpp}{plate\-\_\-neighbours.\-cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,40 @@
+\hypertarget{sphere__point_8cpp}{\section{sphere\-\_\-point.\-cpp File Reference}
+\label{sphere__point_8cpp}\index{sphere\-\_\-point.\-cpp@{sphere\-\_\-point.\-cpp}}
+}
+{\ttfamily \#include \char`\"{}sphere\-\_\-point.\-h\char`\"{}}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\-::ostream \& \hyperlink{sphere__point_8cpp_af521a1ce3a360d87e8acd34f2df0bafc}{operator$<$$<$} (std\-::ostream \&out, const \hyperlink{class_sphere_point}{Sphere\-Point} \&angle)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{sphere__point_8cpp_af521a1ce3a360d87e8acd34f2df0bafc}{\index{sphere\-\_\-point.\-cpp@{sphere\-\_\-point.\-cpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!sphere_point.cpp@{sphere\-\_\-point.\-cpp}}
+\subsubsection[{operator$<$$<$}]{\setlength{\rightskip}{0pt plus 5cm}std\-::ostream\& operator$<$$<$ (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out, }
+\item[{const {\bf Sphere\-Point} \&}]{angle}
+\end{DoxyParamCaption}
+)}}\label{sphere__point_8cpp_af521a1ce3a360d87e8acd34f2df0bafc}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Overloads the $<$$<$ operator. Return \char`\"{}ra\-\_\-value dec\-\_\-value\char`\"{}
+
+I\-N\-P\-U\-T\-S\-: out -\/ an ostream angle -\/ a \hyperlink{class_sphere_point}{Sphere\-Point} instance to insert into out
+
+O\-U\-T\-P\-U\-T\-S\-: out -\/ a modified version of out with angle inserted into it
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 157 of file sphere\-\_\-point.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                  {
+    out << angle.ra() << " " << angle.dec();
+    
+    return out;
+}
+\end{DoxyCode}

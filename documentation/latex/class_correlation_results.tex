@@ -1,0 +1,400 @@
+\hypertarget{class_correlation_results}{\section{Correlation\-Results Class Reference}
+\label{class_correlation_results}\index{Correlation\-Results@{Correlation\-Results}}
+}
+
+
+{\ttfamily \#include $<$correlation\-\_\-results.\-h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_correlation_results_a71efc304ebf89d8b0418d9ac88baac95}{Correlation\-Results} ()
+\item 
+\hyperlink{class_correlation_results_a423781178a3ddcb761c501acff5553ff}{Correlation\-Results} (const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables, const \hyperlink{class_plate_neighbours}{Plate\-Neighbours} \&k\-Plate\-Neighbours)
+\item 
+std\-::string \hyperlink{class_correlation_results_a30bac33d879a65346831124367610148}{correlation\-\_\-file\-\_\-name} () const 
+\item 
+\hyperlink{struct_plates_map_simple}{Plates\-Map\-Simple}\\*
+$<$ \hyperlink{class_correlation_plate}{Correlation\-Plate} $>$\-::map \hyperlink{class_correlation_results_afebc9131b5371056e7ba45aed92c67fc}{correlation\-\_\-plates} () const 
+\item 
+\hyperlink{class_correlation_plate}{Correlation\-Plate} \hyperlink{class_correlation_results_a671d48951a25f1086b6978e07d793920}{correlation\-\_\-plates} (int plate\-\_\-num) const 
+\item 
+\hyperlink{class_correlation_plate}{Correlation\-Plate} \hyperlink{class_correlation_results_a8c428a16d861076e768648f1bbf418cd}{normalized\-\_\-correlation} () const 
+\item 
+size\-\_\-t \hyperlink{class_correlation_results_a2cba363b6c6a959a65b4cd09568139b9}{num\-\_\-bins} () const 
+\item 
+size\-\_\-t \hyperlink{class_correlation_results_adf3ef279db5766a75fe31f8f8cd4bd14}{num\-\_\-pi\-\_\-bins} () const 
+\item 
+size\-\_\-t \hyperlink{class_correlation_results_ae6fbe4f8e750fdaaab5c3a7098bcd584}{num\-\_\-sigma\-\_\-bins} () const 
+\item 
+std\-::string \hyperlink{class_correlation_results_a38ea35df21d881fa164a417cef678af4}{pairs\-\_\-file\-\_\-name} () const 
+\item 
+std\-::vector$<$ int $>$ \hyperlink{class_correlation_results_aea7eabb88af97738eaefb130217f5689}{plates\-\_\-list} () const 
+\item 
+int \hyperlink{class_correlation_results_a59a205c5ca406e92d229efbe24b8424c}{plates\-\_\-list} (int index) const 
+\item 
+std\-::string \hyperlink{class_correlation_results_ab6363e6a8c2357f6a432009e87b12abe}{results} () const 
+\item 
+void \hyperlink{class_correlation_results_ac70d1d7c6ab399bc97404903023023db}{Compute\-Cross\-Correlation} (const \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \&object\-\_\-list, const \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} \&spectra\-\_\-list, const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables)
+\item 
+void \hyperlink{class_correlation_results_afd279057c1c250889bb4c462ad43fd52}{Create\-Bin\-Files} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{correlation__results_8h}{correlation\-\_\-results.\-h} Purpose\-: This file defines the class \hyperlink{class_correlation_results}{Correlation\-Results}. This class contains the variables necessary to store the measurement of the cross-\/correlation
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 37 of file correlation\-\_\-results.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_correlation_results_a71efc304ebf89d8b0418d9ac88baac95}{\index{Correlation\-Results@{Correlation\-Results}!Correlation\-Results@{Correlation\-Results}}
+\index{Correlation\-Results@{Correlation\-Results}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{Correlation\-Results}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Results\-::\-Correlation\-Results} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a71efc304ebf89d8b0418d9ac88baac95}
+
+
+Definition at line 44 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{};
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a423781178a3ddcb761c501acff5553ff}{\index{Correlation\-Results@{Correlation\-Results}!Correlation\-Results@{Correlation\-Results}}
+\index{Correlation\-Results@{Correlation\-Results}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{Correlation\-Results}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Results\-::\-Correlation\-Results} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables, }
+\item[{const {\bf Plate\-Neighbours} \&}]{k\-Plate\-Neighbours}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_results_a423781178a3ddcb761c501acff5553ff}
+\hyperlink{correlation__results_8cpp}{correlation\-\_\-results.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{correlation__results_8h}{correlation\-\_\-results.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_correlation_results}{Correlation\-Results} instance and initializes all its variables
+
+I\-N\-P\-U\-T\-S\-: k\-Global\-Varialbes -\/ object of type \hyperlink{class_global_variables}{Global\-Variables} k\-Plate\-Neighbours -\/ a \hyperlink{class_plate_neighbours}{Plate\-Neighbours} instance
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_plate}{Correlation\-Plate} \hyperlink{class_correlation_results}{Correlation\-Results} \hyperlink{class_global_variables}{Global\-Variables}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 12 of file correlation\-\_\-results.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                             {
+    // setting the number of bins and plates from kGlobalVariables
+    num_bins_ = kGlobalVariables.num_bins();
+    num_sigma_bins_ = kGlobalVariables.num_sigma_bins();
+    num_pi_bins_ = kGlobalVariables.num_pi_bins();
+    
+    // setting the results directory and the pairs file name from
+       kGlobalVariables
+    results_ = kGlobalVariables.results() + "qso_spectrum_pairs_info_bin_";
+    pairs_file_name_ = kGlobalVariables.pairs_file_name();
+    correlation_file_name_ = kGlobalVariables.correlation_file_name();
+    
+    // initialization of the plates map
+    plates_list_ = kPlateNeighbours.GetPlatesList();
+    for (size_t i = 0; i < plates_list_.size(); i ++){
+        correlation_plates_[plates_list_[i]] = CorrelationPlate(plates_list_[i]
+      , num_bins_, results_, pairs_file_name_, kPlateNeighbours.GetNeighboursList(
+      plates_list_[i]));
+    }
+    
+    // initialization of the normalized cross-correlation variable
+    normalized_correlation_ = CorrelationPlate(_NORM_, num_bins_, results_, 
+      kGlobalVariables.normalized_correlation(), kPlateNeighbours.GetNeighboursList(_NORM_
+      ));
+    
+    // creating bin files
+    CreateBinFiles();
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_correlation_results_ac70d1d7c6ab399bc97404903023023db}{\index{Correlation\-Results@{Correlation\-Results}!Compute\-Cross\-Correlation@{Compute\-Cross\-Correlation}}
+\index{Compute\-Cross\-Correlation@{Compute\-Cross\-Correlation}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{Compute\-Cross\-Correlation}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Correlation\-Results\-::\-Compute\-Cross\-Correlation} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Astro\-Object\-Dataset} \&}]{object\-\_\-list, }
+\item[{const {\bf Lya\-Spectra\-Dataset} \&}]{spectra\-\_\-list, }
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_results_ac70d1d7c6ab399bc97404903023023db}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Computes the cross-\/correlation for all plates
+
+I\-N\-P\-U\-T\-S\-: object\-\_\-list -\/ an \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} instance spectra\-\_\-list -\/ a \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} instance k\-Global\-Variables -\/ a \hyperlink{class_global_variables}{Global\-Variables} instance to load the bin settings
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \hyperlink{class_correlation_results}{Correlation\-Results} \hyperlink{class_global_variables}{Global\-Variables} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 56 of file correlation\-\_\-results.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                                                                      
+            {
+    for (size_t i = 0; i < plates_list_.size(); i++){
+        std::cout << i << " out of " << plates_list_.size() << " computed" << 
+      std::endl;
+        (*correlation_plates_.find(plates_list_[i])).second.
+      ComputeCrossCorrelation(object_list, spectra_list, kGlobalVariables);
+    }
+    
+    NormalizeCrossCorrelation();
+    SaveCrossCorrelation();
+    
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a30bac33d879a65346831124367610148}{\index{Correlation\-Results@{Correlation\-Results}!correlation\-\_\-file\-\_\-name@{correlation\-\_\-file\-\_\-name}}
+\index{correlation\-\_\-file\-\_\-name@{correlation\-\_\-file\-\_\-name}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{correlation\-\_\-file\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Results\-::correlation\-\_\-file\-\_\-name} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a30bac33d879a65346831124367610148}
+
+
+Definition at line 53 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return correlation_file_name_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_afebc9131b5371056e7ba45aed92c67fc}{\index{Correlation\-Results@{Correlation\-Results}!correlation\-\_\-plates@{correlation\-\_\-plates}}
+\index{correlation\-\_\-plates@{correlation\-\_\-plates}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{correlation\-\_\-plates}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Simple}$<${\bf Correlation\-Plate}$>$\-::map {\bf Correlation\-Results\-::correlation\-\_\-plates} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_afebc9131b5371056e7ba45aed92c67fc}
+
+
+Definition at line 56 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return correlation_plates_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a671d48951a25f1086b6978e07d793920}{\index{Correlation\-Results@{Correlation\-Results}!correlation\-\_\-plates@{correlation\-\_\-plates}}
+\index{correlation\-\_\-plates@{correlation\-\_\-plates}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{correlation\-\_\-plates}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Plate} {\bf Correlation\-Results\-::correlation\-\_\-plates} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-num}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a671d48951a25f1086b6978e07d793920}
+
+
+Definition at line 57 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return (*correlation_plates_.find(plate_num)).second;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_afd279057c1c250889bb4c462ad43fd52}{\index{Correlation\-Results@{Correlation\-Results}!Create\-Bin\-Files@{Create\-Bin\-Files}}
+\index{Create\-Bin\-Files@{Create\-Bin\-Files}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{Create\-Bin\-Files}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Correlation\-Results\-::\-Create\-Bin\-Files} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_correlation_results_afd279057c1c250889bb4c462ad43fd52}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Creates the bin files in where the pair information will be stored. If files already exist, resets them
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_correlation_results}{Correlation\-Results}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: To\-Str
+
+Definition at line 89 of file correlation\-\_\-results.\-cpp.
+
+
+\begin{DoxyCode}
+                                       {
+    for (int bin = 0; bin < num_bins_; bin ++){
+        
+        // creating directory for the bin
+        std::string directory_name = results_ + ToStr(bin)+"/";
+        std::string command = "mkdir " + directory_name;
+        system(command.c_str());
+        
+        // creating bin files for each of the plates
+        for (PlatesMapSimple<CorrelationPlate>::map::iterator it = 
+      correlation_plates_.begin(); it != correlation_plates_.end(); it ++){
+            
+            std::string filename = directory_name + (*it).second.
+      pairs_file_name();
+            
+            // writing headers in file (open the file erasing the previous
+       content)
+            std::ofstream bin_file(filename.c_str(),std::ofstream::trunc); 
+            if (bin_file.is_open()){
+                bin_file << "# object_RA object_DEC object_Z spectrum_RA
+       spectrum_DEC pixel_Z pixel_dist pixel_number pixel_delta pixel_w pi sigma\n";
+                bin_file.close();
+            }
+            else{
+                std::cout << "Unable to open file:" << std::endl << filename <<
+       std::endl;
+            }            
+            
+        }
+        
+    }
+}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a8c428a16d861076e768648f1bbf418cd}{\index{Correlation\-Results@{Correlation\-Results}!normalized\-\_\-correlation@{normalized\-\_\-correlation}}
+\index{normalized\-\_\-correlation@{normalized\-\_\-correlation}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{normalized\-\_\-correlation}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Correlation\-Plate} {\bf Correlation\-Results\-::normalized\-\_\-correlation} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a8c428a16d861076e768648f1bbf418cd}
+
+
+Definition at line 60 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return normalized_correlation_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a2cba363b6c6a959a65b4cd09568139b9}{\index{Correlation\-Results@{Correlation\-Results}!num\-\_\-bins@{num\-\_\-bins}}
+\index{num\-\_\-bins@{num\-\_\-bins}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{num\-\_\-bins}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Correlation\-Results\-::num\-\_\-bins} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a2cba363b6c6a959a65b4cd09568139b9}
+
+
+Definition at line 63 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return num_bins_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_adf3ef279db5766a75fe31f8f8cd4bd14}{\index{Correlation\-Results@{Correlation\-Results}!num\-\_\-pi\-\_\-bins@{num\-\_\-pi\-\_\-bins}}
+\index{num\-\_\-pi\-\_\-bins@{num\-\_\-pi\-\_\-bins}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{num\-\_\-pi\-\_\-bins}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Correlation\-Results\-::num\-\_\-pi\-\_\-bins} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_adf3ef279db5766a75fe31f8f8cd4bd14}
+
+
+Definition at line 66 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return num_pi_bins_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_ae6fbe4f8e750fdaaab5c3a7098bcd584}{\index{Correlation\-Results@{Correlation\-Results}!num\-\_\-sigma\-\_\-bins@{num\-\_\-sigma\-\_\-bins}}
+\index{num\-\_\-sigma\-\_\-bins@{num\-\_\-sigma\-\_\-bins}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{num\-\_\-sigma\-\_\-bins}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Correlation\-Results\-::num\-\_\-sigma\-\_\-bins} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_ae6fbe4f8e750fdaaab5c3a7098bcd584}
+
+
+Definition at line 69 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return num_sigma_bins_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a38ea35df21d881fa164a417cef678af4}{\index{Correlation\-Results@{Correlation\-Results}!pairs\-\_\-file\-\_\-name@{pairs\-\_\-file\-\_\-name}}
+\index{pairs\-\_\-file\-\_\-name@{pairs\-\_\-file\-\_\-name}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{pairs\-\_\-file\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Results\-::pairs\-\_\-file\-\_\-name} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a38ea35df21d881fa164a417cef678af4}
+
+
+Definition at line 72 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return pairs_file_name_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_aea7eabb88af97738eaefb130217f5689}{\index{Correlation\-Results@{Correlation\-Results}!plates\-\_\-list@{plates\-\_\-list}}
+\index{plates\-\_\-list@{plates\-\_\-list}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{plates\-\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<$int$>$ {\bf Correlation\-Results\-::plates\-\_\-list} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_aea7eabb88af97738eaefb130217f5689}
+
+
+Definition at line 75 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return plates_list_;}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_a59a205c5ca406e92d229efbe24b8424c}{\index{Correlation\-Results@{Correlation\-Results}!plates\-\_\-list@{plates\-\_\-list}}
+\index{plates\-\_\-list@{plates\-\_\-list}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{plates\-\_\-list}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Correlation\-Results\-::plates\-\_\-list} (
+\begin{DoxyParamCaption}
+\item[{int}]{index}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_a59a205c5ca406e92d229efbe24b8424c}
+
+
+Definition at line 76 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return plates_list_[index];}
+\end{DoxyCode}
+\hypertarget{class_correlation_results_ab6363e6a8c2357f6a432009e87b12abe}{\index{Correlation\-Results@{Correlation\-Results}!results@{results}}
+\index{results@{results}!CorrelationResults@{Correlation\-Results}}
+\subsubsection[{results}]{\setlength{\rightskip}{0pt plus 5cm}std\-::string {\bf Correlation\-Results\-::results} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_correlation_results_ab6363e6a8c2357f6a432009e87b12abe}
+
+
+Definition at line 79 of file correlation\-\_\-results.\-h.
+
+
+\begin{DoxyCode}
+{return results_;}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{correlation__results_8h}{correlation\-\_\-results.\-h}\item 
+\hyperlink{correlation__results_8cpp}{correlation\-\_\-results.\-cpp}\end{DoxyCompactItemize}

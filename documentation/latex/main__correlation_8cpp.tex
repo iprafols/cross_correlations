@@ -1,0 +1,155 @@
+\hypertarget{main__correlation_8cpp}{\section{main\-\_\-correlation.\-cpp File Reference}
+\label{main__correlation_8cpp}\index{main\-\_\-correlation.\-cpp@{main\-\_\-correlation.\-cpp}}
+}
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$time.\-h$>$}\\*
+{\ttfamily \#include \char`\"{}astro\-\_\-object.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}astro\-\_\-object\-\_\-dataset.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}correlation\-\_\-plate.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}correlation\-\_\-results.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}global\-\_\-variables.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}lya\-\_\-spectra\-\_\-dataset.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}plate\-\_\-neighbours.\-h\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}plots\-\_\-object.\-h\char`\"{}}\\*
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{main__correlation_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{main__correlation_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}{\index{main\-\_\-correlation.\-cpp@{main\-\_\-correlation.\-cpp}!main@{main}}
+\index{main@{main}!main_correlation.cpp@{main\-\_\-correlation.\-cpp}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf main} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{main__correlation_8cpp_ae66f6b31b5ad750f1fe042a706a4e3d4}
+\hyperlink{main__correlation_8cpp}{main\-\_\-correlation.\-cpp} Purpose\-: Compute the cross correlation of the Lyman-\/alpha forest and quasars. Future versions should compute the cross-\/correlation of two species in general
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 06/17/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Compute the cross correlation of the Lyman-\/alpha forest and quasars
+
+I\-N\-P\-U\-T\-S\-: N\-O\-N\-E
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object_dataset}{Astro\-Object\-Dataset} \hyperlink{class_global_variables}{Global\-Variables} \hyperlink{class_plate_neighbours}{Plate\-Neighbours} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 30 of file main\-\_\-correlation.\-cpp.
+
+
+\begin{DoxyCode}
+          {
+    // load time control variables
+    time_t start_time,end_time;
+    time(&start_time);
+
+    // load global variables and plot object
+    std::cout << "Initializing variables" << std::endl;
+    const GlobalVariables kGlobalVariables;
+    const PlotsObject kPlots(kGlobalVariables.plots());
+
+    // load plate list
+    std::cout << "Loading plate list" << std::endl;
+    const PlateNeighbours kPlateNeighbours(kGlobalVariables.plate_neighbours())
+      ;
+        
+    // load quasar dataset
+    std::cout << "Loading quasar dataset" << std::endl;
+    AstroObjectDataset object_list(kGlobalVariables);
+    std::cout << "Loaded " << object_list.size() << " quasars" << std::endl;
+    std::cout << "Plotting quasar dataset information" << std::endl;
+    kPlots.PlotRADECDispersion(object_list, true);
+    kPlots.PlotZHistogram(object_list, true);
+    
+    // load spectra dataset
+    std::cout << "Loading spectra dataset" << std::endl;
+    LyaSpectraDataset spectra_list(kGlobalVariables);
+    std::cout << "Loaded " << spectra_list.size() << " spectra" << std::endl;
+    std::cout << "Plotting spectra dataset information" << std::endl;
+    kPlots.PlotRADECDispersion(spectra_list, true);
+    kPlots.PlotZHistogram(spectra_list, true);
+    
+    // compute distances to the objects (in Mpc/h)
+    {
+        std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+        InterpolationMap redshift_distance_map(kGlobalVariables);
+        object_list.SetDistances(redshift_distance_map);
+        spectra_list.SetDistances(redshift_distance_map);
+    }
+    
+    // compute the cross-correlation
+    std::cout << "Creating object in where cross-correlation results will be
+       stored" << std::endl;
+        CorrelationResults results(kGlobalVariables, kPlateNeighbours);
+    std::cout << "Computing the cross-correlation" << std::endl;
+    results.ComputeCrossCorrelation(object_list, spectra_list, kGlobalVariables
+      );
+    std::cout << "Plotting cross-correlation" << std::endl;
+    kPlots.PlotCrossCorrelation(results, true);
+        
+    
+    // save the cross-correlation results
+    // --> cCorrelationResults::Save()
+    
+    // remove datasets from memory
+    
+    
+    // compute covariance matrix
+    {
+        /*
+         load objects where the results are stored
+        --> cCovMatrixResults
+         
+         for all cross-correlation bins:
+            
+            load pixel list 1
+            --> cExtendedForestPixelDataset
+                cExtendedForestPixelDataset <-- Dataset
+         
+                --> vector<cExtendedForestPixel> 
+                    cExtendedForestPixel <-- ForestPixel + ra, dec
+         
+            for all cross-correlation bins AFTER this one:
+            
+                * load pixel list 2
+                --> cExtendedForestPixelDataset
+         
+                * do N times:
+                    + randomly select item from pixel_list1 
+                    + retrieve plate neighbours of the selected item's plate
+                    --> cPlateNeighbours::GetNeighboursList
+                    + randomly select item from the subset of pixel_list2
+       comprised of all the neighbouring plates
+                    + add to covariance matrix
+            
+
+         */
+    }
+    
+    
+    // save the covariance matrix results
+    //--> cCovMatrixResults::Save()
+    
+    // create the python scripts for plotting
+    
+    
+    // display time required to run the program
+    std::cout << "End of program" << std::endl;
+    time(&end_time);
+    double time_spent = difftime(end_time, start_time);
+    std::cout << "The program lasted " << time_spent << " seconds. This
+       corresponds to " << time_spent/60.0 << " minutes or " << time_spent/3600.0 << " hours" 
+      << std::endl;
+    
+    return 0;
+}\end{DoxyCode}

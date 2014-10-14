@@ -1,0 +1,339 @@
+\hypertarget{class_lya_spectra_dataset}{\section{Lya\-Spectra\-Dataset Class Reference}
+\label{class_lya_spectra_dataset}\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}}
+}
+
+
+{\ttfamily \#include $<$lya\-\_\-spectra\-\_\-dataset.\-h$>$}
+
+Inheritance diagram for Lya\-Spectra\-Dataset\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_lya_spectra_dataset}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_lya_spectra_dataset_ae9259d54f1bdf5f8b3672a60bbfcd8e6}{Lya\-Spectra\-Dataset} (const \hyperlink{class_global_variables}{Global\-Variables} \&k\-Global\-Variables)
+\item 
+\hyperlink{struct_plates_map_vector}{Plates\-Map\-Vector}$<$ \hyperlink{class_lya_spectrum}{Lya\-Spectrum} $>$\-::map \hyperlink{class_lya_spectra_dataset_a7b3cef8f52440561301354331230ae95}{list} () const 
+\item 
+std\-::vector$<$ \hyperlink{class_lya_spectrum}{Lya\-Spectrum} $>$ \hyperlink{class_lya_spectra_dataset_a823b1542931d028564c59fc48da8f7dc}{list} (int plate\-\_\-number) const 
+\item 
+\hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_spectra_dataset_a03b47e3cb5016ab62c8916ae1f9f980d}{list} (int plate\-\_\-number, int pos) const 
+\item 
+int \hyperlink{class_lya_spectra_dataset_a0b10efda4e299ffb8d8ddce45bebfaa9}{Find\-Catalog\-Length} (const std\-::string \&lya\-\_\-spectra\-\_\-catalog)
+\item 
+void \hyperlink{class_lya_spectra_dataset_a29aa2c3f113d6cbc9d10bfabad12362d}{Give\-R\-A\-D\-E\-C} (std\-::ostream \&out) const 
+\item 
+void \hyperlink{class_lya_spectra_dataset_a859711c028a33cf935ca5a5a3fb480fd}{Give\-Z} (std\-::ostream \&out) const 
+\item 
+void \hyperlink{class_lya_spectra_dataset_a85930fd54f392cbfcbea7f49a80b5916}{Load} (const std\-::string \&object\-\_\-list, const std\-::string \&lya\-\_\-spectra\-\_\-dir, const double \&lya\-\_\-wl)
+\item 
+void \hyperlink{class_lya_spectra_dataset_a444d22db8e799457aef351e74107802e}{Set\-Distances} (const \hyperlink{class_interpolation_map}{Interpolation\-Map} \&redshift\-\_\-distance\-\_\-map)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{lya__spectra__dataset_8h}{lya\-\_\-spectra\-\_\-dataset.\-h} Purpose\-: This file defines the class \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}. This class contains the variables necessary to store a spectra dataset. This class is a specialization of the c\-Dataset class
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/17/2014 
+\end{DoxyVersion}
+
+
+Definition at line 35 of file lya\-\_\-spectra\-\_\-dataset.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_lya_spectra_dataset_ae9259d54f1bdf5f8b3672a60bbfcd8e6}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}}
+\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Lya\-Spectra\-Dataset}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Lya\-Spectra\-Dataset\-::\-Lya\-Spectra\-Dataset} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Global\-Variables} \&}]{k\-Global\-Variables}
+\end{DoxyParamCaption}
+)}}\label{class_lya_spectra_dataset_ae9259d54f1bdf5f8b3672a60bbfcd8e6}
+\hyperlink{lya__spectra__dataset_8cpp}{lya\-\_\-spectra\-\_\-dataset.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{lya__spectra__dataset_8h}{lya\-\_\-spectra\-\_\-dataset.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 08/08/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} instance and loads a catalog of \hyperlink{class_lya_spectrum}{Lya\-Spectrum} objects into it
+
+I\-N\-P\-U\-T\-S\-: k\-Global\-Varialbes -\/ object of type c\-Global\-Variables
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} \hyperlink{class_global_variables}{Global\-Variables}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                           {
+    name_ = kGlobalVariables.lya_spectra_catalog_name();
+    Load(kGlobalVariables.lya_spectra_catalog(), kGlobalVariables.
+      lya_spectra_dir(), kGlobalVariables.lya_wl());
+    
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_lya_spectra_dataset_a0b10efda4e299ffb8d8ddce45bebfaa9}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Find\-Catalog\-Length@{Find\-Catalog\-Length}}
+\index{Find\-Catalog\-Length@{Find\-Catalog\-Length}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Find\-Catalog\-Length}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf Lya\-Spectra\-Dataset\-::\-Find\-Catalog\-Length} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{lya\-\_\-spectra\-\_\-catalog}
+\end{DoxyParamCaption}
+)}}\label{class_lya_spectra_dataset_a0b10efda4e299ffb8d8ddce45bebfaa9}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Finds the number of lines in the provided catalog file list
+
+I\-N\-P\-U\-T\-S\-: lya\-\_\-spectra\-\_\-catalog -\/ name of the list of fits files containing the spectra
+
+O\-U\-T\-P\-U\-T\-S\-: length -\/ an integer containing the number of lines in the catalog file list
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 35 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                            {
+    std::string cmd = "wc -l "+lya_spectra_catalog;
+    char path[PATH_MAX];
+    FILE* pipe = popen(cmd.c_str(),"r");
+    
+    fgets(path, PATH_MAX, pipe);
+    
+    int length = atoi(strtok(path," "));
+
+    return length;
+}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a29aa2c3f113d6cbc9d10bfabad12362d}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}}
+\index{Give\-R\-A\-D\-E\-C@{Give\-R\-A\-D\-E\-C}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Give\-R\-A\-D\-E\-C}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Lya\-Spectra\-Dataset\-::\-Give\-R\-A\-D\-E\-C} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_lya_spectra_dataset_a29aa2c3f113d6cbc9d10bfabad12362d}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Adds the objects' R\-A-\/\-D\-E\-C values to out
+
+I\-N\-P\-U\-T\-S\-: out -\/ an ostream to add the objects' R\-A-\/\-D\-E\-C values to
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_a5867a14c1554b50ce062bdacd36460af}{Dataset}.
+
+
+
+Definition at line 64 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                      {
+    for (PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.begin(); 
+      it != list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            out << (*it).second[i].angle() << std::endl;
+        }
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a859711c028a33cf935ca5a5a3fb480fd}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Give\-Z@{Give\-Z}}
+\index{Give\-Z@{Give\-Z}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Give\-Z}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Lya\-Spectra\-Dataset\-::\-Give\-Z} (
+\begin{DoxyParamCaption}
+\item[{std\-::ostream \&}]{out}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_lya_spectra_dataset_a859711c028a33cf935ca5a5a3fb480fd}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Adds the objects' redshift values to out
+
+I\-N\-P\-U\-T\-S\-: out -\/ an ostream to add the objects' redshift values to
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_pixel}{Lya\-Pixel} \hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_aae82d78ec374da243c22a96236b39465}{Dataset}.
+
+
+
+Definition at line 91 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                  {
+    for (PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.begin(); 
+      it != list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            for (size_t j = 0; j < (*it).second[i].SpectrumSize(); j++){
+                out << (*it).second[i].spectrum(j).z() << std::endl;
+            }
+        }
+    }
+    
+}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a7b3cef8f52440561301354331230ae95}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!list@{list}}
+\index{list@{list}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Plates\-Map\-Vector}$<${\bf Lya\-Spectrum}$>$\-::map {\bf Lya\-Spectra\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectra_dataset_a7b3cef8f52440561301354331230ae95}
+
+
+Definition at line 48 of file lya\-\_\-spectra\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return list_;}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a823b1542931d028564c59fc48da8f7dc}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!list@{list}}
+\index{list@{list}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<${\bf Lya\-Spectrum}$>$ {\bf Lya\-Spectra\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-number}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectra_dataset_a823b1542931d028564c59fc48da8f7dc}
+
+
+Definition at line 49 of file lya\-\_\-spectra\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return (*list_.find(plate_number)).second;}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a03b47e3cb5016ab62c8916ae1f9f980d}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!list@{list}}
+\index{list@{list}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{list}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Lya\-Spectrum} {\bf Lya\-Spectra\-Dataset\-::list} (
+\begin{DoxyParamCaption}
+\item[{int}]{plate\-\_\-number, }
+\item[{int}]{pos}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectra_dataset_a03b47e3cb5016ab62c8916ae1f9f980d}
+
+
+Definition at line 50 of file lya\-\_\-spectra\-\_\-dataset.\-h.
+
+
+\begin{DoxyCode}
+{return (*list_.find(plate_number)).second[pos];}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a85930fd54f392cbfcbea7f49a80b5916}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Load@{Load}}
+\index{Load@{Load}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Load}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Lya\-Spectra\-Dataset\-::\-Load} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{object\-\_\-list, }
+\item[{const std\-::string \&}]{lya\-\_\-spectra\-\_\-dir, }
+\item[{const double \&}]{lya\-\_\-wl}
+\end{DoxyParamCaption}
+)}}\label{class_lya_spectra_dataset_a85930fd54f392cbfcbea7f49a80b5916}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Loads the object dataset from a catalog file
+
+I\-N\-P\-U\-T\-S\-: lya\-\_\-spectra\-\_\-catalog -\/ a string with the name of the list of fits files containing the spectra lya\-\_\-spectra\-\_\-dir -\/ a string with the directory where the ly-\/a spectrum files are stored lya\-\_\-wl -\/ a double with the wavelength of the lyman-\/alpha line (in Angstroms)
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 121 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                                               {
+    // resizing astro_object_pointer
+    size_ = FindCatalogLength(lya_spectra_catalog);
+
+    // open catalog
+    std::ifstream catalog(lya_spectra_catalog.c_str());
+    if (catalog.is_open()){
+        std::string file("");        
+        while (getline(catalog,file)){
+            
+            // create LyaSpectrum
+            LyaSpectrum object(lya_spectra_dir + file, lya_wl);
+            
+            // adding object to list_
+            if (list_.find(object.plate()) == list_.end()){
+                // if necessary, create new entry
+                std::vector<LyaSpectrum> v;
+                list_[object.plate()] = v;
+                num_objects_in_plate_[object.plate()] = 0;
+            }
+            (*list_.find(object.plate())).second.push_back(object);
+            
+            // updating number_of_objects_in_plate
+            (*num_objects_in_plate_.find(object.plate())).second ++;
+        }
+    }
+    else{
+        std::cout << "Error: could not read spectra catalog" << std::endl;
+    }
+}
+\end{DoxyCode}
+\hypertarget{class_lya_spectra_dataset_a444d22db8e799457aef351e74107802e}{\index{Lya\-Spectra\-Dataset@{Lya\-Spectra\-Dataset}!Set\-Distances@{Set\-Distances}}
+\index{Set\-Distances@{Set\-Distances}!LyaSpectraDataset@{Lya\-Spectra\-Dataset}}
+\subsubsection[{Set\-Distances}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Lya\-Spectra\-Dataset\-::\-Set\-Distances} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Interpolation\-Map} \&}]{redshift\-\_\-distance\-\_\-map}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_lya_spectra_dataset_a444d22db8e799457aef351e74107802e}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Sets the distance to every object in the dataset
+
+I\-N\-P\-U\-T\-S\-: redshif\-\_\-distance\-\_\-map -\/ a \hyperlink{class_interpolation_map}{Interpolation\-Map} instance with the redshift-\/distance relation
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_spectra_dataset}{Lya\-Spectra\-Dataset} \hyperlink{class_interpolation_map}{Interpolation\-Map}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Implements \hyperlink{class_dataset_a76dbae8574850da55a3b88149ccbe3f9}{Dataset}.
+
+
+
+Definition at line 172 of file lya\-\_\-spectra\-\_\-dataset.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+        {
+    for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != 
+      list_.end(); it ++){
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            (*it).second[i].SetDistance(redshift_distance_map);
+        }
+    }
+    
+}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{lya__spectra__dataset_8h}{lya\-\_\-spectra\-\_\-dataset.\-h}\item 
+\hyperlink{lya__spectra__dataset_8cpp}{lya\-\_\-spectra\-\_\-dataset.\-cpp}\end{DoxyCompactItemize}

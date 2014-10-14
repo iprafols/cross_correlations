@@ -1,0 +1,245 @@
+\hypertarget{class_lya_spectrum}{\section{Lya\-Spectrum Class Reference}
+\label{class_lya_spectrum}\index{Lya\-Spectrum@{Lya\-Spectrum}}
+}
+
+
+{\ttfamily \#include $<$lya\-\_\-spectrum.\-h$>$}
+
+Inheritance diagram for Lya\-Spectrum\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_lya_spectrum}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_lya_spectrum_a28194690040c52a02f196ea47cad4adc}{Lya\-Spectrum} (const std\-::string \&filename, const double \&lya\-\_\-wl, const bool radians=true)
+\item 
+std\-::vector$<$ \hyperlink{class_lya_pixel}{Lya\-Pixel} $>$ \hyperlink{class_lya_spectrum_ab3532ecc27237cbb5231f386e1b94a62}{spectrum} () const 
+\item 
+\hyperlink{class_lya_pixel}{Lya\-Pixel} \hyperlink{class_lya_spectrum_a371b8e381330aded034d8c6bfb4743df}{spectrum} (size\-\_\-t i) const 
+\item 
+void \hyperlink{class_lya_spectrum_a5aed91d841c38e3c399e2b84b05fd2d3}{Set\-Distance} (const \hyperlink{class_interpolation_map}{Interpolation\-Map} \&redshift\-\_\-distance\-\_\-map)
+\item 
+size\-\_\-t \hyperlink{class_lya_spectrum_aff44677f212bf5a327d899ccbc86a5d9}{Spectrum\-Size} () const 
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{lya__spectrum_8h}{lya\-\_\-spectrum.\-h} Purpose\-: This file defines the class \hyperlink{class_lya_spectrum}{Lya\-Spectrum}. This class contains the variables necessary to store a lyman-\/alpha spectrum. This class is a specialization of the c\-Astro\-Object class
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols (\href{mailto:iprafols@icc.ub.edu}{\tt iprafols@icc.\-ub.\-edu}) 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/18/2014 
+\end{DoxyVersion}
+
+
+Definition at line 35 of file lya\-\_\-spectrum.\-h.
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_lya_spectrum_a28194690040c52a02f196ea47cad4adc}{\index{Lya\-Spectrum@{Lya\-Spectrum}!Lya\-Spectrum@{Lya\-Spectrum}}
+\index{Lya\-Spectrum@{Lya\-Spectrum}!LyaSpectrum@{Lya\-Spectrum}}
+\subsubsection[{Lya\-Spectrum}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Lya\-Spectrum\-::\-Lya\-Spectrum} (
+\begin{DoxyParamCaption}
+\item[{const std\-::string \&}]{filename, }
+\item[{const double \&}]{lya\-\_\-wl, }
+\item[{const bool}]{radians = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_lya_spectrum_a28194690040c52a02f196ea47cad4adc}
+\hyperlink{lya__spectrum_8cpp}{lya\-\_\-spectrum.\-cpp} Purpose\-: This files contains the body for the functions defined in \hyperlink{lya__spectrum_8h}{lya\-\_\-spectrum.\-h}
+
+\begin{DoxyAuthor}{Author}
+Ignasi Pérez-\/\-Ràfols 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\-0 09/18/2014 
+\end{DoxyVersion}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Cosntructs a \hyperlink{class_lya_spectrum}{Lya\-Spectrum} instance
+
+I\-N\-P\-U\-T\-S\-: filename -\/ a string containing the spectrum's fits file name
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_lya_spectrum}{Lya\-Spectrum} \hyperlink{class_lya_pixel}{Lya\-Pixel} \hyperlink{class_sphere_point}{Sphere\-Point}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Definition at line 11 of file lya\-\_\-spectrum.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                               
+                  {
+    // setting the catalog columns to be read
+    std::vector<std::string> fields(3);
+    fields[0] = "LOGLAM";
+    fields[1] = "FOREST";
+    fields[2] = "WEIGHT";
+    
+
+    // construct fits object
+    std::auto_ptr<CCfits::FITS> pInfile; 
+    
+    try{
+        
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(filename,
+      CCfits::Read,1,true,fields));
+        
+    } catch(CCfits::FITS::CantOpen x) {
+        
+        throw "Error occured in cAstroObjectDataset constructor: couldn't open
+       catalog file: " + filename;
+    }
+    CCfits::ExtHDU& data = pInfile->extension(1);
+    
+    // number of lines in the file
+    long NAXIS2 = data.axis(1);
+    size_t nobj = NAXIS2;
+    spectrum_.reserve(nobj);
+    
+    // this will store the information
+    std::valarray<double> loglam, forest, weight;
+    
+    // reading data
+    data.column(fields[0]).read(loglam, 1, nobj); // logarithm of the
+       wavelength value
+    data.column(fields[1]).read(forest, 1, nobj); // normalized flux in the
+       ly-alpha forest
+    data.column(fields[2]).read(weight, 1, nobj); // weight
+    
+    for (int i=0;i<nobj;i++){
+        // create LyaPixel
+        LyaPixel object(loglam[i], lya_wl, forest[i], weight[i]);
+            
+        // adding object to spectrum_
+        spectrum_.push_back(object);
+    }
+    
+    // reading header
+    data.readAllKeys();
+    
+    // extract right ascension
+    std::string sra("RA");
+    double ra;
+    data.keyWord(sra).value(ra);
+     
+    // extract declination
+    std::string sdec("DEC");
+    double dec;
+    data.keyWord(sdec).value(dec);
+     
+    // set angular position
+    if (not radians){
+        ra *= acos(-1)/180.0;
+        dec *= acos(-1)/180.0;
+    }
+    SpherePoint angle(ra, dec);
+    angle_ = angle;
+    
+    // extract redshift
+    std::string sz("Z");
+    data.keyWord(sdec).value(z_);
+    
+    // extract plate, mjd and fiber numbers
+    std::string spmf("PMF");
+    std::string pmf;
+    data.keyWord(spmf).value(pmf);
+    
+    plate_ = atoi(strtok((char*)pmf.c_str(),"-"));
+    mjd_ = atoi(strtok((char*)pmf.c_str(),"-"));
+    fiber_ = atoi(strtok((char*)pmf.c_str(),"-"));
+
+}
+\end{DoxyCode}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_lya_spectrum_a5aed91d841c38e3c399e2b84b05fd2d3}{\index{Lya\-Spectrum@{Lya\-Spectrum}!Set\-Distance@{Set\-Distance}}
+\index{Set\-Distance@{Set\-Distance}!LyaSpectrum@{Lya\-Spectrum}}
+\subsubsection[{Set\-Distance}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf Lya\-Spectrum\-::\-Set\-Distance} (
+\begin{DoxyParamCaption}
+\item[{const {\bf Interpolation\-Map} \&}]{redshift\-\_\-distance\-\_\-map}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}virtual\mbox{]}}}}\label{class_lya_spectrum_a5aed91d841c38e3c399e2b84b05fd2d3}
+E\-X\-P\-L\-A\-N\-A\-T\-I\-O\-N\-: Sets the distance to object
+
+I\-N\-P\-U\-T\-S\-: redshif\-\_\-distance\-\_\-map -\/ a \hyperlink{class_interpolation_map}{Interpolation\-Map} instance with the redshift-\/distance relation
+
+O\-U\-T\-P\-U\-T\-S\-: N\-O\-N\-E
+
+C\-L\-A\-S\-S\-E\-S U\-S\-E\-D\-: \hyperlink{class_astro_object}{Astro\-Object}
+
+F\-U\-N\-C\-I\-T\-O\-N\-S U\-S\-E\-D\-: N\-O\-N\-E
+
+Reimplemented from \hyperlink{class_astro_object_a7addd0f108191b1ca35db6e16e45ed72}{Astro\-Object}.
+
+
+
+Definition at line 108 of file lya\-\_\-spectrum.\-cpp.
+
+
+\begin{DoxyCode}
+                                                                          {
+    dist_ = NAN;
+    
+    for (size_t i = 0; i < spectrum_.size(); i++){
+        spectrum_[i].SetDistance(redshift_distance_map);
+    }
+    
+}\end{DoxyCode}
+\hypertarget{class_lya_spectrum_ab3532ecc27237cbb5231f386e1b94a62}{\index{Lya\-Spectrum@{Lya\-Spectrum}!spectrum@{spectrum}}
+\index{spectrum@{spectrum}!LyaSpectrum@{Lya\-Spectrum}}
+\subsubsection[{spectrum}]{\setlength{\rightskip}{0pt plus 5cm}std\-::vector$<${\bf Lya\-Pixel}$>$ {\bf Lya\-Spectrum\-::spectrum} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectrum_ab3532ecc27237cbb5231f386e1b94a62}
+
+
+Definition at line 48 of file lya\-\_\-spectrum.\-h.
+
+
+\begin{DoxyCode}
+{return spectrum_;}
+\end{DoxyCode}
+\hypertarget{class_lya_spectrum_a371b8e381330aded034d8c6bfb4743df}{\index{Lya\-Spectrum@{Lya\-Spectrum}!spectrum@{spectrum}}
+\index{spectrum@{spectrum}!LyaSpectrum@{Lya\-Spectrum}}
+\subsubsection[{spectrum}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Lya\-Pixel} {\bf Lya\-Spectrum\-::spectrum} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t}]{i}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectrum_a371b8e381330aded034d8c6bfb4743df}
+
+
+Definition at line 49 of file lya\-\_\-spectrum.\-h.
+
+
+\begin{DoxyCode}
+{return spectrum_[i];}
+\end{DoxyCode}
+\hypertarget{class_lya_spectrum_aff44677f212bf5a327d899ccbc86a5d9}{\index{Lya\-Spectrum@{Lya\-Spectrum}!Spectrum\-Size@{Spectrum\-Size}}
+\index{Spectrum\-Size@{Spectrum\-Size}!LyaSpectrum@{Lya\-Spectrum}}
+\subsubsection[{Spectrum\-Size}]{\setlength{\rightskip}{0pt plus 5cm}size\-\_\-t {\bf Lya\-Spectrum\-::\-Spectrum\-Size} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily  \mbox{[}inline\mbox{]}}}}\label{class_lya_spectrum_aff44677f212bf5a327d899ccbc86a5d9}
+
+
+Definition at line 58 of file lya\-\_\-spectrum.\-h.
+
+
+\begin{DoxyCode}
+{return spectrum_.size();}
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{lya__spectrum_8h}{lya\-\_\-spectrum.\-h}\item 
+\hyperlink{lya__spectrum_8cpp}{lya\-\_\-spectrum.\-cpp}\end{DoxyCompactItemize}
