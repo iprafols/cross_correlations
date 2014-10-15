@@ -108,7 +108,7 @@ void CorrelationResults::CreateBinFiles(){
         
         // creating directory for the bin
         std::string directory_name = results_ + ToStr(bin)+"/";
-        std::string command = "mkdir " + directory_name;
+        std::string command = "mkdir -p -v " + directory_name;
         system(command.c_str());
         
         // creating bin files for each of the plates

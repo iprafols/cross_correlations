@@ -29,8 +29,8 @@ GlobalVariables::GlobalVariables(){
     //
     // general settings
     //
-    //pwd_ = "/Users/iprafols/cross_correlations/";
-    pwd_ = "/triforce/iprafols/cross_correlations/";
+    pwd_ = "/Users/iprafols/cross_correlations/";
+    //pwd_ = "/triforce/iprafols/cross_correlations/";
     results_ = pwd_ + "results2/";
     plots_ = pwd_ + "plots2/";
     objects_catalog_ = pwd_ + "DR11Q_alpha_v0.fits";

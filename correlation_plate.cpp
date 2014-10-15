@@ -115,12 +115,13 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     
     size_t number_of_objects = object_list.num_objects_in_plate(plate_number_);
     
-    //std::cout << "computing cross-correlation in plate " << plate_number_ << "; in this plate there are " << number_of_objects << " AstroObjects" << std::endl;
+    std::cout << "computing cross-correlation in plate " << plate_number_ << "; in this plate there are " << number_of_objects << " AstroObjects" << std::endl;
 
     // loop over AstroObjects
     for (size_t i = 0; i < number_of_objects; i ++){
+        
         AstroObject object = object_list.list(plate_number_, i);
-                
+             
         double sigma_aux_o = 2.0*object.dist(); // auxiliar variable to compute sigma values
         
         // loop over neighbouring plates
@@ -130,14 +131,21 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
             
             // loop over LyaSpectra
             for (size_t k = 0; k < number_of_spectra; k ++){
-
+                
                 LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[j], k);
                 std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
+                
                 
                 // compute angular separation
                 double cos_theta = object.angle().CosAngularDistance(lya_spectrum.angle());
                 
-                double sigma_aux = sigma_aux_o*(1.0-cos_theta); // auxiliar variable to compute sigma values
+                double sigma_aux;
+                if (cos_theta == 1.0){
+                    sigma_aux = 0.0;
+                }
+                else{
+                    sigma_aux = sigma_aux_o*(1.0-cos_theta); // auxiliar variable to compute sigma values
+                }
                 
                 // check if all pixels in the spectrum are too far apart
                 double pair_min_sigma = sqrt(sigma_aux*spectrum[0].dist()); // minimum distance obtained for lowest redshift pixel
@@ -154,7 +162,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     continue;
                 }
                 double pair_min_pi = object.dist()-spectrum.back().dist(); // maximum distance obtained for highest redshift pixel
-                if (pair_min_pi>max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
+                if (pair_min_pi > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
                     //std::cout << "TEST: spectra rejected because min_pi is too large" << std::endl;
                     continue;
                 }
@@ -178,18 +186,30 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (pi<0.0){
                         i_index -= 1;
                     }
+                    if (i_index < 0){
+                        std::cout << "TEST: pi = " << pi << "; step_pi = " << step_pi << "; pi/step_pi = " << pi/step_pi << "; int(pi/step_pi) = " << int(pi/step_pi) << std::endl;
+                    }
+
                     
                     // locate sigma pixel (j_index)
                     int j_index = int(sigma/step_sigma);
+                    if (j_index < 0){
+                        std::cout << "TEST: sigma = " << sigma << "; step_sigma = " << step_sigma << "; sigma/step_sigma = " << sigma/step_sigma << "; int(sigma/step_sigma) = " << int(sigma/step_sigma) << "; sqrt(sigma_aux*spectrum[p].dist()) = " << sqrt(sigma_aux*spectrum[p].dist()) << "; sigma_aux*spectrum[p].dist() = " << sigma_aux*spectrum[p].dist() << "; sigma_aux = " << sigma_aux << "; spectrum[p].dist() = " << spectrum[p].dist() << "; sigma_aux_o = " << sigma_aux_o << "; cos_theta = " << cos_theta <<                        std::endl;
+                    }
                     
                     // locate xi pixel (k)
                     int k_index = i_index*num_sigma_bins+j_index;
-                    
+                    if (k_index < 0 or i_index < 0 or j_index < 0){
+                        std::cout << "TEST: i_index = " << i_index << " j_index = " << j_index << " k_index = " << k_index << std::endl;
+                        continue;
+                        
+                    }
                     // add contribution to xi in the specified bin
                     AddPair(k_index, spectrum[p], pi, sigma);
                     
                     // write down pair information in bin file
                     SavePair(k_index, object, lya_spectrum, p, pi, sigma);
+                    
                 }
             }
         }

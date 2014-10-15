@@ -9,39 +9,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "correlation_plate.cpp"
-         timestampString = "434468422.969395"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "136"
-         endingLineNumber = "136"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "correlation_plate.cpp"
          timestampString = "434468468.580634"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "141"
          endingLineNumber = "141"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "correlation_plate.cpp"
-         timestampString = "434468494.306432"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "146"
-         endingLineNumber = "146"
          landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -98,6 +70,188 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "137"
          endingLineNumber = "137"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "434964434.018637"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "153"
+         endingLineNumber = "153"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "434964445.88402"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "175"
+         endingLineNumber = "175"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "434964452.846138"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "158"
+         endingLineNumber = "158"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435056980.29491"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "186"
+         endingLineNumber = "186"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435056981.096919"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "187"
+         endingLineNumber = "187"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435056981.826078"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "188"
+         endingLineNumber = "188"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435057016.128142"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "193"
+         endingLineNumber = "193"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435057016.870191"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "192"
+         endingLineNumber = "192"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435057017.869863"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "194"
+         endingLineNumber = "194"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435058441.992244"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "183"
+         endingLineNumber = "183"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435058443.304237"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "184"
+         endingLineNumber = "184"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435058445.06714"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "185"
+         endingLineNumber = "185"
+         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "435059489.709718"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "198"
+         endingLineNumber = "198"
          landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const GlobalVariables&amp; kGlobalVariables)"
          landmarkType = "5">
       </FileBreakpoint>

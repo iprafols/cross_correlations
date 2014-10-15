@@ -116,6 +116,9 @@
       </FileRef>
    </Group>
    <FileRef
+      location = "group:configure">
+   </FileRef>
+   <FileRef
       location = "group:esquema.rtf">
    </FileRef>
    <FileRef
