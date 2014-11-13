@@ -72,6 +72,9 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool
         script << std::endl;
         script << "import matplotlib.ticker as ax" << std::endl;
         script << "from matplotlib.ticker import MultipleLocator, FormatStrFormatter, NullFormatter, ScalarFormatter" << std::endl;
+        script << std::endl;
+        script << "import math" << std::endl;
+        script << "from math import sqrt" << std::endl;
         script << "\"\"\"" << std::endl;
         script << "EXPLANATION:" << std::endl;
         script << "    Plots the measured correlation function" << std::endl;
@@ -80,15 +83,21 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool
         script << "num_sigma_bins = " << res.num_sigma_bins() << std::endl;
         script << "plots_dir = '" << plots_dir_ << "'" << std::endl;
         script << "filename = '" << res.normalized_correlation().pairs_file_name() << "'" << std::endl;
+        script << "dispersion_squared_filename = '" << res.bootstrap_dispersion_squared().pairs_file_name() << "'" << std::endl;
         script << "data = np.genfromtxt(filename, names = True)" << std::endl;
+        script << "dispersion_squared = np.genfromtxt(dispersion_squared_filename, names = True)" << std::endl;
+        script << std::endl;
+        script << "# plotting" << std::endl;
         script << "for j in range (0, num_sigma_bins):" << std::endl;
-        script << "    x = [value for i,value in enumerate(data['mean_pi']) if (i % num_sigma_bins == j)]" << std::endl;
-        script << "    y = [value for i,value in enumerate(data['xi']) if (i % num_sigma_bins == j)]" << std::endl;
+        script << "    pi = [value for i,value in enumerate(data['mean_pi']) if (i % num_sigma_bins == j)]" << std::endl;
+        script << "    xi = [value for i,value in enumerate(data['xi']) if (i % num_sigma_bins == j)]" << std::endl;
+        script << "    dpi = [sqrt(value) for i,value in enumerate(dispersion_squared['mean_pi']) if (i % num_sigma_bins == j)]" << std::endl;
+        script << "    dxi = [sqrt(value) for i,value in enumerate(dispersion_squared['xi']) if (i % num_sigma_bins == j)]" << std::endl;
         script << "    fig = plt.figure(figsize=(14,7))" << std::endl;
         script << "    ax = fig.add_subplot(1,1,1)" << std::endl;
-        script << "    ax.set_xlabel(r'\\pi\\left(h^{-1}Mpc\\right)')" << std::endl;
-        script << "    ax.set_ylabel(r'\\xi\\left(\\pi, \\sigma\\right)')" << std::endl;
-        script << "    ax.plot(x,y)" << std::endl;
+        script << "    ax.set_xlabel(r'$\\pi\\left(h^{-1}Mpc\\right)$')" << std::endl;
+        script << "    ax.set_ylabel(r'$\\xi\\left(\\pi, \\sigma\\right)$')" << std::endl;
+        script << "    ax.errorbar(pi,xi,yerr = dxi, xerr = dpi, fmt = 'b.')" << std::endl;
         script << "    fig.savefig(plots_dir + 'correlation_measurements_sigma_bin_' + str(j) + '.eps')" << std::endl;
         script << "    del fig # freeing memory" << std::endl;
         

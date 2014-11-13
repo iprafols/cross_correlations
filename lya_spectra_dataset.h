@@ -21,7 +21,7 @@
 
 // classes needed
 #include "dataset.h"
-#include "global_variables.h"
+#include "input.h"
 #include "interpolation_map.h"
 #include "lya_spectrum.h"
 ////////
@@ -39,7 +39,7 @@ public:
     // constructors
     
     // constructs object and initializes its variables
-    LyaSpectraDataset(const GlobalVariables& kGlobalVariables);
+    LyaSpectraDataset(const Input& input);
     
     // -------------------------------------------------------------
     // access methods

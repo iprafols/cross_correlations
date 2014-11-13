@@ -22,7 +22,7 @@
 // classes needed
 #include "astro_object_dataset.h"
 #include "correlation_plate.h"
-#include "global_variables.h"
+#include "input.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
 ////////
@@ -44,10 +44,20 @@ public:
     CorrelationResults(){};
 
     // constructs object and initializes its variables
-    CorrelationResults(const GlobalVariables& kGlobalVariables, const PlateNeighbours& kPlateNeighbours);
+    CorrelationResults(const Input& input, const PlateNeighbours& kPlateNeighbours);
 
     // -------------------------------------------------------------
     // access methods
+    
+    // access function for bootstrap_
+    std::vector<CorrelationPlate> bootstrap() const {return bootstrap_;}
+    CorrelationPlate bootstrap(size_t i) const {return bootstrap_[i];}
+    
+    // access function for bootstrap_dispersion_squared_
+    CorrelationPlate bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
+    
+    // access function for compute_bootstrap_
+    bool bootstrap_flag() const {return bootstrap_flag_;}
     
     // access function for correlation_file_name_
     std::string correlation_file_name() const {return correlation_file_name_;}
@@ -80,9 +90,9 @@ public:
     
     // -------------------------------------------------------------
     // other methods
-    
+        
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const GlobalVariables& kGlobalVariables);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
     
     // create bin files
     void CreateBinFiles();
@@ -93,6 +103,15 @@ public:
     
     
 private:
+    // bootstrap variables
+    std::vector<CorrelationPlate> bootstrap_;
+    
+    // bootstrap dispersion 
+    CorrelationPlate bootstrap_dispersion_squared_;
+    
+    // boolean to specify whether or not to compute the bootstrap realizations
+    bool bootstrap_flag_;
+    
     // correlation file name
     std::string correlation_file_name_;
     
@@ -124,6 +143,12 @@ private:
     // -------------------------------------------------------------
     // methods
     
+    // compute bootstrap dispersion
+    void ComputeBootstrapDispersion();
+
+    // compute bootstrap realizations
+    void ComputeBootstrapRealizations();
+
     // Normalizes the cross correlation results
     void NormalizeCrossCorrelation();
     

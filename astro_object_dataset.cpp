@@ -10,27 +10,27 @@
 
 
 
-AstroObjectDataset::AstroObjectDataset(const GlobalVariables& kGlobalVariables){
+AstroObjectDataset::AstroObjectDataset(const Input& input){
     /**
      EXPLANATION:
      Cosntructs a AstroObjectDataset instance and loads a catalog of AstroObjects into it
      
      INPUTS:
-     kGlobalVarialbes - object of type GlobalVariables
+     kGlobalVarialbes - object of type Input
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
      AstroObjectDataset
-     GlobalVariables
+     Input
      
      FUNCITONS USED:
      NONE
      */
     
-    name_ = kGlobalVariables.objects_catalog_name();
-    Load(kGlobalVariables.z_min(), kGlobalVariables.z_max(), kGlobalVariables.objects_catalog());
+    name_ = input.objects_catalog_name();
+    Load(input.z_min(), input.z_max(), input.objects_catalog());
     
 }
 

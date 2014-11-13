@@ -40,11 +40,17 @@ GlobalVariables::GlobalVariables(){
     normalized_correlation_ = results_ + "normalized_correlation.dat";
     plate_neighbours_ = pwd_ + "plate_neighbours.dat";
     lya_spectra_dir_ = pwd_ + "spectrum_fits_files/";
-    //lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_one_spectrum.ls";// versió per fer proves
-    lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_some_spectrum.ls";// versió per fer proves
+    lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_one_spectrum.ls";// versió per fer proves
+    //lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_some_spectrum.ls";// versió per fer proves
     //lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_list.ls"; // versió definitiva
     lya_spectra_catalog_name_ = "DR11Q_spectra_forest";
     num_plates_ = 2044; // DR11
+
+    // bootstrap settings
+    bootstrap_flag_ = true;
+    num_bootstrap_ = 50000;
+    bootstrap_ = results_ + "bootstrap_realization_";
+    bootstrap_dispersion_squared_ = results_ + "bootstrap_dispersion_squared.dat";
     
     //
     // Fidutial model
@@ -56,9 +62,9 @@ GlobalVariables::GlobalVariables(){
     //
     // bin setting
     //
-    neighbours_max_distance_ = 3.0*acos(-1.0)/180.0; // (in radians)
-    max_pi_ = 50.0; // (in Mpc/h)
-    max_sigma_ = 50.0; // (in Mpc/h)
+    neighbours_max_distance_ = 4.0*acos(-1.0)/180.0; // (in radians)
+    max_pi_ = 150.0; // (in Mpc/h)
+    max_sigma_ = 150.0; // (in Mpc/h)
     step_pi_ = 5.0; // (in Mpc/h)
     step_sigma_ = 5.0; // (in Mpc/h)
     num_pi_bins_ = int(2.0*max_pi_/step_pi_);

@@ -83,10 +83,29 @@ public:
     
     
     // -------------------------------------------------------------
+    // set methods
+
+    // set mean_pi_
+    void set_mean_pi(size_t index, double value) {mean_pi_[index] = value;}
+    
+    // set mean_sigma_
+    void set_mean_sigma(size_t index, double value) {mean_sigma_[index] = value;}
+    
+    // set num_averaged_pairs_
+    void set_num_averaged_pairs(size_t index, int value) {num_averaged_pairs_[index] = value;}
+    
+    // set weight_
+    void set_weight(size_t index, double value) {weight_[index] = value;}
+    
+    // set xi_
+    void set_xi(size_t index, double value) {xi_[index] = value;}
+    
+    
+    // -------------------------------------------------------------
     // other methods
 
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const GlobalVariables& kGlobalVariables);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
     
     //returns a string with the information for the selected bin
     std::string Info(size_t bin);
@@ -103,6 +122,13 @@ public:
     
     // adition
     void operator+= (const CorrelationPlate& other);
+    
+    // subtraction
+    CorrelationPlate operator- (const CorrelationPlate& other);
+    
+    // multiplication
+    CorrelationPlate operator* (const CorrelationPlate& other);
+
 
     
     

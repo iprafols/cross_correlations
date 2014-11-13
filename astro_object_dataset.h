@@ -24,7 +24,7 @@
 // classes needed
 #include "astro_object.h"
 #include "dataset.h"
-#include "global_variables.h"
+#include "input.h"
 #include "interpolation_map.h"
 ////////
 
@@ -44,7 +44,7 @@ public:
     AstroObjectDataset(){};
     
     // constructs object and initializes its variables
-    AstroObjectDataset(const GlobalVariables& kGlobalVariables);
+    AstroObjectDataset(const Input& input);
     
     // -------------------------------------------------------------
     // access methods

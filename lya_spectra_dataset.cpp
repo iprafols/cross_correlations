@@ -8,27 +8,27 @@
 
 #include "lya_spectra_dataset.h"
 
-LyaSpectraDataset::LyaSpectraDataset(const GlobalVariables& kGlobalVariables){
+LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     /**
      EXPLANATION:
      Cosntructs a LyaSpectraDataset instance and loads a catalog of LyaSpectrum objects into it
      
      INPUTS:
-     kGlobalVarialbes - object of type cGlobalVariables
+     kGlobalVarialbes - object of type cInput
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
      LyaSpectraDataset
-     GlobalVariables
+     Input
      
      FUNCITONS USED:
      NONE
      */
     
-    name_ = kGlobalVariables.lya_spectra_catalog_name();
-    Load(kGlobalVariables.lya_spectra_catalog(), kGlobalVariables.lya_spectra_dir(), kGlobalVariables.lya_wl());
+    name_ = input.lya_spectra_catalog_name();
+    Load(input.lya_spectra_catalog(), input.lya_spectra_dir(), input.lya_wl());
     
 }
 

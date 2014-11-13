@@ -80,7 +80,7 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     
 }
 
-void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const GlobalVariables& kGlobalVariables){
+void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input){
     /**
      EXPLANATION:
      Computes the cross-correlation
@@ -88,7 +88,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      INPUTS:
      object_list - an AstroObjectDataset instance
      spectra_list - a LyaSpectraDataset instance
-     kGlobalVariables - a GlobalVariables instance to load bin settings
+     input - a Input instance to load bin settings
      
      OUTPUTS:
      NONE
@@ -96,7 +96,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      CLASSES USED:
      AstroObjectDataset
      CorrelationPlate
-     GLobalVariables
+     Input
      LyaPixel
      LyaSpectraDataset
      LyaSpectrum
@@ -106,12 +106,12 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      */
     
     // load bin settings
-    double max_pi = kGlobalVariables.max_pi();
-    double max_sigma = kGlobalVariables.max_sigma();
-    double step_pi = kGlobalVariables.step_pi();
-    double step_sigma = kGlobalVariables.step_sigma();
-    double num_pi_bins = kGlobalVariables.num_pi_bins();
-    double num_sigma_bins = kGlobalVariables.num_sigma_bins();    
+    double max_pi = input.max_pi();
+    double max_sigma = input.max_sigma();
+    double step_pi = input.step_pi();
+    double step_sigma = input.step_sigma();
+    double num_pi_bins = input.num_pi_bins();
+    double num_sigma_bins = input.num_sigma_bins();    
     
     size_t number_of_objects = object_list.num_objects_in_plate(plate_number_);
     
@@ -387,3 +387,86 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
     
 }
 
+CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
+    /**
+     EXPLANATION:
+     Overloads the - operator. Returns a new instance with the xi_, mean_sigma, mean_pi and weight_ values subtracted by those in other.
+     
+     INPUTS:
+     other - a CorrelationPlate instance to be subtracted
+     
+     OUTPUTS:
+     temp - a CorrelationPlate instance
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    CorrelationPlate temp;
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_);
+    
+    // check that both instances have the same number of bins
+    if (num_bins_ == other.num_bins()){
+        
+        for (size_t i = 0; i < num_bins_; i ++){
+            temp.set_xi(i, xi_[i] - other.xi(i));
+            temp.set_mean_pi(i, mean_pi_[i] - other.mean_pi(i));
+            temp.set_mean_sigma(i, mean_sigma_[i] - other.mean_sigma(i));
+            temp.set_weight(i, weight_[i] - other.weight(i));
+            temp.set_num_averaged_pairs(i, num_averaged_pairs_[i] - other.num_averaged_pairs(i));
+        }
+        
+    }
+    
+    // if they don't, complain
+    else{
+        std::cout << "Warning: Trying to subtract CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+    }
+    
+    return temp;
+    
+}
+        
+CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
+    /**
+     EXPLANATION:
+     Overloads the * operator. Returns a new instance with the xi_, mean_sigma, mean_pi and weight_ values multiplied by those in other.
+     
+     INPUTS:
+     other - a CorrelationPlate instance to be subtracted
+     
+     OUTPUTS:
+     temp - a CorrelationPlate instance
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    CorrelationPlate temp;
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_);
+    
+    // check that both instances have the same number of bins
+    if (num_bins_ == other.num_bins()){
+        
+        for (size_t i = 0; i < num_bins_; i ++){
+            temp.set_xi(i, xi_[i]*other.xi(i));
+            temp.set_mean_pi(i, mean_pi_[i]*other.mean_pi(i));
+            temp.set_mean_sigma(i, mean_sigma_[i]*other.mean_sigma(i));
+            temp.set_weight(i, weight_[i]*other.weight(i));
+            temp.set_num_averaged_pairs(i, num_averaged_pairs_[i]*other.num_averaged_pairs(i));
+        }
+        
+    }
+    // if they don't, complain
+    else{
+        std::cout << "Warning: Trying to multiply CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+    }
+            
+    return temp;
+    
+}
+   

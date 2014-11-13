@@ -8,19 +8,19 @@
 
 #include "interpolation_map.h"
 
-InterpolationMap::InterpolationMap(const GlobalVariables& kGlobalVariables){
+InterpolationMap::InterpolationMap(const Input& input){
     /**
      EXPLANATION:
      Cosntructs a InterpolationMap instance and initializes its variables
      
      INPUTS:
-     kGlobalVarialbes - object of type GlobalVariables
+     kGlobalVarialbes - object of type Input
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
-     GlobalVariables
+     Input
      InterpolationMap
      
      FUNCITONS USED:
@@ -28,14 +28,14 @@ InterpolationMap::InterpolationMap(const GlobalVariables& kGlobalVariables){
      */
     double interpolation_step,z_max_interpolation,z_min_interpolation;
     
-    z_max_interpolation = kGlobalVariables.z_max_interpolation();
-    z_min_interpolation = kGlobalVariables.z_min_interpolation();
-    interpolation_step = (z_max_interpolation-z_min_interpolation)/double(kGlobalVariables.num_points_interpolation());
+    z_max_interpolation = input.z_max_interpolation();
+    z_min_interpolation = input.z_min_interpolation();
+    interpolation_step = (z_max_interpolation-z_min_interpolation)/double(input.num_points_interpolation());
     
     // setting initial and auxiliar variables
     double z = 0,dist = 0; // setting initial values for the integral
-    double aux = kGlobalVariables.c()/100.0; // =c/H0*h (auxiliar variable to speed up the computation)
-    double wm = kGlobalVariables.wm(); // Omega_matter (auxiliar variable to speed up the computation)
+    double aux = input.c()/100.0; // =c/H0*h (auxiliar variable to speed up the computation)
+    double wm = input.wm(); // Omega_matter (auxiliar variable to speed up the computation)
     double wv = 1.0-wm; // Omega_vacuum (auxiliar variable to speed up the computation)
     double z_plus1 = 1.0-interpolation_step*0.5; // =1+z at mid_interval (auxiliar variable to speed up the computation)
     

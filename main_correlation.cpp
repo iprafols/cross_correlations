@@ -16,7 +16,7 @@
 #include "astro_object_dataset.h"
 #include "correlation_plate.h"
 #include "correlation_results.h"
-#include "global_variables.h"
+#include "input.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
 #include "plots_object.h"
@@ -27,20 +27,20 @@
 
 
 
-int main(){
+int main(int argc, char *argv[]){
     /**
      EXPLANATION:
      Compute the cross correlation of the Lyman-alpha forest and quasars
           
      INPUTS:
-     NONE
+     input_file[optional] - a file containing the input settings
      
      OUTPUTS:
      NONE
           
      CLASSES USED:
      AstroObjectDataset
-     GlobalVariables
+     Input
      PlateNeighbours
      LyaSpectraDataset
      
@@ -54,16 +54,20 @@ int main(){
 
     // load global variables and plot object
     std::cout << "Initializing variables" << std::endl;
-    const GlobalVariables kGlobalVariables;
-    const PlotsObject kPlots(kGlobalVariables.plots());
+    string input_filename = "";
+    if (argc > 1){
+        input_filename += argv[1];
+    }
+    Input input(input_filename);
+    const PlotsObject kPlots(input.plots());
 
     // load plate list
     std::cout << "Loading plate list" << std::endl;
-    const PlateNeighbours kPlateNeighbours(kGlobalVariables.plate_neighbours());
+    const PlateNeighbours kPlateNeighbours(input.plate_neighbours());
         
     // load quasar dataset
     std::cout << "Loading quasar dataset" << std::endl;
-    AstroObjectDataset object_list(kGlobalVariables);
+    AstroObjectDataset object_list(input);
     std::cout << "Loaded " << object_list.size() << " quasars" << std::endl;
     std::cout << "Plotting quasar dataset information" << std::endl;
     kPlots.PlotRADECDispersion(object_list, true);
@@ -71,7 +75,7 @@ int main(){
     
     // load spectra dataset
     std::cout << "Loading spectra dataset" << std::endl;
-    LyaSpectraDataset spectra_list(kGlobalVariables);
+    LyaSpectraDataset spectra_list(input);
     std::cout << "Loaded " << spectra_list.size() << " spectra" << std::endl;
     std::cout << "Plotting spectra dataset information" << std::endl;
     kPlots.PlotRADECDispersion(spectra_list, true);
@@ -80,23 +84,19 @@ int main(){
     // compute distances to the objects (in Mpc/h)
     {
         std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
-        InterpolationMap redshift_distance_map(kGlobalVariables);
+        InterpolationMap redshift_distance_map(input);
         object_list.SetDistances(redshift_distance_map);
         spectra_list.SetDistances(redshift_distance_map);
     }
     
     // compute the cross-correlation
     std::cout << "Creating object in where cross-correlation results will be stored" << std::endl;
-        CorrelationResults results(kGlobalVariables, kPlateNeighbours);
+        CorrelationResults results(input, kPlateNeighbours);
     std::cout << "Computing the cross-correlation" << std::endl;
-    results.ComputeCrossCorrelation(object_list, spectra_list, kGlobalVariables);
+    results.ComputeCrossCorrelation(object_list, spectra_list, input);
     std::cout << "Plotting cross-correlation" << std::endl;
     kPlots.PlotCrossCorrelation(results, true);
         
-    
-    // save the cross-correlation results
-    // --> cCorrelationResults::Save()
-    
     // remove datasets from memory
     
     

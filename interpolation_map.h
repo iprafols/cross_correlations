@@ -15,7 +15,7 @@
 ////////
 
 // classes needed
-#include "global_variables.h"
+#include "input.h"
 ////////
 
 // functions needed
@@ -32,7 +32,7 @@ public:
     InterpolationMap(){};
     
     // constructs object and initializes its variables
-    InterpolationMap(const GlobalVariables& kGlobalVariables);
+    InterpolationMap(const Input& input);
     
     // -------------------------------------------------------------
     // access methods

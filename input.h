@@ -1,17 +1,19 @@
 /**
- global _variables.h
- Purpose: This file defines the class GlobalVariables. This class contains the constant variables which are used in a "global" sense
-
+ input.h
+ Purpose: This file defines the class Input. This class contains the constant variables which are used in a "global" sense
+ 
  @author Ignasi Pérez-Ràfols (iprafols@icc.ub.edu)
  @version 1.0 on 17/06/14
-
+ 
  */
 
-#ifndef _GlobalVariables_h
-#define _GlobalVariables_h
+#ifndef _Input_h
+#define _Input_h
 
 // libraries needed
 #include <cmath>
+#include <fstream>
+#include <iostream>
 #include <string>
 ////////
 
@@ -19,18 +21,19 @@
 ////////
 
 // functions needed
+#include "function_remove_blank_spaces.hpp"
 ////////
 
 
-class GlobalVariables{
+class Input{
     
 public:
     // -------------------------------------------------------------
     // constuctors
-
+    
     // constructs object and initializes its variables
-    GlobalVariables();
-
+    Input(const std::string& filename = "");
+    
     // -------------------------------------------------------------
     // access methods
     
@@ -63,7 +66,7 @@ public:
     
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
-        
+    
     // access function for lya_wl_
     double lya_wl() const {return lya_wl_;}
     
@@ -102,6 +105,9 @@ public:
     
     // access function for object_catalog_name_
     std::string objects_catalog_name() const {return objects_catalog_name_;}
+    
+    // access function for output_
+    std::string output() const {return output_;}
     
     // access function for pairs_file_name_
     std::string pairs_file_name() const {return pairs_file_name_;}
@@ -146,7 +152,7 @@ public:
 private:
     // -------------------------------------------------------------
     // general settings
-        
+    
     // base name of the files containing the cross-correlation measurements (filename = correlation_file_name_ + 'bin number' + ".dat"
     std::string correlation_file_name_;
     
@@ -162,12 +168,15 @@ private:
     // objects catalog name
     std::string objects_catalog_name_;
     
+    // output directory
+    std::string output_;
+    
     // base name of the files in which pairs information is saved (filename = results_ + 'some_directory' + pairs_file_name_)
     std::string pairs_file_name_;
     
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
-
+    
     // plots directory
     std::string plots_;
     
@@ -187,14 +196,14 @@ private:
     std::string lya_spectra_catalog_name_;
     
     
-
+    
     // -------------------------------------------------------------
     // bootstrap settings
     
     
     // base name of the files containing the bootstrap realizations (filename = bootstrap_ + 'realixation number' + ".dat"
     std::string bootstrap_;
-
+    
     // name of the file containing the boostrap dispersion
     std::string bootstrap_dispersion_squared_;
     
@@ -203,7 +212,7 @@ private:
     
     // number of bootstrap realizations
     size_t num_bootstrap_;
-
+    
     
     
     // -------------------------------------------------------------
@@ -221,7 +230,7 @@ private:
     
     // -------------------------------------------------------------
     // bin settings 
-
+    
     // maximum value of parallel separation (in Mpc/h)
     double max_pi_;
     
@@ -233,7 +242,7 @@ private:
     
     // number of bins in parallel separation
     int num_pi_bins_;
-
+    
     // number of bins in perpendicular separation 
     int num_sigma_bins_;
     
@@ -271,6 +280,31 @@ private:
     // -------------------------------------------------------------
     // Some mathematical and physical constants
     double c_; // speed of light (in km/s)
+    
+    // -------------------------------------------------------------
+    // control variables
+
+    // used parameters
+    std::string used_params_;
+    
+    // unused parameters
+    std::string unused_params_;
+    
+    
+    // -------------------------------------------------------------
+    // methods
+    
+    // Reads the input files and sets the specified parameters
+    void ReadInputValues(const std::string& filename);
+    
+    // Set all parameters to default values
+    void SetDefaultValues();
+    
+    // Set a specified variable to the specified value
+    void SetValue(const std::string& name, const std::string& value);
+    
+    // Write the used and the unused parameters
+    void WriteParams();
     
 };
 
