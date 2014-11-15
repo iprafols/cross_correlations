@@ -55,10 +55,7 @@ public:
     
     // access function for bootstrap_dispersion_squared_
     CorrelationPlate bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
-    
-    // access function for compute_bootstrap_
-    bool bootstrap_flag() const {return bootstrap_flag_;}
-    
+        
     // access function for correlation_file_name_
     std::string correlation_file_name() const {return correlation_file_name_;}
     
@@ -66,6 +63,9 @@ public:
     PlatesMapSimple<CorrelationPlate>::map correlation_plates() const {return correlation_plates_;}
     CorrelationPlate correlation_plates(int plate_num) const {return (*correlation_plates_.find(plate_num)).second;}
     
+    // access function for compute_bootstrap_
+    bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
+
     // access function for normalized_correlation_
     CorrelationPlate normalized_correlation() const {return normalized_correlation_;}
     
@@ -108,16 +108,16 @@ private:
     
     // bootstrap dispersion 
     CorrelationPlate bootstrap_dispersion_squared_;
-    
-    // boolean to specify whether or not to compute the bootstrap realizations
-    bool bootstrap_flag_;
-    
+        
     // correlation file name
     std::string correlation_file_name_;
     
     // map containing the correlation in the different plates
     PlatesMapSimple<CorrelationPlate>::map correlation_plates_;
     
+    // boolean to specify whether or not to compute the bootstrap realizations
+    bool flag_compute_bootstrap_;
+
     // number of bins
     size_t num_bins_;
     

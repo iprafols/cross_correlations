@@ -33,25 +33,19 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool
     /*
      EXPLANATION:
      Plots the correlation function
+     
      INPUTS:
      res - object where the results are stored
+     
      OUTPUTS:
      NONE
-     GLOBAL VARIABLES USED:
-     max_pi
-     max_sigma
-     N_pi
-     N_sigma
-     object_name
-     pwd
-     spectra_name
-     step_pi
-     step_sigma
+     
      CLASSES USED:
-     Results
-     FUNCTIONS USED:
+     Plots
+     
+     FUNCITONS USED:
      NONE
-     */
+    */
     
     // set the name of the results and script file
     std::string filename = "correlation_measurements";

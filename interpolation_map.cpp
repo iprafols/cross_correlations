@@ -14,7 +14,7 @@ InterpolationMap::InterpolationMap(const Input& input){
      Cosntructs a InterpolationMap instance and initializes its variables
      
      INPUTS:
-     kGlobalVarialbes - object of type Input
+     input - object of type Input
      
      OUTPUTS:
      NONE

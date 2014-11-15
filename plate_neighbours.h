@@ -21,6 +21,7 @@
 ////////
 
 // classes needed
+#include "input.h"
 #include "plate.h"
 ////////
 
@@ -41,7 +42,7 @@ public:
     PlateNeighbours(){};
     
     // constructs object and initializes its variables
-    PlateNeighbours(const std::string& kPlateNeighbours);
+    PlateNeighbours(const Input& Input);
     
     // -------------------------------------------------------------
     // access methods
@@ -76,8 +77,9 @@ private:
     // list of plates with the corresponding neighbours
     PlatesMapVector<Plate>::map plates_;
 
-    
-    
+    // -------------------------------------------------------------
+    // other methods
+    void ReadPlateNeighbours(std::ifstream& plates_file);
 };
 
 #endif

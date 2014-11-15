@@ -8,13 +8,13 @@
 
 #include "plate_neighbours.h"
 
-PlateNeighbours::PlateNeighbours(const string& kPlateNeighbours){
+PlateNeighbours::PlateNeighbours(const Input& input){
     /**
      EXPLANATION:
      Cosntructs a PlateNeighbours instance and initializes all its variables
      
      INPUTS:
-     kGlobalVarialbes - object of type cGlobalVariables
+     input - a Input instance
      
      OUTPUTS:
      NONE
@@ -23,44 +23,44 @@ PlateNeighbours::PlateNeighbours(const string& kPlateNeighbours){
      PlateNeighbours
      
      FUNCITONS USED:
-     NONE
+     ComputePlateNeighbours
      */
     
-    std::ifstream plates_file(kPlateNeighbours.c_str());
+    std::ifstream plates_file(input.plate_neighbours().c_str());
     if (plates_file.is_open()){
         // read plate neighbours
-        std::string line;
-        while (getline(plates_file,line)){
-            if (line[0] != '#'){
-                std::vector<std::string> cols = Split(line," ");
-            
-                // store plate number
-                int plate_number = atoi(cols[0].c_str());
-            
-                // store neighbours in a vector
-                std::vector<Plate> neighbours;
-                neighbours.resize(cols.size()-1);
-            
-                for (size_t i = 0,j = 1; i < neighbours.size() and j < cols.size();i ++, j++){
-                    neighbours[i].set_plate_number(atoi(cols[j].c_str()));
-                }
-            
-                // add plate
-                if (plates_.find(plate_number) == plates_.end()){
-                    plates_[plate_number] = neighbours;
-                }
-                else{
-                    std::cout << "Attempted to create an entry for plate " << plate_number << " when the entry already exists. Check " << kPlateNeighbours << " for repeated lines" << std::endl;
-                }
-            }
-            
-        }
+        ReadPlateNeighbours(plates_file);
         
         plates_file.close();
     }
     else{
-        std::cout << "Error: Unable to open file: " << std::endl << kPlateNeighbours << std::endl;
-        std::exit;
+        std::cout << "Error: Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
+        std::cout << "This may be because the list is not created and the corresponding flag was not set." << std::endl << "Do you want to compute the plate neighbours list? (this may take a while) [y/n]" << std::endl;
+        std::string ans = "";
+        while (ans == ""){
+            std::cin >> ans;
+            if ((ans != "y") and (ans != "n")){
+                ans = "";
+                std::cout << "Please answer 'y' or 'n'" << std::endl;
+            }
+        }
+        if (ans == "y"){
+            ComputePlateNeighbours(input);
+            std::ifstream plates_file2(input.plate_neighbours().c_str());
+            if (plates_file2.is_open()){
+                // read plate neighbours
+                ReadPlateNeighbours(plates_file2);
+                
+                plates_file2.close();
+            }
+            else{
+                std::cout << "Error: Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
+                std::exit;
+            }
+        }
+        else{
+            std::exit;
+        }
     }
     
 }
@@ -192,6 +192,51 @@ std::vector<int> PlateNeighbours::GetPlatesList() const {
     }
     
     return plates_list;
+}
+
+void PlateNeighbours::ReadPlateNeighbours(std::ifstream& plates_file){
+    /**
+     EXPLANATION:
+     Reads the plate neighbours list
+     
+     INPUTS:
+     plates_file - a ifstream instance with the file containing the neighbours list
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     PlateNeighbours
+     
+     FUNCITONS USED:
+     NONE
+     */
+    std::string line;
+    while (getline(plates_file,line)){
+        if (line[0] != '#'){
+            std::vector<std::string> cols = Split(line," ");
+            
+            // store plate number
+            int plate_number = atoi(cols[0].c_str());
+            
+            // store neighbours in a vector
+            std::vector<Plate> neighbours;
+            neighbours.resize(cols.size()-1);
+            
+            for (size_t i = 0,j = 1; i < neighbours.size() and j < cols.size();i ++, j++){
+                neighbours[i].set_plate_number(atoi(cols[j].c_str()));
+            }
+            
+            // add plate
+            if (plates_.find(plate_number) == plates_.end()){
+                plates_[plate_number] = neighbours;
+            }
+            else{
+                std::cout << "Attempted to create an entry for plate " << plate_number << " when the entry already exists. Check plate neighbours file for repeated lines" << std::endl;
+            }
+        }
+        
+    }
 }
 
 void PlateNeighbours::Save(const std::string& filename){

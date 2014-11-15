@@ -16,7 +16,7 @@ AstroObjectDataset::AstroObjectDataset(const Input& input){
      Cosntructs a AstroObjectDataset instance and loads a catalog of AstroObjects into it
      
      INPUTS:
-     kGlobalVarialbes - object of type Input
+     input - object of type Input
      
      OUTPUTS:
      NONE

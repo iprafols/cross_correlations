@@ -15,7 +15,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
      Cosntructs a CorrelationResults instance and initializes all its variables
      
      INPUTS:
-     kGlobalVarialbes - object of type Input
+     input - object of type Input
      kPlateNeighbours - a PlateNeighbours instance
      
      OUTPUTS:
@@ -50,8 +50,8 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     normalized_correlation_ = CorrelationPlate(_NORM_, num_bins_, results_, input.normalized_correlation(), kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
-    bootstrap_flag_ = input.bootstrap_flag();
-    if (bootstrap_flag_){
+    flag_compute_bootstrap_ = input.flag_compute_bootstrap();
+    if (flag_compute_bootstrap_){
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
             bootstrap_.push_back(CorrelationPlate(_NORM_, num_bins_, results_, input.bootstrap(), kPlateNeighbours.GetNeighboursList(_NORM_)));
@@ -95,7 +95,7 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
     
     NormalizeCrossCorrelation();
     
-    if (bootstrap_flag_){
+    if (flag_compute_bootstrap_){
         ComputeBootstrapRealizations();
         ComputeBootstrapDispersion();
         SaveCrossCorrelation();

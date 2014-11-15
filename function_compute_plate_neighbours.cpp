@@ -1,5 +1,5 @@
 /**
- main_plates_neighbours.cpp
+ function_compute_plate_neighbours.cpp
  Purpose: Create a list of all the used plates and their neighbouring plates
  
  @author Ignasi Pérez-Ràfols
@@ -7,6 +7,7 @@
  */
 
 // libraries used
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
 #include <fstream>
@@ -17,7 +18,7 @@
 ////////
 
 // classes used
-#include "global_variables.h"
+#include "input.h"
 #include "plate.h"
 #include "plate_neighbours.h"
 ////////
@@ -27,21 +28,21 @@
 
 #include "typedefs.h"
 
-int main(){
+void ComputePlateNeighbours(const Input& input){
     /**
      EXPLANATION:
      Create a list of all the used plates and their neighbouring plates
      
      INPUTS:
-     NONE
+     input - a Input instance
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
-     cGlobalVariables
-     cPlate
-     cPlateNeighbours
+     Input
+     Plate
+     PlateNeighbours
      
      FUNCITONS USED:
      NONE
@@ -51,16 +52,15 @@ int main(){
     time_t start_time,end_time;
     time(&start_time);
     
-    std::cout << "Initializing variables" << std::endl;
-    // load global variables
-    const GlobalVariables kGlobalVariables;
-    const std::string kLyaSpectraDir = kGlobalVariables.lya_spectra_dir();
-    const double kNeighboursMaxDistance = kGlobalVariables.neighbours_max_distance();
+    std::cout << "Computing plate neighbours list" << std::endl;
+    // load variables
+    const std::string kLyaSpectraDir = input.lya_spectra_dir();
+    const double kNeighboursMaxDistance = input.neighbours_max_distance();
     // load empty plate map
     PlatesMapSimple<Plate>::map plate_list;
     
     std::cout << "Reading spectra catalog" << std::endl;
-    std::ifstream catalog(kGlobalVariables.lya_spectra_catalog().c_str());
+    std::ifstream catalog(input.lya_spectra_catalog().c_str());
     // open catalog
     int number_of_read_spectra = 0;
     if (catalog.is_open()){
@@ -88,24 +88,14 @@ int main(){
     }
     else{
         std::cout << "Error: could not read spectra catalog" << std::endl;
-        return 0;
+        std::exit;
     }
     
-    // show contents
-    /*for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
-        std::cout << "plate " << (*it).first << " contains " << (*it).second.number_of_objects() << " objects; ra = " << (*it).second.angle().ra() << "; dec = " << (*it).second.angle().dec() << std::endl; 
-    }*/
-
     // normalize contents
     std::cout << "Normalizing mean right ascension and declination for the different plates" << std::endl;
     for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
         (*it).second.Normalize();
     }
-    
-    // show contents
-    /*for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
-        std::cout << "plate " << (*it).first << " : ra = " << (*it).second.angle().ra() << "; dec = " << (*it).second.angle().dec() << std::endl; 
-    }*/
     
     // load empty neighbours map
     std::cout << "Creating neighbours map" << std::endl;
@@ -113,17 +103,8 @@ int main(){
     
     // every plate is considered a neighbour of itself
     for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
-        //std::cout << "inserting plate " << (*it).first;
         neighbours_list.AddPlate((*it).second);
-        //std::cout << "; neigbours list size is " << neighbours_list.plates().size() << std::endl;
     }
-    
-    // show contents
-    /*PlatesMapVector<Plate>::map neighbours_plates = neighbours_list.plates();
-    for (PlatesMapVector<Plate>::map::iterator it = neighbours_plates.begin(); it != neighbours_plates.end(); it ++){
-        std::cout << "found plate " << (*it).first << std::endl; 
-    }*/
-
     
     // look for neighbours
     std::cout << "Looking for neighbours" << std::endl;
@@ -133,7 +114,6 @@ int main(){
                 continue;
             }
             
-            //std::cout << "checking plates " << (*it).first << " and " << (*it2).first << std::endl;
             // if they are neigbours
             if ((*it).second.IsNeighbour((*it2).second,kNeighboursMaxDistance)){
                 neighbours_list.AddNeighbours((*it).second,(*it2).second);
@@ -142,31 +122,21 @@ int main(){
         }
     }
     
-    // print results
-    /*PlatesMapVector<Plate>::map neighbours_plates2 = neighbours_list.plates();
-    for (PlatesMapVector<Plate>::map::iterator it = neighbours_plates2.begin(); it != neighbours_plates2.end(); it ++){
-        
-        std::cout << "plate " << (*it).first << " has the following neighbours:" << std::endl; 
-        std::vector<int> v = neighbours_list.GetNeighboursList((*it).first);
-        
-        for (size_t i = 0;i < v.size(); i++){
-            std::cout << v[i] << " ";
-        }
-        std::cout << std::endl;
-    }*/
-    
     // save results
-    neighbours_list.Save(kGlobalVariables.plate_neighbours());
+    neighbours_list.Save(input.plate_neighbours());
     
     // display time required to run the program
-    std::cout << "End of program" << std::endl;
+    std::cout << "Plate neightbours list computed" << std::endl;
     time(&end_time);
     double time_spent = difftime(end_time, start_time);
-    std::cout << "The program lasted " << time_spent << " seconds. This corresponds to " << time_spent/60.0 << " minutes or " << time_spent/3600.0 << " hours" << std::endl;
-
-    return 0;
+    if (time_spent < 60.0){
+        std::cout << "It took " << time_spent << " seconds to compute the neighbours list" << std::endl;
+    }
+    else if (time_spent < 3600.0){
+        std::cout << "It took " << time_spent/60.0 << " minutes to compute the neighbours list" << std::endl;
+    }
+    else{
+        std::cout << "It took " << time_spent/3600.0 << " hours to compute the neighbours list" << std::endl;
+    }
     
-    
-
-
 }

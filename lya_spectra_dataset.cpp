@@ -14,7 +14,7 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
      Cosntructs a LyaSpectraDataset instance and loads a catalog of LyaSpectrum objects into it
      
      INPUTS:
-     kGlobalVarialbes - object of type cInput
+     input - object of type cInput
      
      OUTPUTS:
      NONE

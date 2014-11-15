@@ -11,6 +11,7 @@
 #define _Input_h
 
 // libraries needed
+#include <cstdlib>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -24,6 +25,7 @@
 #include "function_remove_blank_spaces.hpp"
 ////////
 
+#include "typedefs.h"
 
 class Input{
     
@@ -42,16 +44,19 @@ public:
     
     // access function for bootstrap_dispersion_squared_
     std::string bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
-    
-    // access function for bootstrap_flag_
-    bool bootstrap_flag() const {return bootstrap_flag_;}
-    
+        
     // access function for c_
     double c() const {return c_;}
     
     // access function for correlation_file_name_
     std::string correlation_file_name() const {return correlation_file_name_;}
     
+    // access function for flag_compute_bootstrap_
+    bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
+    
+    // access function for flag_compute_plate_neighbours_
+    bool flag_compute_plate_neighbours() const {return flag_compute_plate_neighbours_;}
+
     // access function for h
     double h() const {return h_;}
     
@@ -151,6 +156,18 @@ public:
     
 private:
     // -------------------------------------------------------------
+    // flags
+    
+    // flag to determine whether to compute the bootstrap realizations or not
+    bool flag_compute_bootstrap_;
+    
+    // flag to determine whether to compute the plate neighbours list or not
+    bool flag_compute_plate_neighbours_;
+    
+    
+    
+    
+    // -------------------------------------------------------------
     // general settings
     
     // base name of the files containing the cross-correlation measurements (filename = correlation_file_name_ + 'bin number' + ".dat"
@@ -206,9 +223,6 @@ private:
     
     // name of the file containing the boostrap dispersion
     std::string bootstrap_dispersion_squared_;
-    
-    // flag to determine whether to compute the bootstrap realizations or not
-    bool bootstrap_flag_;
     
     // number of bootstrap realizations
     size_t num_bootstrap_;
@@ -301,7 +315,10 @@ private:
     void SetDefaultValues();
     
     // Set a specified variable to the specified value
-    void SetValue(const std::string& name, const std::string& value);
+    void SetValue(const std::string& name, const std::string& value, InputFlag& input_flag);
+    
+    // Update the composed parameters whenever necessary
+    void UpdateComposedParams(const InputFlag& input_flag);
     
     // Write the used and the unused parameters
     void WriteParams();

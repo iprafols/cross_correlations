@@ -4,9 +4,6 @@
    <FileRef
       location = "container:main_correlation.cpp">
    </FileRef>
-   <FileRef
-      location = "group:main_plates.cpp">
-   </FileRef>
    <Group
       location = "container:../../Library/Autosave Information"
       name = "classes">
@@ -26,7 +23,7 @@
          location = "group:../../cross_correlations/code2/dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:global_variables.cpp">
+         location = "group:../../cross_correlations/code2/input.cpp">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/interpolation_map.cpp">
@@ -57,10 +54,16 @@
       location = "container:../../Library/Autosave Information"
       name = "funcitons">
       <FileRef
+         location = "group:../../cross_correlations/code2/function_compute_plate_neighbours.cpp">
+      </FileRef>
+      <FileRef
          location = "container:function_to_str.hpp">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/function_split.hpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/function_remove_blank_spaces.hpp">
       </FileRef>
    </Group>
    <Group
@@ -82,7 +85,7 @@
          location = "group:../../cross_correlations/code2/dataset.h">
       </FileRef>
       <FileRef
-         location = "group:../../cross_correlations/code2/global_variables.h">
+         location = "group:../../cross_correlations/code2/input.h">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/interpolation_map.h">

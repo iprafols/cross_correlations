@@ -23,6 +23,7 @@
 ////////
 
 // functions used
+#include "defines.h"
 ////////
 
 
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]){
      LyaSpectraDataset
      
      FUNCITONS USED:
-     NONE
+     ComputePlateNeighbours
      */
     
     // load time control variables
@@ -61,9 +62,13 @@ int main(int argc, char *argv[]){
     Input input(input_filename);
     const PlotsObject kPlots(input.plots());
 
+    // check whether or not the plate list needs to be computed
+    if (input.flag_compute_plate_neighbours()){
+        ComputePlateNeighbours(input);
+    }
     // load plate list
     std::cout << "Loading plate list" << std::endl;
-    const PlateNeighbours kPlateNeighbours(input.plate_neighbours());
+    const PlateNeighbours kPlateNeighbours(input);
         
     // load quasar dataset
     std::cout << "Loading quasar dataset" << std::endl;
@@ -142,7 +147,15 @@ int main(int argc, char *argv[]){
     std::cout << "End of program" << std::endl;
     time(&end_time);
     double time_spent = difftime(end_time, start_time);
-    std::cout << "The program lasted " << time_spent << " seconds. This corresponds to " << time_spent/60.0 << " minutes or " << time_spent/3600.0 << " hours" << std::endl;
+    if (time_spent < 60.0){
+        std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
+    }
+    else if (time_spent < 3600.0){
+        std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
+    }
+    else{
+        std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
+    }
     
     return 0;
 }
