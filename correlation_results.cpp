@@ -36,9 +36,9 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     num_pi_bins_ = input.num_pi_bins();
     
     // setting the results directory and the pairs file name from input
-    results_ = input.results() + "qso_spectrum_pairs_info_bin_";
-    pairs_file_name_ = input.pairs_file_name();
-    correlation_file_name_ = input.correlation_file_name();
+    results_ = input.results() + "detailed_info_bin_";
+    pairs_file_name_ = "detailed_info_plate_";
+    output_base_name_ = input.output() + input.output_base_name();
     
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
@@ -47,7 +47,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // initialization of the normalized cross-correlation variable
-    normalized_correlation_ = CorrelationPlate(_NORM_, num_bins_, results_, input.normalized_correlation(), kPlateNeighbours.GetNeighboursList(_NORM_));
+    normalized_correlation_ = CorrelationPlate(_NORM_, num_bins_, results_, "", kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
     flag_compute_bootstrap_ = input.flag_compute_bootstrap();
@@ -98,8 +98,8 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
     if (flag_compute_bootstrap_){
         ComputeBootstrapRealizations();
         ComputeBootstrapDispersion();
-        SaveCrossCorrelation();
     }
+    SaveCrossCorrelation();
     
 }
 
@@ -280,16 +280,16 @@ void CorrelationResults::SaveCrossCorrelation(){
     
     std::string filename;
     
-    // save plate contribution cross-correlation in each of the bins
+    // save plate contribution to cross-correlation in each of the bins
     for (int bin = 0; bin < num_bins_; bin ++){
         
-        filename = correlation_file_name_ + ToStr(bin) + ".dat";
+        filename = output_base_name_ + ToStr(bin) + ".data";
         
         // open the file erasing the previous content)
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
         if (file.is_open()){
-            file << "# Note: the following numbers are not normalized" << std::endl;
-            file << CorrelationPlate::InfoHeader() << std::endl;
+            file << "# Note: the following are not normalized" << std::endl;
+            file << "# " << CorrelationPlate::InfoHeader() << std::endl;
             
             for (size_t i = 0; i < plates_list_.size(); i++){
                 
@@ -304,15 +304,30 @@ void CorrelationResults::SaveCrossCorrelation(){
     }
     
     // save normalized cross-correlation
-    filename = normalized_correlation_.pairs_file_name();
+    filename = output_base_name_ + ".data";
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
         if (file.is_open()){
-            file << CorrelationPlate::InfoHeader() << " bin_index" << std::endl;
+            for (size_t i = 0; i < num_bins_; i++){
+                
+                file << i << " " << normalized_correlation_.xi(i) << std::endl;
+            }
+            
+            file.close();
+        }
+        else{
+            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+        }
+    }
+    filename = output_base_name_ + ".full.data";
+    {
+        std::ofstream file(filename.c_str(),std::ofstream::trunc); 
+        if (file.is_open()){
+            file << "# bin_index " << CorrelationPlate::InfoHeader() << std::endl;
         
             for (size_t i = 0; i < num_bins_; i++){
             
-                file << normalized_correlation_.Info(i) << " " << i << std::endl;
+                file << i << " " << normalized_correlation_.Info(i) << std::endl;
             }
         
             file.close();
@@ -323,44 +338,66 @@ void CorrelationResults::SaveCrossCorrelation(){
     }
     
     // save bootstrap realizations
-    for (size_t i = 0; i < bootstrap_.size(); i ++){
-        filename = bootstrap_[i].pairs_file_name() + ToStr(i) + ".dat";
-        
-        std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-        if (file.is_open()){
-            file << CorrelationPlate::InfoHeader() << " bin_index" << std::endl;
-            
-            for (size_t j = 0; j < num_bins_; j++){
-                
-                file << bootstrap_[i].Info(j) << " " << j << std::endl;
+    if (flag_compute_bootstrap_){
+        for (size_t i = 0; i < bootstrap_.size(); i ++){
+            filename = output_base_name_ + ".bootstrap" + ToStr(i) + ".data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc); 
+                if (file.is_open()){
+                    
+                    for (size_t j = 0; j < num_bins_; j++){
+                        
+                        file << j << " " << bootstrap_[i].Info(j) << std::endl;
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                }
             }
             
-            file.close();
+            filename = output_base_name_ + ".bootstrap" + ToStr(i) + ".full.data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc); 
+                if (file.is_open()){
+                    file << "# bin index " << CorrelationPlate::InfoHeader() << std::endl;
+                    
+                    for (size_t j = 0; j < num_bins_; j++){
+                        
+                        file << bootstrap_[i].Info(j) << " " << j << std::endl;
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                }
+            }
+            
         }
-        else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+        
+        // save bootstrap dispersion
+        filename = bootstrap_dispersion_squared_.pairs_file_name();
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc); 
+            if (file.is_open()){
+                file << "# " << CorrelationPlate::InfoHeader() << " bin_index" << std::endl;
+                
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    file << bootstrap_dispersion_squared_.Info(i) << " " << i << std::endl;
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+            }
         }
 
     }
-    
-    // save bootstrap dispersion
-    filename = bootstrap_dispersion_squared_.pairs_file_name();
-    {
-        std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-        if (file.is_open()){
-            file << CorrelationPlate::InfoHeader() << " bin_index" << std::endl;
-        
-            for (size_t i = 0; i < num_bins_; i++){
-            
-                file << bootstrap_dispersion_squared_.Info(i) << " " << i << std::endl;
-            }
-        
-            file.close();
-        }
-        else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
-        }
-    }
+
 }
 
 

@@ -56,8 +56,8 @@ public:
     // access function for bootstrap_dispersion_squared_
     CorrelationPlate bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
         
-    // access function for correlation_file_name_
-    std::string correlation_file_name() const {return correlation_file_name_;}
+    // access function for output_base_name_
+    std::string output_base_name() const {return output_base_name_;}
     
     // access function for correlation_plates_
     PlatesMapSimple<CorrelationPlate>::map correlation_plates() const {return correlation_plates_;}
@@ -109,8 +109,8 @@ private:
     // bootstrap dispersion 
     CorrelationPlate bootstrap_dispersion_squared_;
         
-    // correlation file name
-    std::string correlation_file_name_;
+    // output base name
+    std::string output_base_name_;
     
     // map containing the correlation in the different plates
     PlatesMapSimple<CorrelationPlate>::map correlation_plates_;

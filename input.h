@@ -47,10 +47,7 @@ public:
         
     // access function for c_
     double c() const {return c_;}
-    
-    // access function for correlation_file_name_
-    std::string correlation_file_name() const {return correlation_file_name_;}
-    
+        
     // access function for flag_compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
@@ -63,11 +60,11 @@ public:
     // access function for H0_
     double h0() const {return h0_;}
     
-    // access function for lya_spectra_catalog_
-    std::string lya_spectra_catalog() const {return lya_spectra_catalog_;}
+    // access function for dataset2_
+    std::string dataset2() const {return dataset2_;}
     
-    // access function for lya_spectra_catalog_name_
-    std::string lya_spectra_catalog_name() const {return lya_spectra_catalog_name_;}
+    // access function for dataset2_name_
+    std::string dataset2_name() const {return dataset2_name_;}
     
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
@@ -83,10 +80,7 @@ public:
     
     // access function for neighbours_max_distance_
     double neighbours_max_distance() const {return neighbours_max_distance_;}
-    
-    // access function for normalized_correlation_
-    std::string normalized_correlation() const {return normalized_correlation_;}
-    
+        
     // access function for num_bootstrap_
     size_t num_bootstrap() const {return num_bootstrap_;}
     
@@ -106,25 +100,25 @@ public:
     int num_sigma_bins() const {return num_sigma_bins_;}
     
     // access function for object_catalog_
-    std::string objects_catalog() const {return objects_catalog_;}
+    std::string dataset1() const {return dataset1_;}
     
     // access function for object_catalog_name_
-    std::string objects_catalog_name() const {return objects_catalog_name_;}
+    std::string dataset1_name() const {return dataset1_name_;}
     
     // access function for output_
     std::string output() const {return output_;}
     
-    // access function for pairs_file_name_
-    std::string pairs_file_name() const {return pairs_file_name_;}
-    
+    // access function for output_base_name_
+    std::string output_base_name() const {return output_base_name_;}
+        
     // acces function for plate_neighbours_
     std::string plate_neighbours() const {return plate_neighbours_;}
     
     // access function for plots_
     std::string plots() const {return plots_;}
     
-    // access function for pwd_
-    std::string pwd() const {return pwd_;}
+    // access function for input_
+    std::string input() const {return input_;}
     
     // access function for results_
     std::string results() const {return results_;}
@@ -166,51 +160,54 @@ private:
     
     
     
-    
     // -------------------------------------------------------------
-    // general settings
+    // input settings
     
-    // base name of the files containing the cross-correlation measurements (filename = correlation_file_name_ + 'bin number' + ".dat"
-    std::string correlation_file_name_;
-    
-    // name of the file where the normalized cross-correlation values will be saved
-    std::string normalized_correlation_;
+    // input directory
+    std::string input_;
     
     // number of plates 
     int num_plates_;
     
     // objects catalog filename
-    std::string objects_catalog_;
+    std::string dataset1_;
     
     // objects catalog name
-    std::string objects_catalog_name_;
-    
-    // output directory
-    std::string output_;
-    
-    // base name of the files in which pairs information is saved (filename = results_ + 'some_directory' + pairs_file_name_)
-    std::string pairs_file_name_;
+    std::string dataset1_name_;
     
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
-    
-    // plots directory
-    std::string plots_;
-    
-    // main directory
-    std::string pwd_;
-    
-    // results directory
-    std::string results_;
     
     // spectra directory
     std::string lya_spectra_dir_;
     
     // spectra catalog filename
-    std::string lya_spectra_catalog_;
+    std::string dataset2_;
     
     // spectra catalog name
-    std::string lya_spectra_catalog_name_;
+    std::string dataset2_name_;
+    
+    
+    
+    // -------------------------------------------------------------
+    // output settings
+    
+    // output directory
+    std::string output_;
+    
+    // output base name
+    std::string output_base_name_;
+    
+    // plots directory
+    std::string plots_;
+    
+    // partial results directory
+    std::string results_;
+
+    
+    
+    
+    
     
     
     

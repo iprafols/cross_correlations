@@ -135,7 +135,6 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                 LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[j], k);
                 std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
                 
-                
                 // compute angular separation
                 double cos_theta = object.angle().CosAngularDistance(lya_spectrum.angle());
                 
@@ -187,20 +186,20 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         i_index -= 1;
                     }
                     if (i_index < 0){
-                        std::cout << "TEST: pi = " << pi << "; step_pi = " << step_pi << "; pi/step_pi = " << pi/step_pi << "; int(pi/step_pi) = " << int(pi/step_pi) << std::endl;
+                        //std::cout << "TEST: pi = " << pi << "; step_pi = " << step_pi << "; pi/step_pi = " << pi/step_pi << "; int(pi/step_pi) = " << int(pi/step_pi) << std::endl;
                     }
 
                     
                     // locate sigma pixel (j_index)
                     int j_index = int(sigma/step_sigma);
                     if (j_index < 0){
-                        std::cout << "TEST: sigma = " << sigma << "; step_sigma = " << step_sigma << "; sigma/step_sigma = " << sigma/step_sigma << "; int(sigma/step_sigma) = " << int(sigma/step_sigma) << "; sqrt(sigma_aux*spectrum[p].dist()) = " << sqrt(sigma_aux*spectrum[p].dist()) << "; sigma_aux*spectrum[p].dist() = " << sigma_aux*spectrum[p].dist() << "; sigma_aux = " << sigma_aux << "; spectrum[p].dist() = " << spectrum[p].dist() << "; sigma_aux_o = " << sigma_aux_o << "; cos_theta = " << cos_theta <<                        std::endl;
+                        //std::cout << "TEST: sigma = " << sigma << "; step_sigma = " << step_sigma << "; sigma/step_sigma = " << sigma/step_sigma << "; int(sigma/step_sigma) = " << int(sigma/step_sigma) << "; sqrt(sigma_aux*spectrum[p].dist()) = " << sqrt(sigma_aux*spectrum[p].dist()) << "; sigma_aux*spectrum[p].dist() = " << sigma_aux*spectrum[p].dist() << "; sigma_aux = " << sigma_aux << "; spectrum[p].dist() = " << spectrum[p].dist() << "; sigma_aux_o = " << sigma_aux_o << "; cos_theta = " << cos_theta <<                        std::endl;
                     }
                     
                     // locate xi pixel (k)
                     int k_index = i_index*num_sigma_bins+j_index;
                     if (k_index < 0 or i_index < 0 or j_index < 0){
-                        std::cout << "TEST: i_index = " << i_index << " j_index = " << j_index << " k_index = " << k_index << std::endl;
+                        //std::cout << "TEST: i_index = " << i_index << " j_index = " << j_index << " k_index = " << k_index << std::endl;
                         continue;
                         
                     }
@@ -235,7 +234,7 @@ std::string CorrelationPlate::Info(size_t bin){
      */
     string out = "";
     
-    out += ToStr(plate_number_) + " " + ToStr(xi_[bin]) + " " + ToStr(mean_pi_[bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(num_averaged_pairs_[bin]);
+    out += ToStr(xi_[bin]) + " " + ToStr(mean_pi_[bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(num_averaged_pairs_[bin]) + " " + ToStr(plate_number_);
     
     return out;
 }
@@ -258,7 +257,7 @@ std::string CorrelationPlate::InfoHeader(){
      NONE
      */
     
-    return "# plate xi mean_pi mean_sigma weight num_averaged_pairs";
+    return "xi mean_pi mean_sigma weight num_averaged_pairs plate";
 }
 
 void CorrelationPlate::Normalize(){

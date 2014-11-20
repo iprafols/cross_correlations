@@ -16,6 +16,7 @@
 #include "astro_object_dataset.h"
 #include "correlation_plate.h"
 #include "correlation_results.h"
+#include "covariance_matrix.h"
 #include "input.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
@@ -26,6 +27,7 @@
 #include "defines.h"
 ////////
 
+#include "typedefs.h"
 
 
 int main(int argc, char *argv[]){
@@ -60,7 +62,7 @@ int main(int argc, char *argv[]){
         input_filename += argv[1];
     }
     Input input(input_filename);
-    const PlotsObject kPlots(input.plots());
+    const PlotsObject kPlots(input);
 
     // check whether or not the plate list needs to be computed
     if (input.flag_compute_plate_neighbours()){
@@ -70,7 +72,42 @@ int main(int argc, char *argv[]){
     std::cout << "Loading plate list" << std::endl;
     const PlateNeighbours kPlateNeighbours(input);
         
-    // load quasar dataset
+    // initialize cross-correlation results
+    CorrelationResults results(input, kPlateNeighbours);
+    
+    {
+        // load quasar dataset
+        std::cout << "Loading quasar dataset" << std::endl;
+        AstroObjectDataset object_list(input);
+        std::cout << "Loaded " << object_list.size() << " quasars" << std::endl;
+        std::cout << "Plotting quasar dataset information" << std::endl;
+        kPlots.PlotRADECDispersion(object_list, true);
+        kPlots.PlotZHistogram(object_list, true);
+        
+        // load spectra dataset
+        std::cout << "Loading spectra dataset" << std::endl;
+        LyaSpectraDataset spectra_list(input);
+        std::cout << "Loaded " << spectra_list.size() << " spectra" << std::endl;
+        std::cout << "Plotting spectra dataset information" << std::endl;
+        kPlots.PlotRADECDispersion(spectra_list, true);
+        kPlots.PlotZHistogram(spectra_list, true);
+        
+        // compute distances to the objects (in Mpc/h)
+        {
+            std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+            InterpolationMap redshift_distance_map(input);
+            object_list.SetDistances(redshift_distance_map);
+            spectra_list.SetDistances(redshift_distance_map);
+        }
+        
+        // compute the cross-correlation
+        std::cout << "Computing the cross-correlation" << std::endl;
+        //CorrelationResults results(input, kPlateNeighbours);
+        results.ComputeCrossCorrelation(object_list, spectra_list, input);
+        std::cout << "Plotting cross-correlation" << std::endl;
+        kPlots.PlotCrossCorrelation(results, true);
+    }
+    /*// load quasar dataset
     std::cout << "Loading quasar dataset" << std::endl;
     AstroObjectDataset object_list(input);
     std::cout << "Loaded " << object_list.size() << " quasars" << std::endl;
@@ -95,17 +132,22 @@ int main(int argc, char *argv[]){
     }
     
     // compute the cross-correlation
-    std::cout << "Creating object in where cross-correlation results will be stored" << std::endl;
-        CorrelationResults results(input, kPlateNeighbours);
     std::cout << "Computing the cross-correlation" << std::endl;
+    //CorrelationResults results(input, kPlateNeighbours);
     results.ComputeCrossCorrelation(object_list, spectra_list, input);
     std::cout << "Plotting cross-correlation" << std::endl;
     kPlots.PlotCrossCorrelation(results, true);
         
     // remove datasets from memory
-    
+    */
     
     // compute covariance matrix
+    std::cout << "Computing covariance matrix" << std::endl;
+    CovarianceMatrix cov_mat(input);
+    if (input.flag_compute_bootstrap()){
+        cov_mat.ComputeBootstrapCovMat(results.bootstrap());
+    }
+    
     {
         /*
          load objects where the results are stored
@@ -140,7 +182,7 @@ int main(int argc, char *argv[]){
     // save the covariance matrix results
     //--> cCovMatrixResults::Save()
     
-    // create the python scripts for plotting
+    // run the plotting scripts
     
     
     // display time required to run the program

@@ -27,8 +27,8 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
      NONE
      */
     
-    name_ = input.lya_spectra_catalog_name();
-    Load(input.lya_spectra_catalog(), input.lya_spectra_dir(), input.lya_wl());
+    name_ = input.dataset2_name();
+    Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl());
     
 }
 

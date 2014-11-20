@@ -60,7 +60,7 @@ void ComputePlateNeighbours(const Input& input){
     PlatesMapSimple<Plate>::map plate_list;
     
     std::cout << "Reading spectra catalog" << std::endl;
-    std::ifstream catalog(input.lya_spectra_catalog().c_str());
+    std::ifstream catalog(input.dataset2().c_str());
     // open catalog
     int number_of_read_spectra = 0;
     if (catalog.is_open()){

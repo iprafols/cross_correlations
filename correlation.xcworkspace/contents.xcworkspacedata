@@ -20,6 +20,9 @@
          location = "group:../../cross_correlations/code2/correlation_results.cpp">
       </FileRef>
       <FileRef
+         location = "group:../../cross_correlations/code2/covariance_matrix.cpp">
+      </FileRef>
+      <FileRef
          location = "group:../../cross_correlations/code2/dataset.cpp">
       </FileRef>
       <FileRef
@@ -82,6 +85,9 @@
          location = "container:correlation_results.h">
       </FileRef>
       <FileRef
+         location = "group:../../cross_correlations/code2/covariance_matrix.h">
+      </FileRef>
+      <FileRef
          location = "group:../../cross_correlations/code2/dataset.h">
       </FileRef>
       <FileRef
@@ -120,6 +126,9 @@
    </Group>
    <FileRef
       location = "group:configure">
+   </FileRef>
+   <FileRef
+      location = "group:param.ini">
    </FileRef>
    <FileRef
       location = "group:esquema.rtf">

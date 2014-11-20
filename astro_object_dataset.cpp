@@ -29,8 +29,8 @@ AstroObjectDataset::AstroObjectDataset(const Input& input){
      NONE
      */
     
-    name_ = input.objects_catalog_name();
-    Load(input.z_min(), input.z_max(), input.objects_catalog());
+    name_ = input.dataset1_name();
+    Load(input.z_min(), input.z_max(), input.dataset1());
     
 }
 
@@ -88,7 +88,7 @@ void AstroObjectDataset::GiveZ(std::ostream& out) const{
     
 }
 
-void AstroObjectDataset::Load(const double& z_min, const double& z_max, const std::string& objects_catalog){
+void AstroObjectDataset::Load(const double& z_min, const double& z_max, const std::string& dataset1){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
@@ -96,7 +96,7 @@ void AstroObjectDataset::Load(const double& z_min, const double& z_max, const st
      INPUTS:
      z_min - minimum redshift to accept AstroObject into the dataset
      z_max - maximum redshift to accept AstroObject into the dataset
-     objects_catalog - name of the catalog file
+     dataset1 - name of the catalog file
      
      OUTPUTS:
      NONE
@@ -125,11 +125,11 @@ void AstroObjectDataset::Load(const double& z_min, const double& z_max, const st
     
     try{
         
-        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(objects_catalog,CCfits::Read,1,true,fields));
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(dataset1,CCfits::Read,1,true,fields));
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error occured in AstroObjectDataset constructor: couldn't open catalog file: " + objects_catalog;
+        throw "Error occured in AstroObjectDataset constructor: couldn't open catalog file: " + dataset1;
     }
     CCfits::ExtHDU& data = pInfile->extension(1);
     

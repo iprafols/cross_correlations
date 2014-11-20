@@ -11,6 +11,7 @@
 #define _typedefs_h
 
 #include <map>
+#include <utility>
 #include <vector>
 
 template <typename T> 
@@ -26,6 +27,6 @@ struct PlatesMapSimple{
 
 typedef std::map<std::string, bool> InputFlag;
 
-
+typedef std::map<std::pair<int,int>,double> CovMat;
 
 #endif

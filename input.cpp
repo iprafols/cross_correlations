@@ -138,28 +138,33 @@ void Input::SetDefaultValues(){
     flag_compute_plate_neighbours_ = false;
     
     
-    //
-    // general settings
-    //
-    pwd_ = "../";
-    output_ = "output/";
-    results_ = output_ + "results/";
-    plots_ = output_ + "plots/";
-    objects_catalog_ = pwd_ + "DR11Q_alpha_v0.fits";
-    objects_catalog_name_ = "DR11Q_alpha_v0";
-    pairs_file_name_ = "qso_spectrum_pairs_plate_";
-    correlation_file_name_ = results_ + "correlation_bin_";
-    normalized_correlation_ = results_ + "normalized_correlation.dat";
-    plate_neighbours_ = pwd_ + "plate_neighbours.dat";
-    lya_spectra_dir_ = pwd_ + "spectrum_fits_files/";
-    //lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_one_spectrum.ls";// versió per fer proves
-    //lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_some_spectrum.ls";// versió per fer proves
-    lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_list.ls";
-    lya_spectra_catalog_name_ = "DR11Q_spectra_forest";
+    // -------------------------------------------------------------
+    // input settings
+    input_ = "../";
+    dataset1_ = input_ + "DR11Q_alpha_v0.fits";
+    dataset1_name_ = "DR11Q";
+    plate_neighbours_ = input_ + "plate_neighbours.dat";
+    lya_spectra_dir_ = input_ + "spectrum_fits_files/";
+    dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
+    dataset2_name_ = "DR11LyaF";
     num_plates_ = 2044; // DR11
     
+    
+    // -------------------------------------------------------------
+    // output settings
+    output_ = "output/";
+    output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
+    results_ = output_ + "partial_results/";
+    plots_ = output_ + "plots/";
+    
+    
+    
+    
+    
+    
+    
     // bootstrap settings
-    num_bootstrap_ = 50000;
+    num_bootstrap_ = 10000;
     bootstrap_ = results_ + "bootstrap_realization_";
     bootstrap_dispersion_squared_ = results_ + "bootstrap_dispersion_squared.dat";
     
@@ -174,8 +179,8 @@ void Input::SetDefaultValues(){
     // bin setting
     //
     neighbours_max_distance_ = 4.0*acos(-1.0)/180.0; // (in radians)
-    max_pi_ = 150.0; // (in Mpc/h)
-    max_sigma_ = 150.0; // (in Mpc/h)
+    max_pi_ = 50.0; // (in Mpc/h)
+    max_sigma_ = 50.0; // (in Mpc/h)
     step_pi_ = 5.0; // (in Mpc/h)
     step_sigma_ = 5.0; // (in Mpc/h)
     num_pi_bins_ = int(2.0*max_pi_/step_pi_);
@@ -248,16 +253,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             c_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "correlation_file_name"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            correlation_file_name_ = value;
             input_flag[name] = true;
         }
         else{
@@ -339,20 +334,20 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "lya_spectra_catalog"){
+    else if (name == "dataset2"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            lya_spectra_catalog_ = value;
+            dataset2_ = value;
             input_flag[name] = true;
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "lya_spectra_catalog_name"){
+    else if (name == "dataset2_name"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            lya_spectra_catalog_name_ = value;
+            dataset2_name_ = value;
             input_flag[name] = true;
         }
         else{
@@ -403,16 +398,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             neighbours_max_distance_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "normalized_correlation"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            normalized_correlation_ = value;
             input_flag[name] = true;
         }
         else{
@@ -479,20 +464,20 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "objects_catalog"){
+    else if (name == "dataset1"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            objects_catalog_ = value;
+            dataset1_ = value;
             input_flag[name] = true;
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "objects_catalog_name"){
+    else if (name == "dataset1_name"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            objects_catalog_name_ = value;
+            dataset1_name_ = value;
             input_flag[name] = true;
         }
         else{
@@ -509,10 +494,10 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "pairs_file_name"){
+    else if (name == "output_base_name"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            pairs_file_name_ = value;
+            output_base_name_ = value;
             input_flag[name] = true;
         }
         else{
@@ -539,10 +524,10 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "pwd"){
+    else if (name == "input"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            pwd_ = value;
+            input_ = value;
             input_flag[name] = true;
         }
         else{
@@ -660,7 +645,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it = input_flag.find("output");
     it2 = input_flag.find("results");    
     if (it != input_flag.end() and it2 == input_flag.end()){
-        results_ = output_ + "results/";
+        results_ = output_ + "partial_results/";
     }
     
     //updating plots_ if necessary
@@ -670,58 +655,32 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         plots_ = output_ + "plots/";
     }
     
-    // updating objects_catalog_ if necessary
-    it = input_flag.find("pwd");
-    it2 = input_flag.find("objects_catalog");
+    // updating dataset1_ if necessary
+    it = input_flag.find("input");
+    it2 = input_flag.find("dataset1");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        objects_catalog_ = pwd_ + "DR11Q_alpha_v0.fits";
-    }
-    
-    // updating correlation_file_name_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");
-    it3 = input_flag.find("correlation_file_name");
-    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
-        if (it2 == input_flag.end()){
-            correlation_file_name_ = output_ + "results/correlation_bin_";
-        }
-        else{
-            correlation_file_name_ = results_ + "correlation_bin_";
-        }
-    }
-    
-    // updating normalized_correlation_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");
-    it3 = input_flag.find("normalized_correlation");
-    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
-        if (it2 == input_flag.end()){
-            normalized_correlation_ = output_ + "results/normalized_correlation.dat";
-        }
-        else{
-            normalized_correlation_ = results_ + "normalized_correlation.dat";
-        }
+        dataset1_ = input_ + "DR11Q_alpha_v0.fits";
     }
     
     // updating plate_neighbours_ if necessary
-    it = input_flag.find("pwd");
+    it = input_flag.find("input");
     it2 = input_flag.find("plate_neighbours");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        plate_neighbours_ = pwd_ + "plate_neighbours.dat";
+        plate_neighbours_ = input_ + "plate_neighbours.dat";
     }
     
     // updating lya_spectra_dir_ if necessary
-    it = input_flag.find("pwd");
+    it = input_flag.find("input");
     it2 = input_flag.find("lya_spectra_dir");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_spectra_dir_ = pwd_ + "spectrum_fits_files/";
+        lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     }
     
-    // updating lya_spectra_catalog_ if necessary
-    it = input_flag.find("pwd");
-    it2 = input_flag.find("lya_spectra_catalog");
+    // updating dataset2_ if necessary
+    it = input_flag.find("input");
+    it2 = input_flag.find("dataset2");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_spectra_catalog_ = pwd_ + "DR11Q_spectra_forest_list.ls";
+        dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
     
     // updating normalized_correlation_ if necessary
@@ -730,7 +689,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it3 = input_flag.find("bootstrap");
     if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
         if (it2 == input_flag.end()){
-            bootstrap_ = output_ + "results/bootstrap_realization_";
+            bootstrap_ = output_ + "partial_results/bootstrap_realization_";
         }
         else{
             bootstrap_ = results_ + "bootstrap_realization_";
@@ -743,7 +702,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it3 = input_flag.find("bootstrap_dispersion_squared");
     if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
         if (it2 == input_flag.end()){
-            bootstrap_dispersion_squared_ = output_ + "results/bootstrap_dispersion_squared.dat";
+            bootstrap_dispersion_squared_ = output_ + "partial_results/bootstrap_dispersion_squared.dat";
         }
         else{
             bootstrap_dispersion_squared_ = results_ + "bootstrap_dispersion_squared.dat";
@@ -772,6 +731,15 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end() or it4 != input_flag.end()){
         num_bins_ = int(2.0*max_pi_/step_pi_)*int(max_sigma_/step_sigma_);
     }
+    
+    // updating output_base_name_ if necessary
+    it = input_flag.find("dataset1_name_");
+    it2 = input_flag.find("dataset2_name_");
+    it3 = input_flag.find("output_dataset_name");
+    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
+        output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
+    }
+    
     
 }
 

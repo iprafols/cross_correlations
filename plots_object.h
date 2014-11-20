@@ -33,7 +33,7 @@ public:
     // constructors
     
     // constructs object and initializes its variables
-    PlotsObject(std::string plots_dir);
+    PlotsObject(const Input& input);
     
     // -------------------------------------------------------------
     // access methods
@@ -62,6 +62,15 @@ private:
     // path where the plots will be stored
     std::string plots_dir_;
     
+    // output base name
+    std::string output_base_name_;
+    
+    
+    // -------------------------------------------------------------
+    // methods
+    
+    // Writes a makefile for plotting
+    void MakePlottingMakefile() const;
 };
 
 

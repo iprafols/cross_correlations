@@ -21,12 +21,10 @@ LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/
 
 # this variables sets the name of the executable
 EXECUTABLE_CORRELATION = programs/correlation.run
-EXECUTABLE_PLATE_NEIGHBOURS = programs/plates.run
 
 # this variable contains the list of sources
 SOURCES = $(wildcard *.cpp)
-SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp correlation_plate.cpp correlation_results.cpp dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp sphere_point.cpp
-SOURCES_PLATE_NEIGHBOURS = main_plates.cpp global_variables.cpp plate.cpp plate_neighbours.cpp sphere_point.cpp
+SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp correlation_plate.cpp correlation_results.cpp covariance_matrix.cpp dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp sphere_point.cpp
 SOURCES_PLOT = $(wildcard ./output/plots/*.py)
 
 # this variable contains the list of object files
@@ -49,17 +47,8 @@ all: correlation
 
 correlation: $(EXECUTABLE_CORRELATION)
 
-plates: $(OBJECTS_PLATE_NEIGHBOURS) ../plate_neighbours.dat
 
 plots: $(OBJECTS_PLOT)
-
-
-
-#
-# RUN TARGETS
-#
-../plate_neighbours.dat: $(EXECUTABLE_PLATE_NEIGHBOURS)
-	./$(EXECUTABLE_PLATE_NEIGHBOURS)
 
 
 
@@ -75,10 +64,6 @@ build/%.o: %.cpp
 $(EXECUTABLE_CORRELATION): $(OBJECTS_CORRELATION)
 	$(CC) $(LFLAGS) $(OBJECTS_CORRELATION) -o $(EXECUTABLE_CORRELATION)
 	#./$(EXECUTABLE_CORRELATION)
-
-$(EXECUTABLE_PLATE_NEIGHBOURS): $(OBJECTS_PLATE_NEIGHBOURS)
-	$(CC) $(LFLAGS) $(OBJECTS_PLATE_NEIGHBOURS) -o $(EXECUTABLE_PLATE_NEIGHBOURS)
-
 
 
 #
