@@ -53,9 +53,6 @@ public:
     std::vector<CorrelationPlate> bootstrap() const {return bootstrap_;}
     CorrelationPlate bootstrap(size_t i) const {return bootstrap_[i];}
     
-    // access function for bootstrap_dispersion_squared_
-    CorrelationPlate bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
-        
     // access function for output_base_name_
     std::string output_base_name() const {return output_base_name_;}
     
@@ -106,9 +103,6 @@ private:
     // bootstrap variables
     std::vector<CorrelationPlate> bootstrap_;
     
-    // bootstrap dispersion 
-    CorrelationPlate bootstrap_dispersion_squared_;
-        
     // output base name
     std::string output_base_name_;
     
@@ -143,9 +137,6 @@ private:
     // -------------------------------------------------------------
     // methods
     
-    // compute bootstrap dispersion
-    void ComputeBootstrapDispersion();
-
     // compute bootstrap realizations
     void ComputeBootstrapRealizations();
 

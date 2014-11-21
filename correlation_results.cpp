@@ -54,11 +54,9 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     if (flag_compute_bootstrap_){
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
-            bootstrap_.push_back(CorrelationPlate(_NORM_, num_bins_, results_, input.bootstrap(), kPlateNeighbours.GetNeighboursList(_NORM_)));
+            bootstrap_.push_back(CorrelationPlate(_NORM_, num_bins_, results_, "error", kPlateNeighbours.GetNeighboursList(_NORM_)));
         }
-        
-        bootstrap_dispersion_squared_ = CorrelationPlate(_NORM_, num_bins_, results_, input.bootstrap_dispersion_squared(), kPlateNeighbours.GetNeighboursList(_NORM_));
-        
+
     }
     
     // creating bin files
@@ -97,54 +95,8 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
     
     if (flag_compute_bootstrap_){
         ComputeBootstrapRealizations();
-        ComputeBootstrapDispersion();
     }
     SaveCrossCorrelation();
-    
-}
-
-void CorrelationResults::ComputeBootstrapDispersion(){
-    /**
-     EXPLANATION:
-     Computes the dispersion found in the normalized bootstrap realizations
-     
-     INPUTS:
-     NONE
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     CorrelationPlate
-     CorrelationResults
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    // computin mean
-    CorrelationPlate mean(_NORM_, num_bins_, "", "", normalized_correlation_.plate_neighbours());
-    
-    for (size_t i = 0; i < bootstrap_.size(); i ++){
-        
-        mean += bootstrap_[i];
-        
-    }
-    mean.Normalize();
-    
-    // computing dispersion
-    for (size_t i = 0; i < bootstrap_.size(); i ++){
-        
-        CorrelationPlate aux = bootstrap_[i]-mean;
-        bootstrap_dispersion_squared_ += aux*aux;
-
-    }
-    
-    for (size_t i = 0; i < num_bins_; i ++){
-        bootstrap_dispersion_squared_.set_weight(i, double(bootstrap_.size()));
-        bootstrap_dispersion_squared_.set_num_averaged_pairs(i, _NORM_);
-    }
-    bootstrap_dispersion_squared_.Normalize();
     
 }
 
@@ -375,25 +327,6 @@ void CorrelationResults::SaveCrossCorrelation(){
                 }
             }
             
-        }
-        
-        // save bootstrap dispersion
-        filename = bootstrap_dispersion_squared_.pairs_file_name();
-        {
-            std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-            if (file.is_open()){
-                file << "# " << CorrelationPlate::InfoHeader() << " bin_index" << std::endl;
-                
-                for (size_t i = 0; i < num_bins_; i++){
-                    
-                    file << bootstrap_dispersion_squared_.Info(i) << " " << i << std::endl;
-                }
-                
-                file.close();
-            }
-            else{
-                std::cout << "Unable to open file:" << std::endl << filename << std::endl;
-            }
         }
 
     }

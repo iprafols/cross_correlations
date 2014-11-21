@@ -39,12 +39,6 @@ public:
     // -------------------------------------------------------------
     // access methods
     
-    // access function for bootstrap_
-    std::string bootstrap() const {return bootstrap_;}
-    
-    // access function for bootstrap_dispersion_squared_
-    std::string bootstrap_dispersion_squared() const {return bootstrap_dispersion_squared_;}
-        
     // access function for c_
     double c() const {return c_;}
         
@@ -203,40 +197,7 @@ private:
     
     // partial results directory
     std::string results_;
-
     
-    
-    
-    
-    
-    
-    
-    // -------------------------------------------------------------
-    // bootstrap settings
-    
-    
-    // base name of the files containing the bootstrap realizations (filename = bootstrap_ + 'realixation number' + ".dat"
-    std::string bootstrap_;
-    
-    // name of the file containing the boostrap dispersion
-    std::string bootstrap_dispersion_squared_;
-    
-    // number of bootstrap realizations
-    size_t num_bootstrap_;
-    
-    
-    
-    // -------------------------------------------------------------
-    // Fidutial model
-    
-    // Hubble constatnt at present time (in km/s/Mpc)
-    double h0_;
-    
-    // Reduced Hubble constant: H0/100
-    double h_; 
-    
-    // Omega matter
-    double wm_; 
     
     
     // -------------------------------------------------------------
@@ -265,6 +226,33 @@ private:
     
     // step value of perpendicular separation (in Mpc/h)
     double step_sigma_;
+
+    
+    
+    
+    
+    
+    
+    
+    // -------------------------------------------------------------
+    // bootstrap settings
+        
+    // number of bootstrap realizations
+    size_t num_bootstrap_;
+    
+    
+    
+    // -------------------------------------------------------------
+    // Fidutial model
+    
+    // Hubble constatnt at present time (in km/s/Mpc)
+    double h0_;
+    
+    // Reduced Hubble constant: H0/100
+    double h_; 
+    
+    // Omega matter
+    double wm_; 
     
     
     // -------------------------------------------------------------
@@ -316,6 +304,9 @@ private:
     
     // Update the composed parameters whenever necessary
     void UpdateComposedParams(const InputFlag& input_flag);
+    
+    // Write this run's configuration
+    void WriteLog();
     
     // Write the used and the unused parameters
     void WriteParams();

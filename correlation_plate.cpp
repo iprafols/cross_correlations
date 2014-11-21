@@ -35,12 +35,11 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins
     num_bins_ = num_bins;
     if (plate_number_ == _NORM_){
         results_ = "";
-        pairs_file_name_ = pairs_file_name;
     }
     else{
         results_ = results;
-        pairs_file_name_ = "/" + pairs_file_name + ToStr(plate_number_) + ".dat";
     }
+    pairs_file_name_ = pairs_file_name;
     
     xi_.resize(num_bins_,0.0);
     mean_pi_.resize(num_bins_,0.0);

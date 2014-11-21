@@ -50,10 +50,14 @@ Input::Input(const std::string& filename){
     command = "mkdir -p -v " + plots_;
     system(command.c_str());
     
-    // write the used and unused parameters
+    // write the used and unused parameters from the .ini file
     if (filename != ""){
         WriteParams();
     }
+    
+    // write down this run's configuration
+    WriteLog();
+    
 }
 
 void Input::ReadInputValues(const std::string& filename){
@@ -158,26 +162,8 @@ void Input::SetDefaultValues(){
     plots_ = output_ + "plots/";
     
     
-    
-    
-    
-    
-    
-    // bootstrap settings
-    num_bootstrap_ = 10000;
-    bootstrap_ = results_ + "bootstrap_realization_";
-    bootstrap_dispersion_squared_ = results_ + "bootstrap_dispersion_squared.dat";
-    
-    //
-    // Fidutial model
-    //
-    h0_ = 68.0;
-    h_ = h0_/100.0;
-    wm_ = 0.3;
-    
-    //
+    // -------------------------------------------------------------
     // bin setting
-    //
     neighbours_max_distance_ = 4.0*acos(-1.0)/180.0; // (in radians)
     max_pi_ = 50.0; // (in Mpc/h)
     max_sigma_ = 50.0; // (in Mpc/h)
@@ -186,10 +172,21 @@ void Input::SetDefaultValues(){
     num_pi_bins_ = int(2.0*max_pi_/step_pi_);
     num_sigma_bins_ = int(max_sigma_/step_sigma_);
     num_bins_ = num_pi_bins_*num_sigma_bins_;
+
     
-    //
+    // -------------------------------------------------------------
+    // bootstrap settings
+    num_bootstrap_ = 10000;    
+    
+    // -------------------------------------------------------------
+    // Fidutial model
+    h0_ = 70;
+    h_ = h0_/100.0;
+    wm_ = 0.27;
+      
+    
+    // -------------------------------------------------------------
     // line and redshift settings
-    //
     lya_wl_ = 1215.67;
     z_min_ = 2.0;
     z_max_ = 3.5;
@@ -197,14 +194,14 @@ void Input::SetDefaultValues(){
     z_max_interpolation_ = 4.0; 
     num_points_interpolation_ = 30000; 
     
-    //
+    
+    // -------------------------------------------------------------
     // Some mathematical and physical constants
-    //
     c_ = 299792.458;
     
-    //
+    
     // internal settings
-    //
+    // -------------------------------------------------------------
     used_params_ = "";
     unused_params_ = "";
 }
@@ -229,27 +226,7 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
      NONE
      */
     
-    if (name == "bootstrap"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            bootstrap_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "bootstrap_dispersion_squared"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            bootstrap_dispersion_squared_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "c"){
+    if (name == "c"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             c_ = double(atof(value.c_str()));
@@ -414,21 +391,18 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "num_bins"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            num_bins_ = atoi(value.c_str());
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
     else if (name == "num_pi_bins"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            num_pi_bins_ = atoi(value.c_str());
-            input_flag[name] = true;
+            it = input_flag.find("step_pi");
+            if (it == input_flag.end()){
+                num_pi_bins_ = atoi(value.c_str());
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit;
+            }
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
@@ -457,8 +431,15 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
     else if (name == "num_sigma_bins"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            num_sigma_bins_ = atoi(value.c_str());
-            input_flag[name] = true;
+            it = input_flag.find("step_sigma");
+            if (it == input_flag.end()){
+                num_sigma_bins_ = atoi(value.c_str());
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit;
+            }
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
@@ -547,7 +528,15 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
     else if (name == "step_pi"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            step_pi_ = double(atof(value.c_str()));
+            it = input_flag.find("num_pi_bins");
+            if (it == input_flag.end()){
+                step_pi_ = double(atof(value.c_str()));
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit;
+            }
             input_flag[name] = true;
         }
         else{
@@ -557,8 +546,15 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
     else if (name == "step_sigma"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            step_sigma_ = double(atof(value.c_str()));
-            input_flag[name] = true;
+            it = input_flag.find("num_sigma_bins");
+            if (it == input_flag.end()){
+                step_sigma_ = double(atof(value.c_str()));
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit;
+            }
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
@@ -639,7 +635,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
      NONE
      */
     
-    InputFlag::const_iterator it, it2, it3, it4;
+    InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
     // updating results_ if necessary
     it = input_flag.find("output");
@@ -682,54 +678,53 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
-    
-    // updating normalized_correlation_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");
-    it3 = input_flag.find("bootstrap");
-    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
-        if (it2 == input_flag.end()){
-            bootstrap_ = output_ + "partial_results/bootstrap_realization_";
-        }
-        else{
-            bootstrap_ = results_ + "bootstrap_realization_";
-        }
-    }
-    
-    // updating bootstrap_dispersion_squared_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");
-    it3 = input_flag.find("bootstrap_dispersion_squared");
-    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
-        if (it2 == input_flag.end()){
-            bootstrap_dispersion_squared_ = output_ + "partial_results/bootstrap_dispersion_squared.dat";
-        }
-        else{
-            bootstrap_dispersion_squared_ = results_ + "bootstrap_dispersion_squared.dat";
-        }
-    }
-    
-    // updating num_pi_bins_ if necessary
+            
+    // updating num_pi_bins_ and step_pi_ if necessary
     it = input_flag.find("max_pi");
     it2 = input_flag.find("step_pi");
-    if (it != input_flag.end() or it2 != input_flag.end()){
-        num_pi_bins_ = int(2.0*max_pi_/step_pi_);
+    it3 = input_flag.find("num_pi_bins");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_pi_ = max_pi_/double(num_pi_bins_);
+        }
+        else{
+            num_pi_bins_ = int(2.0*max_pi_/step_pi_);
+        }
     }
     
     // updating num_sigma_bins_ if necessary
     it = input_flag.find("max_sigma");
     it2 = input_flag.find("step_sigma");
-    if (it != input_flag.end() or it2 != input_flag.end()){
-        num_sigma_bins_ = int(max_sigma_/step_sigma_);
+    it3 = input_flag.find("num_sigma_bins");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_sigma_ = max_sigma_/double(num_sigma_bins_);
+        }
+        else{
+            num_sigma_bins_ = int(max_sigma_/step_sigma_);
+        }
     }
     
     // updating num_bins_ if necessary
     it = input_flag.find("max_pi");
     it2 = input_flag.find("step_pi");
-    it3 = input_flag.find("max_sigma");
-    it4 = input_flag.find("step_sigma");
-    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end() or it4 != input_flag.end()){
-        num_bins_ = int(2.0*max_pi_/step_pi_)*int(max_sigma_/step_sigma_);
+    it3 = input_flag.find("num_pi_bins");
+    it4 = input_flag.find("max_sigma");
+    it5 = input_flag.find("step_sigma");
+    it6 = input_flag.find("num_sigma_bins");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end() or it4 != input_flag.end() or it5 != input_flag.end() or it6 != input_flag.end()){
+        if (it3 != input_flag.end() and it6 != input_flag.end()){
+            num_bins_ = num_pi_bins_*num_sigma_bins_;
+        }
+        else if (it3 != input_flag.end()){
+            num_bins_ = num_pi_bins_*int(max_sigma_/step_sigma_);
+        }
+        else if (it6 != input_flag.end()){
+            num_bins_ = int(2.0*max_pi_/step_pi_)*num_sigma_bins_;
+        }
+        else{
+            num_bins_ = int(2.0*max_pi_/step_pi_)*int(max_sigma_/step_sigma_);
+        }
     }
     
     // updating output_base_name_ if necessary
@@ -741,6 +736,121 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     }
     
     
+}
+
+void Input::WriteLog(){
+    /**
+     EXPLANATION:
+     Writes down this run's configuration
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     Input
+     
+     FUNCITONS USED:
+     NONE
+     */
+    std::ofstream log;
+    log.open((output_ + "log.param").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+    if (log.is_open()){
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// flags" << std::endl;
+        if (flag_compute_bootstrap_){
+            log << "flag_compute_bootstrap = true" << std::endl;
+        }
+        else{
+            log << "flag_compute_bootstrap = false" << std::endl;
+        }
+        if (flag_compute_plate_neighbours_){
+            log << "flag_compute_plate_neighbours = true" << std::endl;
+        }
+        else{
+            log << "flag_compute_plate_neighbours = false" << std::endl;
+        }
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// input settings" << std::endl;
+        log << "input = " << input_ << std::endl;
+        log << "dataset1 = " << dataset1_ << std::endl;
+        log << "dataset1_name = " << dataset1_name_ << std::endl;
+        log << "plate_neighbours = " << plate_neighbours_ << std::endl;
+        log << "lya_spectra_dir = " << lya_spectra_dir_ << std::endl;
+        log << "dataset2 = " << dataset2_ << std::endl;
+        log << "dataset2_name = " << dataset2_name_ << std::endl;
+        log << "num_plates = " << num_plates_ << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// output settings" << std::endl;
+        log << "output = " << output_ << std::endl;
+        log << "output_base_name = " << output_base_name_ << std::endl;
+        log << "results = " << results_ << std::endl;
+        log << "plots = " << plots_ << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// bin setting" << std::endl;
+        log << "neighbours_max_distance_ = " << neighbours_max_distance_ << " # (in radians)" << std::endl;
+        log << "max_pi = " << max_pi_ << " # (in Mpc/h)" << std::endl;
+        log << "max_sigma = " << max_sigma_ << " # (in Mpc/h)" << std::endl;
+        log << "step_pi = " << step_pi_ << " # (in Mpc/h)" << std::endl;
+        log << "step_sigma = " << step_sigma_ << " # (in Mpc/h)" << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// bootstrap settings" << std:: endl;
+        log << "num_bootstrap = " << num_bootstrap_ << std:: endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std:: endl;
+        log << "// Fidutial model" << std:: endl;
+        log << "h = " << h_ << std:: endl;
+        log << "wm = " << wm_ << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// line and redshift settings" << std::endl;
+        log << "lya_wl = " << lya_wl_ << std::endl;
+        log << "z_min = " << z_min_ << std::endl;
+        log << "z_max = " << z_max_ << std::endl;
+        log << "z_min_interpolation = " << z_min_interpolation_ << std::endl;
+        log << "z_max_interpolation = " << z_max_interpolation_ << std::endl;
+        log << "num_points_interpolation = " << num_points_interpolation_ << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// Some mathematical and physical constants" << std::endl;
+        log << "c = " << c_ << std::endl;
+        log << std::endl;
+        
+        
+        log.close();
+    }
+    else{
+        std::cout << "Unable to open file:" << std::endl << output_ << "log.param" << std::endl;
+    }
 }
 
 void Input::WriteParams(){
@@ -782,4 +892,5 @@ void Input::WriteParams(){
     else{
         std::cout << "Unable to open file:" << std::endl << output_ << "unused.param" << std::endl;
     }
+
 }
