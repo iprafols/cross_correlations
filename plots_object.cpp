@@ -84,7 +84,7 @@ void PlotsObject::MakePlottingMakefile() const{
     }    
 }
 
-void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool update_script) const{
+void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Input& input, const bool update_script) const{
     /*
      EXPLANATION:
      Plots the correlation function
@@ -126,7 +126,9 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool
             script << "    Plots the measured correlation function" << std::endl;
             script << "\"\"\"" << std::endl;
             script << "# loading variables" << std::endl;
-            script << "num_sigma_bins = " << res.num_sigma_bins() << std::endl;
+            script << "max_sigma = " << input.max_sigma() << std::endl;
+            script << "sigma_step = " << input.step_sigma() << std::endl;
+            script << "num_sigma_bins = " << input.num_sigma_bins() << std::endl;
             script << "filename = '../" << output_base_name_ << ".full.data'" << std::endl;
             script << "cov_filename = '../" << output_base_name_ << ".bootstrap.diag.cov'" << std::endl;
             script << "data = np.genfromtxt(filename, names = True)" << std::endl;
@@ -141,10 +143,12 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const bool
             script << "    dxi = [sqrt(value) for i,value in enumerate(cov[:,1]) if (i % num_sigma_bins == j)]" << std::endl;
             script << "    fig = plt.figure(figsize=(14,7))" << std::endl;
             script << "    ax = fig.add_subplot(1,1,1)" << std::endl;
-            script << "    ax.set_xlabel(r'$\\pi\\left(h^{-1}Mpc\\right)$')" << std::endl;
-            script << "    ax.set_ylabel(r'$\\xi\\left(\\pi, \\sigma\\right)$')" << std::endl;
+            script << "    ax.set_xlabel(r'$\\pi\\left(h^{-1}Mpc\\right)$', fontsize = 20)" << std::endl;
+            script << "    ax.set_ylabel(r'$\\xi\\left(\\pi, \\sigma\\right)$', fontsize = 20)" << std::endl;
             script << "    ax.errorbar(pi,xi,yerr = dxi, fmt = 'b.')" << std::endl;
+            script << "    ax.text(0.05,0.05,r'$\\sigma/\\left(h^{-1}Mpc\\right)\\in\\left[' + str(j*sigma_step) + ', '+str((j+1)*sigma_step )+ r'\\right) $',transform = ax.transAxes, fontsize = 20)" << std::endl;
             script << "    fig.savefig('correlation_measurements_sigma_bin_' + str(j) + '.eps')" << std::endl;
+            script << "    plt.close(fig)" << std::endl;
             
             script.close();
         }

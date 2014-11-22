@@ -20,6 +20,7 @@
 
 // classes needed
 #include "correlation_results.h"
+#include "input.h"
 #include "dataset.h"
 ////////
 
@@ -45,7 +46,7 @@ public:
     // other methods
     
     // Plots the correlation function
-    void PlotCrossCorrelation(const CorrelationResults& res, const bool update_script = false) const;
+    void PlotCrossCorrelation(const CorrelationResults& res, const Input& input, const bool update_script = false) const;
     
     // Plots the RA-DEC dispersion for the given objects
     void PlotRADECDispersion(Dataset& dataset, const bool update_script = false) const;
