@@ -68,13 +68,7 @@ public:
     
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
-    
-    // access function for num_pi_bins_
-    size_t num_pi_bins() const {return num_pi_bins_;}
-    
-    // access function for num_sigma_bins_
-    size_t num_sigma_bins() const {return num_sigma_bins_;}
-    
+        
     // access function for pairs_file_name_
     std::string pairs_file_name() const {return pairs_file_name_;}
     
@@ -114,13 +108,7 @@ private:
 
     // number of bins
     size_t num_bins_;
-    
-    // number of bins in parallel separation
-    size_t num_pi_bins_;
-    
-    // number of bins in perpendicular separation
-    size_t num_sigma_bins_;
-    
+        
     // pairs file name
     std::string pairs_file_name_;
     

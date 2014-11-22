@@ -32,8 +32,6 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     
     // setting the number of bins and plates from input
     num_bins_ = input.num_bins();
-    num_sigma_bins_ = input.num_sigma_bins();
-    num_pi_bins_ = input.num_pi_bins();
     
     // setting the results directory and the pairs file name from input
     results_ = input.results() + "detailed_info_bin_";
