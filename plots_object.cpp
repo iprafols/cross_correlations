@@ -76,7 +76,7 @@ void PlotsObject::MakePlottingMakefile() const{
         file << "all: $(OBJECTS)" << std::endl;
         file << std::endl;
         file << "%.pyc: %.py" << std::endl;
-        file << "	python $<" << std::endl;
+        file << "\t" << "python $<" << std::endl;
         file.close();
     }
     else{
@@ -160,7 +160,7 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
 
 }
 
-void PlotsObject::PlotRADECDispersion(Dataset& dataset, const bool update_script) const{
+void PlotsObject::PlotRADECDispersion(const Dataset& dataset, const bool update_script) const{
     /**
      EXPLANATION:
      Plots the RA-DEC dispersion for the given objects
@@ -249,7 +249,7 @@ void PlotsObject::PlotRADECDispersion(Dataset& dataset, const bool update_script
     
 }
 
-void PlotsObject::PlotZHistogram(Dataset& dataset, const bool update_script) const{
+void PlotsObject::PlotZHistogram(const Dataset& dataset, const bool update_script) const{
     /**
      EXPLANATION:
      Plots the redshift histogram for the given objects

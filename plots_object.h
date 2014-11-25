@@ -49,10 +49,10 @@ public:
     void PlotCrossCorrelation(const CorrelationResults& res, const Input& input, const bool update_script = false) const;
     
     // Plots the RA-DEC dispersion for the given objects
-    void PlotRADECDispersion(Dataset& dataset, const bool update_script = false) const;
+    void PlotRADECDispersion(const Dataset& dataset, const bool update_script = false) const;
         
     // Plots the RA-DEC dispersion for the given objects
-    void PlotZHistogram(Dataset& dataset, const bool update_script = false) const;
+    void PlotZHistogram(const Dataset& dataset, const bool update_script = false) const;
     
     
     

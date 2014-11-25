@@ -1,5 +1,5 @@
 /**
- dataset.h
+ astro_object_dataset.h
  Purpose: This file defines the class AstroObjectDataset. This class contains the variables necessary to store a object dataset. This class is a specialization of the cDataset class
  
  @author Ignasi Pérez-Ràfols (iprafols@icc.ub.edu)
@@ -40,11 +40,11 @@ public:
     // -------------------------------------------------------------
     // constructors
     
-    // constructs empty object
+    /*// constructs empty object
     AstroObjectDataset(){};
     
     // constructs object and initializes its variables
-    AstroObjectDataset(const Input& input);
+    AstroObjectDataset(const Input& input);*/
     
     // -------------------------------------------------------------
     // access methods
@@ -64,7 +64,7 @@ public:
     void GiveZ(std::ostream& out) const;
     
     // load the dataset
-    void Load(const double& z_min, const double& z_max, const std::string& object_list);
+    virtual void Load(const double& z_min, const double& z_max, const std::string& dataset1) =0;
     
     // set the distance to every object in the dataset
     void SetDistances(const InterpolationMap& redshift_distance_map);
@@ -74,10 +74,13 @@ public:
     
     
     
-private:        
+protected:        
     // map with the plates information
     PlatesMapVector<AstroObject>::map list_;
     
+    
+    // -------------------------------------------------------------
+    // other methods
 
     
 };

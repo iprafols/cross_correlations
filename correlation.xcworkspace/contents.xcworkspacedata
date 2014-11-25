@@ -26,10 +26,13 @@
          location = "group:../../cross_correlations/code2/dataset.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../cross_correlations/code2/input.cpp">
+         location = "group:../../cross_correlations/code2/dla_dataset.cpp">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/interpolation_map.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/input.cpp">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/lya_pixel.cpp">
@@ -48,6 +51,9 @@
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/plots_object.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../cross_correlations/code2/quasar_dataset.cpp">
       </FileRef>
       <FileRef
          location = "group:../../cross_correlations/code2/sphere_point.cpp">
@@ -91,6 +97,9 @@
          location = "group:../../cross_correlations/code2/dataset.h">
       </FileRef>
       <FileRef
+         location = "group:../../cross_correlations/code2/dla_dataset.h">
+      </FileRef>
+      <FileRef
          location = "group:../../cross_correlations/code2/input.h">
       </FileRef>
       <FileRef
@@ -115,6 +124,9 @@
          location = "group:../../cross_correlations/code2/plots_object.h">
       </FileRef>
       <FileRef
+         location = "group:../../cross_correlations/code2/quasar_dataset.h">
+      </FileRef>
+      <FileRef
          location = "group:../../cross_correlations/code2/sphere_point.h">
       </FileRef>
       <FileRef
@@ -124,9 +136,6 @@
          location = "group:../../cross_correlations/code2/typedefs.h">
       </FileRef>
    </Group>
-   <FileRef
-      location = "group:configure">
-   </FileRef>
    <FileRef
       location = "group:param.ini">
    </FileRef>

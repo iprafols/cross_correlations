@@ -58,7 +58,9 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // creating bin files
-    CreateBinFiles();
+    if (!input.flag_load_only()){
+        CreateBinFiles();
+    }
 }
 
 void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input){

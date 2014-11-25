@@ -41,12 +41,18 @@ public:
     
     // access function for c_
     double c() const {return c_;}
-        
+            
     // access function for flag_compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
     // access function for flag_compute_plate_neighbours_
     bool flag_compute_plate_neighbours() const {return flag_compute_plate_neighbours_;}
+        
+    // access function for  flag_load_only_
+    bool flag_load_only() const {return flag_load_only_;}
+    
+    // access function for flag_plot_catalog_info_
+    bool flag_plot_catalog_info() const {return flag_plot_catalog_info_;}
 
     // access function for h
     double h() const {return h_;}
@@ -59,7 +65,7 @@ public:
     
     // access function for dataset2_name_
     std::string dataset2_name() const {return dataset2_name_;}
-    
+        
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
@@ -98,6 +104,9 @@ public:
     
     // access function for object_catalog_name_
     std::string dataset1_name() const {return dataset1_name_;}
+    
+    // access function for dataset1_type_
+    std::string dataset1_type() const {return dataset1_type_;}
     
     // access function for output_
     std::string output() const {return output_;}
@@ -145,14 +154,20 @@ public:
 private:
     // -------------------------------------------------------------
     // flags
-    
+        
     // flag to determine whether to compute the bootstrap realizations or not
     bool flag_compute_bootstrap_;
     
     // flag to determine whether to compute the plate neighbours list or not
     bool flag_compute_plate_neighbours_;
     
+    // flag to determine whether to end program after loading the catalogs and plotting their information
+    bool flag_load_only_;
     
+    // flag to determine whether to plot catalogues info or not
+    bool flag_plot_catalog_info_;
+
+
     
     // -------------------------------------------------------------
     // input settings
@@ -168,6 +183,9 @@ private:
     
     // objects catalog name
     std::string dataset1_name_;
+    
+    // objects type
+    std::string dataset1_type_;
     
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
@@ -225,12 +243,7 @@ private:
     double step_pi_;
     
     // step value of perpendicular separation (in Mpc/h)
-    double step_sigma_;
-
-    
-    
-    
-    
+    double step_sigma_;  
     
     
     

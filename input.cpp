@@ -45,8 +45,10 @@ Input::Input(const std::string& filename){
     
     // creating folders if required
     std::string command;
-    command = "mkdir -p -v " + results_;
-    system(command.c_str());
+    if (!flag_load_only_){
+        command = "mkdir -p -v " + results_;
+        system(command.c_str());
+    }
     command = "mkdir -p -v " + plots_;
     system(command.c_str());
     
@@ -140,6 +142,8 @@ void Input::SetDefaultValues(){
     // flags
     flag_compute_bootstrap_ = true;
     flag_compute_plate_neighbours_ = false;
+    flag_load_only_ = false;
+    flag_plot_catalog_info_ = flag_load_only_;
     
     
     // -------------------------------------------------------------
@@ -147,6 +151,7 @@ void Input::SetDefaultValues(){
     input_ = "../";
     dataset1_ = input_ + "DR11Q_alpha_v0.fits";
     dataset1_name_ = "DR11Q";
+    dataset1_type_ = "quasar";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
@@ -263,6 +268,44 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else if (value == "false" or value == "FALSE" or value == "False"){
                 flag_compute_plate_neighbours_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_load_only"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_load_only_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_load_only_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_plot_catalog_info"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_plot_catalog_info_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_plot_catalog_info_ = false;
             }
             else{
                 unused_params_ += name + " = " + value + "\n";
@@ -465,6 +508,16 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
+    else if (name == "dataset1_type"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_type_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
     else if (name == "output"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -637,39 +690,11 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
-    // updating results_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");    
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        results_ = output_ + "partial_results/";
-    }
-    
-    //updating plots_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("plots");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        plots_ = output_ + "plots/";
-    }
-    
     // updating dataset1_ if necessary
     it = input_flag.find("input");
     it2 = input_flag.find("dataset1");
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset1_ = input_ + "DR11Q_alpha_v0.fits";
-    }
-    
-    // updating plate_neighbours_ if necessary
-    it = input_flag.find("input");
-    it2 = input_flag.find("plate_neighbours");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        plate_neighbours_ = input_ + "plate_neighbours.dat";
-    }
-    
-    // updating lya_spectra_dir_ if necessary
-    it = input_flag.find("input");
-    it2 = input_flag.find("lya_spectra_dir");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     }
     
     // updating dataset2_ if necessary
@@ -678,31 +703,19 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
-            
-    // updating num_pi_bins_ and step_pi_ if necessary
-    it = input_flag.find("max_pi");
-    it2 = input_flag.find("step_pi");
-    it3 = input_flag.find("num_pi_bins");
-    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
-        if (it3 != input_flag.end()){
-            step_pi_ = max_pi_/double(num_pi_bins_);
-        }
-        else{
-            num_pi_bins_ = int(2.0*max_pi_/step_pi_);
-        }
+    
+    // updating flag_plot_catalog_info_ if necessary
+    it = input_flag.find("flag_load_only");
+    it2 = input_flag.find("flag_plot_catalog_info");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_plot_catalog_info_ = flag_load_only_;
     }
     
-    // updating num_sigma_bins_ if necessary
-    it = input_flag.find("max_sigma");
-    it2 = input_flag.find("step_sigma");
-    it3 = input_flag.find("num_sigma_bins");
-    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
-        if (it3 != input_flag.end()){
-            step_sigma_ = max_sigma_/double(num_sigma_bins_);
-        }
-        else{
-            num_sigma_bins_ = int(max_sigma_/step_sigma_);
-        }
+    // updating lya_spectra_dir_ if necessary
+    it = input_flag.find("input");
+    it2 = input_flag.find("lya_spectra_dir");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     }
     
     // updating num_bins_ if necessary
@@ -726,6 +739,32 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
             num_bins_ = int(2.0*max_pi_/step_pi_)*int(max_sigma_/step_sigma_);
         }
     }
+
+    // updating num_pi_bins_ and step_pi_ if necessary
+    it = input_flag.find("max_pi");
+    it2 = input_flag.find("step_pi");
+    it3 = input_flag.find("num_pi_bins");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_pi_ = max_pi_/double(num_pi_bins_);
+        }
+        else{
+            num_pi_bins_ = int(2.0*max_pi_/step_pi_);
+        }
+    }
+    
+    // updating num_sigma_bins_ and step_sigma_ if necessary
+    it = input_flag.find("max_sigma");
+    it2 = input_flag.find("step_sigma");
+    it3 = input_flag.find("num_sigma_bins");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_sigma_ = max_sigma_/double(num_sigma_bins_);
+        }
+        else{
+            num_sigma_bins_ = int(max_sigma_/step_sigma_);
+        }
+    }
     
     // updating output_base_name_ if necessary
     it = input_flag.find("dataset1_name_");
@@ -735,6 +774,26 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
     }
     
+    // updating results_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("results");    
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        results_ = output_ + "partial_results/";
+    }
+    
+    // updating plate_neighbours_ if necessary
+    it = input_flag.find("input");
+    it2 = input_flag.find("plate_neighbours");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        plate_neighbours_ = input_ + "plate_neighbours.dat";
+    }
+    
+    //updating plots_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("plots");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        plots_ = output_ + "plots/";
+    }
     
 }
 
@@ -774,6 +833,18 @@ void Input::WriteLog(){
         else{
             log << "flag_compute_plate_neighbours = false" << std::endl;
         }
+        if (flag_load_only_){
+            log << "flag_load_only = true" << std::endl;
+        }
+        else{
+            log << "flag_load_only = false" << std::endl;
+        }
+        if (flag_plot_catalog_info_){
+            log << "flag_plot_catalog_info = true" << std::endl;
+        }
+        else{
+            log << "flag_plot_catalog_info = false" << std::endl;
+        }
         log << std::endl;
         
         
@@ -783,6 +854,7 @@ void Input::WriteLog(){
         log << "input = " << input_ << std::endl;
         log << "dataset1 = " << dataset1_ << std::endl;
         log << "dataset1_name = " << dataset1_name_ << std::endl;
+        log << "dataset1_type = " << dataset1_type_ << std::endl;
         log << "plate_neighbours = " << plate_neighbours_ << std::endl;
         log << "lya_spectra_dir = " << lya_spectra_dir_ << std::endl;
         log << "dataset2 = " << dataset2_ << std::endl;

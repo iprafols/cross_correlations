@@ -1,19 +1,18 @@
 /**
- astro_object_dataset.cpp
- Purpose: This files contains the body for the functions defined in astro_object_dataset.h
+ quasar_dataset.cpp
+ Purpose: This files contains the body for the functions defined in quasar_dataset.h
  
  @author Ignasi Pérez-Ràfols
- @version 1.0 08/08/2014
+ @version 1.0 11/25/2014
  */
 
-#include "astro_object_dataset.h"
+#include "quasar_dataset.h"
 
 
-
-/*AstroObjectDataset::AstroObjectDataset(const Input& input){
+QuasarDataset::QuasarDataset(const Input& input){
     /**
      EXPLANATION:
-     Cosntructs a AstroObjectDataset instance and loads a catalog of AstroObjects into it
+     Cosntructs a QuasarDataset instance and loads a catalog of AstroObjects into it
      
      INPUTS:
      input - object of type Input
@@ -22,73 +21,19 @@
      NONE
      
      CLASSES USED:
-     AstroObjectDataset
+     QuasarDataset
      Input
      
      FUNCITONS USED:
      NONE
      */
     
-    /*name_ = input.dataset1_name();
+    name_ = input.dataset1_name();
     Load(input.z_min(), input.z_max(), input.dataset1());
     
-}*/
-
-void AstroObjectDataset::GiveRADEC(std::ostream& out) const{
-    /**
-     EXPLANATION:
-     Adds the objects' RA-DEC values to out
-     
-     INPUTS:
-     out - an ostream to add the objects' RA-DEC values to
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     AstroObject
-     AstroObjectDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    for (PlatesMapVector<AstroObject>::map::const_iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            out << (*it).second[i].angle() << std::endl;
-        }
-    }
-    
 }
 
-void AstroObjectDataset::GiveZ(std::ostream& out) const{
-    /**
-     EXPLANATION:
-     Adds the objects' redshift values to out
-     
-     INPUTS:
-     out - an ostream to add the objects' redshift values to
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     AstroObject
-     AstroObjectDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    for (PlatesMapVector<AstroObject>::map::const_iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            out << (*it).second[i].z() << std::endl;
-        }
-    }
-    
-}
-
-/*void AstroObjectDataset::Load(const double& z_min, const double& z_max, const std::string& dataset1){
+void QuasarDataset::Load(const double& z_min, const double& z_max, const std::string& dataset1){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
@@ -109,7 +54,7 @@ void AstroObjectDataset::GiveZ(std::ostream& out) const{
      NONE
      */
     
-    /*// setting the catalog columns to be read
+    // setting the catalog columns to be read
     std::vector<std::string> fields(8);
     fields[0] = "PLATE";
     fields[1] = "MJD";
@@ -188,33 +133,4 @@ void AstroObjectDataset::GiveZ(std::ostream& out) const{
         }
     }
     
-}*/
-
-void AstroObjectDataset::SetDistances(const InterpolationMap& redshift_distance_map){
-    /**
-     EXPLANATION:
-     Sets the distance to every object in the dataset
-     
-     INPUTS:
-     redshif_distance_map - a InterpolationMap instance with the redshift-distance relation
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     AstroObject
-     AstroObjectDataset
-     InterpolationMap
-     
-     FUNCITONS USED:
-     NONE
-     */
-
-    for (PlatesMapVector<AstroObject>::map::iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            (*it).second[i].SetDistance(redshift_distance_map);
-        }
-    }
-        
 }
-
