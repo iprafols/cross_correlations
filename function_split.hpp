@@ -13,6 +13,7 @@
 
 // libraries used
 #include <iostream>
+#include <cstring>
 #include <vector>
 #include <string>
 ////////
