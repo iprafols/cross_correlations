@@ -12,6 +12,7 @@
 
 // libraries needed
 #include <cmath>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -43,6 +44,9 @@ public:
     // constructs empty object
     CorrelationPlate(){};
     
+    // constructs "bad data" CorrelationPlate
+    CorrelationPlate(int bad_data);
+    
     // constructs object and initializes its variables
     CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours);
     
@@ -51,18 +55,18 @@ public:
     
     // access functions for mean_pi_
     std::vector<double> mean_pi() const {return mean_pi_;}
-    double mean_pi(size_t index) const {return mean_pi_[index];}
+    double mean_pi(size_t index) const;
     
     // access functions for mean_sigma_
     std::vector<double> mean_sigma() const {return mean_sigma_;}
-    double mean_sigma(size_t index) const {return mean_sigma_[index];}
+    double mean_sigma(size_t index) const;
     
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
     
     // access funtion for num_averaged_pairs_
     std::vector<int> num_averaged_pairs() const {return num_averaged_pairs_;}
-    int num_averaged_pairs(size_t index) const {return num_averaged_pairs_[index];}
+    int num_averaged_pairs(size_t index) const;
     
     // access function for pairs_file_name_
     std::string pairs_file_name() const {return pairs_file_name_;}
@@ -75,30 +79,30 @@ public:
 
     // access functions for weight_
     std::vector<double> weight() const {return weight_;}
-    double weight(size_t index) const {return weight_[index];}
+    double weight(size_t index) const;
     
     // access functions for xi_
     std::vector<double> xi() const {return xi_;}
-    double xi(size_t index) const {return xi_[index];}
+    double xi(size_t index) const;
     
     
     // -------------------------------------------------------------
     // set methods
 
     // set mean_pi_
-    void set_mean_pi(size_t index, double value) {mean_pi_[index] = value;}
+    void set_mean_pi(size_t index, double value);
     
     // set mean_sigma_
-    void set_mean_sigma(size_t index, double value) {mean_sigma_[index] = value;}
+    void set_mean_sigma(size_t index, double value);
     
     // set num_averaged_pairs_
-    void set_num_averaged_pairs(size_t index, int value) {num_averaged_pairs_[index] = value;}
+    void set_num_averaged_pairs(size_t index, int value);
     
     // set weight_
-    void set_weight(size_t index, double value) {weight_[index] = value;}
+    void set_weight(size_t index, double value);
     
     // set xi_
-    void set_xi(size_t index, double value) {xi_[index] = value;}
+    void set_xi(size_t index, double value);
     
     
     // -------------------------------------------------------------

@@ -46,8 +46,8 @@ public:
     
     // access functions for list_
     PlatesMapVector<LyaSpectrum>::map list() const {return list_;}
-    std::vector<LyaSpectrum> list(int plate_number) const {return (*list_.find(plate_number)).second;}
-    LyaSpectrum list(int plate_number, int pos) const {return (*list_.find(plate_number)).second[pos];}
+    std::vector<LyaSpectrum> list(int plate_number) const;
+    LyaSpectrum list(int plate_number, size_t pos) const;
     
     // -------------------------------------------------------------
     // other methods

@@ -23,12 +23,16 @@
 // functions needed
 ////////
 
+#include "defines.h"
 
 class LyaPixel{
     
 public:
     // -------------------------------------------------------------
     // constructors
+    
+    // constructs a "bad data" LyaPixel
+    LyaPixel(double bad_data);
     
     // constructs object and initializes its variables
     LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight);

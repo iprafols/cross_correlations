@@ -27,6 +27,7 @@
 ////////
 
 #include "typedefs.h"
+#include "defines.h"
 
 class CovarianceMatrix{
     

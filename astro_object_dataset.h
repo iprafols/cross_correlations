@@ -51,8 +51,8 @@ public:
     
     // access functions for list_
     PlatesMapVector<AstroObject>::map list() const {return list_;}
-    std::vector<AstroObject> list(int plate_number) const {return (*list_.find(plate_number)).second;}
-    AstroObject list(int plate_number, size_t pos) const {return (*list_.find(plate_number)).second[pos];}
+    std::vector<AstroObject> list(int plate_number) const;
+    AstroObject list(int plate_number, size_t pos) const;
     
     // -------------------------------------------------------------
     // other methods

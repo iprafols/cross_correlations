@@ -14,7 +14,9 @@
 
 // libraries needed
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -31,6 +33,7 @@
 // functions needed
 ////////
 
+#include "defines.h"
 
 class LyaSpectrum: public AstroObject{
     
@@ -38,6 +41,9 @@ public:
     // -------------------------------------------------------------
     // constructors
     
+    // constructs a "bad data" LyaSpectrum
+    LyaSpectrum(double bad_data);
+
     // constructs object and initializes its variables
     LyaSpectrum(const std::string& filename, const double& lya_wl, const bool radians = true);
     
@@ -46,7 +52,7 @@ public:
 
     // access method for spectrum_
     std::vector<LyaPixel> spectrum() const {return spectrum_;}
-    LyaPixel spectrum(size_t i) const {return spectrum_[i];}
+    LyaPixel spectrum(size_t i) const;
     
     // -------------------------------------------------------------
     // other methods

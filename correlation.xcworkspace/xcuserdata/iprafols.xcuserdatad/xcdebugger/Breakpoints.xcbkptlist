@@ -14,7 +14,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "153"
          endingLineNumber = "153"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -28,7 +28,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "175"
          endingLineNumber = "175"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::weight(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -112,7 +112,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "172"
          endingLineNumber = "172"
-         landmarkName = "CovarianceMatrix::SaveBootstrapCovMat()"
+         landmarkName = "CovarianceMatrix::ComputeBootstrapCovMat(const std::vector&lt;CorrelationPlate&gt;&amp; bootstrap)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -238,7 +238,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "160"
          endingLineNumber = "160"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::weight(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -252,7 +252,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "165"
          endingLineNumber = "165"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::weight(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -265,9 +265,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "154"
-         endingLineNumber = "154"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
-         landmarkType = "5">
+         endingLineNumber = "154">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -280,7 +278,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "182"
          endingLineNumber = "182"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::xi(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -294,7 +292,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "189"
          endingLineNumber = "189"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::xi(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -308,7 +306,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "196"
          endingLineNumber = "196"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::xi(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -322,7 +320,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "202"
          endingLineNumber = "202"
-         landmarkName = "CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset&amp; object_list, const LyaSpectraDataset&amp; spectra_list, const Input&amp; input)"
+         landmarkName = "CorrelationPlate::xi(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -330,84 +328,238 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632356.506917"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438717669.721401"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "81"
-         endingLineNumber = "81"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "117"
+         endingLineNumber = "117"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632374.531168"
+         filePath = "quasar_dataset.cpp"
+         timestampString = "438718261.362836"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "87"
-         endingLineNumber = "87"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "130"
+         endingLineNumber = "130"
+         landmarkName = "QuasarDataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632379.816982"
+         filePath = "quasar_dataset.cpp"
+         timestampString = "438718261.921983"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "90"
-         endingLineNumber = "90"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "128"
+         endingLineNumber = "128"
+         landmarkName = "QuasarDataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632380.210225"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718832.395888"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "91"
-         endingLineNumber = "91"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "112"
+         endingLineNumber = "112"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632446.054004"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718832.892837"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "125"
-         endingLineNumber = "125"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "111"
+         endingLineNumber = "111"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "main_correlation.cpp"
-         timestampString = "438632449.567359"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718833.54863"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "132"
-         endingLineNumber = "132"
-         landmarkName = "main(int argc, char *argv[])"
-         landmarkType = "7">
+         startingLineNumber = "109"
+         endingLineNumber = "109"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718833.939983"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "110"
+         endingLineNumber = "110"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718834.492693"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "108"
+         endingLineNumber = "108"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438718835.036429"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "107"
+         endingLineNumber = "107"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719230.77441"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "63"
+         endingLineNumber = "63"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719231.330654"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "64"
+         endingLineNumber = "64"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719231.908393"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "65"
+         endingLineNumber = "65"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719232.459612"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "67"
+         endingLineNumber = "67"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719233.092377"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "66"
+         endingLineNumber = "66"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "dla_dataset.cpp"
+         timestampString = "438719233.860683"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "68"
+         endingLineNumber = "68"
+         landmarkName = "DLADataset::Load(const double&amp; z_min, const double&amp; z_max, const std::string&amp; dataset1)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "438723510.894524"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "126"
+         endingLineNumber = "126"
+         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "correlation_plate.cpp"
+         timestampString = "438723546.691809"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "143"
+         endingLineNumber = "143"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
+         landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

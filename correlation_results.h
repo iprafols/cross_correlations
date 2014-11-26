@@ -51,14 +51,14 @@ public:
     
     // access function for bootstrap_
     std::vector<CorrelationPlate> bootstrap() const {return bootstrap_;}
-    CorrelationPlate bootstrap(size_t i) const {return bootstrap_[i];}
+    CorrelationPlate bootstrap(size_t i) const;
     
     // access function for output_base_name_
     std::string output_base_name() const {return output_base_name_;}
     
     // access function for correlation_plates_
     PlatesMapSimple<CorrelationPlate>::map correlation_plates() const {return correlation_plates_;}
-    CorrelationPlate correlation_plates(int plate_num) const {return (*correlation_plates_.find(plate_num)).second;}
+    CorrelationPlate correlation_plates(int plate_num) const;
     
     // access function for compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
@@ -74,7 +74,7 @@ public:
     
     // access functions for plates_list_
     std::vector<int> plates_list() const {return plates_list_;}
-    int plates_list(int index) const {return plates_list_[index];}
+    int plates_list(int index) const;
     
     // access function for results_
     std::string results() const {return results_;}

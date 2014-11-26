@@ -8,6 +8,33 @@
 
 #include "astro_object.h"
 
+AstroObject::AstroObject(double bad_data){
+    /**
+     EXPLANATION:
+     Cosntructs a bad_data AstroObject instance
+     
+     INPUTS:
+     bad_data - a double valued _BAD_DATA_
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     AstroObject
+     SpherePoint
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (bad_data != _BAD_DATA_){
+        std::cout << "Error while initializing a AstroObject 'bad data' instance" << std::endl;
+        std::exit;
+    }
+
+    z_ = _BAD_DATA_;
+    dist_ = _BAD_DATA_;
+}
+
 AstroObject::AstroObject(double& ra, double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const bool radians){
     /**
      EXPLANATION:
@@ -43,7 +70,9 @@ AstroObject::AstroObject(double& ra, double& dec, const int& plate, const int& f
     fiber_ = fiber;
     mjd_ = mjd;
     z_ = z;
+    dist_ = _BAD_DATA_;
 }
+
 
 void AstroObject::SetDistance(const InterpolationMap& redshift_distance_map){
     /**

@@ -8,6 +8,34 @@
 
 #include "lya_pixel.h"
 
+LyaPixel::LyaPixel(double bad_data){
+    /**
+     EXPLANATION:
+     Cosntructs a bad_data LyaPixel instance
+     
+     INPUTS:
+     bad_data - a double valued _BAD_DATA_
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaPixel
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (bad_data != _BAD_DATA_){
+        std::cout << "Error while initializing a LyaPixel 'bad data' instance" << std::endl;
+        std::exit;
+    }
+    
+    forest_ = _BAD_DATA_;
+    weight_ = _BAD_DATA_;
+    z_ = _BAD_DATA_;
+    
+}
+
 LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight){
     /**
      EXPLANATION:

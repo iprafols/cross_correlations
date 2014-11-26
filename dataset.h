@@ -38,7 +38,7 @@ public:
     
     // access function for num_objects_in_plate_
     PlatesMapSimple<size_t>::map num_objects_in_plate() const {return num_objects_in_plate_;}
-    size_t num_objects_in_plate(int plate_number) const {return (*num_objects_in_plate_.find(plate_number)).second;}
+    size_t num_objects_in_plate(int plate_number) const;
     
     // access function for size_
     size_t size() const {return size_;}

@@ -21,6 +21,7 @@
 // functions needed
 ////////
 
+#include "defines.h"
 
 class InterpolationMap{
     
@@ -40,7 +41,7 @@ public:
     // access functions for interpolation_map_
     std::map<double,double> interpolation_map() const {return interpolation_map_;}
     double interpolation_map(double first) const {return (*interpolation_map_.find(first)).second;}
-    double interpolation_map(std::map<double,double>::iterator it) const {return (*it).second;}
+    double interpolation_map(std::map<double,double>::iterator it) const;
     
     // -------------------------------------------------------------
     // other methods

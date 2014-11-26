@@ -58,8 +58,88 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // creating bin files
-    if (!input.flag_load_only()){
+    if (input.flag_write_partial_results()){
         CreateBinFiles();
+    }
+}
+
+CorrelationPlate CorrelationResults::bootstrap(size_t i) const {
+    /**
+     EXPLANATION:
+     Access function for xi_
+     
+     INPUTS:
+     i - index of the selected bootstrap_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationResults
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (i < bootstrap_.size()){
+        return bootstrap_[i];
+    }
+    else{
+        CorrelationPlate cp(_BAD_DATA_);
+        return cp;
+    }
+}
+
+CorrelationPlate CorrelationResults::correlation_plates(int plate_num) const {
+    /**
+     EXPLANATION:
+     Access function for correlation_plates_
+     
+     INPUTS:
+     plate_num - index of the selected correlation_plates_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationResults
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    PlatesMapSimple<CorrelationPlate>::map::const_iterator it;
+    it = correlation_plates_.find(plate_num);
+    if (it == correlation_plates_.end()){
+        CorrelationPlate cp(_BAD_DATA_INT_);
+        return cp;
+    }
+    else{
+        return (*it).second;
+    }
+}
+
+int CorrelationResults::plates_list(int index) const {
+    /**
+     EXPLANATION:
+     Access function for plates_list_
+     
+     INPUTS:
+     index - index of the selected correlation_plates_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationResults
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (index < plates_list_.size()){
+        return plates_list_[index];
+    }
+    else{
+        return _BAD_DATA_INT_;
     }
 }
 

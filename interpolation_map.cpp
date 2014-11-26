@@ -53,6 +53,31 @@ InterpolationMap::InterpolationMap(const Input& input){
     }
 }
 
+double InterpolationMap::interpolation_map(std::map<double,double>::iterator it) const{
+    /**
+     EXPLANATION:
+     Access function for interpolation_map_
+     
+     INPUTS:
+     it - pointer to the element to be recovered
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     InterpolationMap
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (it == interpolation_map_.end()){
+        return _BAD_DATA_;
+    }
+    else{
+        return (*it).second;
+    }
+}
+
 double InterpolationMap::LinearInterpolation(const double& z) const{
     /**
      EXPLANATION:

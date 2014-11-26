@@ -150,6 +150,12 @@ std::vector<int> PlateNeighbours::GetNeighboursList(int plate) const{
         // locate plate
         PlatesMapVector<Plate>::map::const_iterator map_it = plates_.find(plate);
         
+        // if not found, return empty vector
+        if (map_it == plates_.end()){
+            std::vector<int> neighbours;
+            return neighbours;
+        }
+        
         // create vector of neighbours with the correct size, fill it with zeros
         std::vector<int> neighbours((*map_it).second.size(),0);
         
@@ -183,7 +189,6 @@ std::vector<int> PlateNeighbours::GetPlatesList() const {
      NONE
      */
     
-    //std::vector<int> plates_list(plates_.size(),0);
     std::vector<int> plates_list;
     plates_list.reserve(plates_.size());
     

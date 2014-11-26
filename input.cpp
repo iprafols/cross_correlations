@@ -915,8 +915,8 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     }
     
     // updating output_base_name_ if necessary
-    it = input_flag.find("dataset1_name_");
-    it2 = input_flag.find("dataset2_name_");
+    it = input_flag.find("dataset1_name");
+    it2 = input_flag.find("dataset2_name");
     it3 = input_flag.find("output_dataset_name");
     if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
         output_base_name_ = dataset1_name_ + "-" + dataset2_name_;

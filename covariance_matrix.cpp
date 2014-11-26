@@ -69,12 +69,24 @@ double CovarianceMatrix::bootstrap_cov_mat(size_t i,size_t j) const{
      
      FUNCITONS USED:
      NONE
-     */
+     */    
     if (i <= j){
-        return (*bootstrap_cov_mat_.find(std::pair<size_t,size_t>(i,j))).second;
+        CovMat::const_iterator it = bootstrap_cov_mat_.find(std::pair<size_t,size_t>(i,j));
+        if (it == bootstrap_cov_mat_.end()){
+            return _BAD_DATA_;
+        }
+        else{
+            return (*it).second;
+        }
     }
     else{
-        return (*bootstrap_cov_mat_.find(std::pair<size_t,size_t>(j,i))).second;
+        CovMat::const_iterator it = bootstrap_cov_mat_.find(std::pair<size_t,size_t>(j,i));
+        if (it == bootstrap_cov_mat_.end()){
+            return _BAD_DATA_;
+        }
+        else{
+            return (*it).second;
+        }
     }
 }
 
@@ -96,10 +108,22 @@ double CovarianceMatrix::cov_mat(size_t i,size_t j) const{
      NONE
      */
     if (i <= j){
-        return (*cov_mat_.find(std::pair<size_t,size_t>(i,j))).second;
+        CovMat::const_iterator it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
+        if (it == cov_mat_.end()){
+            return _BAD_DATA_;
+        }
+        else{
+            return (*it).second;
+        }
     }
     else{
-        return (*cov_mat_.find(std::pair<size_t,size_t>(j,i))).second;
+        CovMat::const_iterator it = cov_mat_.find(std::pair<size_t,size_t>(j,i));
+        if (it == cov_mat_.end()){
+            return _BAD_DATA_;
+        }
+        else{
+            return (*it).second;
+        }
     }
 }
 

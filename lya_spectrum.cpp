@@ -8,6 +8,32 @@
 
 #include "lya_spectrum.h"
 
+LyaSpectrum::LyaSpectrum(double bad_data){
+    /**
+     EXPLANATION:
+     Cosntructs a bad_data AstroObject instance
+     
+     INPUTS:
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaSpectrum
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (bad_data != _BAD_DATA_){
+        std::cout << "Error while initializing a LyaSpectrum 'bad data' instance" << std::endl;
+        std::exit;
+    }
+
+    z_ = _BAD_DATA_;
+    dist_ = _BAD_DATA_;
+}
+
 LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, const bool radians){
     /**
      EXPLANATION:
@@ -103,6 +129,34 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     mjd_ = atoi(strtok((char*)pmf.c_str(),"-"));
     fiber_ = atoi(strtok((char*)pmf.c_str(),"-"));
 
+}
+
+LyaPixel LyaSpectrum::spectrum(size_t i) const {
+    /**
+     EXPLANATION:
+     Access function for spectrum_
+     
+     INPUTS:
+     i - index of the selected spectrum_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaPixel
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (i < spectrum_.size()){
+        return spectrum_[i];
+    }
+    else{
+        LyaPixel lp(_BAD_DATA_);
+        return lp;
+    }
+    
 }
 
 void LyaSpectrum::SetDistance(const InterpolationMap& redshift_distance_map){

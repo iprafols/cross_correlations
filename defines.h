@@ -11,6 +11,9 @@
 #ifndef _defines_h
 #define _defines_h
 
+#include <cfloat>
+#include <climits>
+
 // classes needed
 #include "input.h"
 
@@ -20,6 +23,8 @@ void ComputePlateNeighbours(const Input& input);
 
 // defined constants
 #define _NORM_ -1
+#define _BAD_DATA_ DBL_MAX
+#define _BAD_DATA_INT_ INT_MAX
 
 
 

@@ -132,8 +132,8 @@ void BaofitSetup::WriteIniFile(const Input& input, const bool bootstrap){
             file << "#kspace-fft = true # recommended when including distorsions into the model" << std::endl;
         }
         file << "modelroot = " << input.baofit_model_root() << std::endl;
-        file << "fiducial = DR9LyaMocksNLeffPk" << std::endl;
-        file << "nowiggles = DR9LyaMocksSB" << std::endl;
+        file << "fiducial = DR9LyaMocksLCDM" << std::endl;
+        file << "nowiggles = DR9LyaMocksLCDMSB" << std::endl;
         file << std::endl;
         file << "# Model configuration" << std::endl;
         file << "cross-correlation = yes" << std::endl;

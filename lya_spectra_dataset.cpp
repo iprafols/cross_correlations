@@ -32,6 +32,71 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     
 }
 
+std::vector<LyaSpectrum> LyaSpectraDataset::list(int plate_number) const{
+    /**
+     EXPLANATION:
+     Access function for list_
+     
+     INPUTS:
+     plate_number - index of the selected list_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaSpectraDataset
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.find(plate_number);
+    if (it == list_.end()){
+        std::vector<LyaSpectrum> v;
+        return v;
+    }
+    else{
+        return (*it).second;
+    }    
+}
+
+LyaSpectrum LyaSpectraDataset::list(int plate_number, size_t pos) const {
+    /**
+     EXPLANATION:
+     Access function for list_
+     
+     INPUTS:
+     plate_number - index of the selected list_ element
+     pos - position in the selected list_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaSpectraDataset
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.find(plate_number);
+    if (it == list_.end()){
+        LyaSpectrum v(_BAD_DATA_);
+        return v;
+    }
+    else{
+        if (pos < (*it).second.size()){
+            return (*it).second[pos];
+        }
+        else{
+            LyaSpectrum v(_BAD_DATA_);
+            return v;
+        }
+    }  
+}
+
 int LyaSpectraDataset::FindCatalogLength(const std::string& lya_spectra_catalog){
     /**
      EXPLANATION:

@@ -11,6 +11,8 @@
 #define _AstroObject_h
 
 // libraries needed
+#include <cstdlib>
+#include <iostream>
 ////////
 
 // classes needed
@@ -21,6 +23,7 @@
 // functions needed
 ////////
 
+#include "defines.h"
 
 class AstroObject{
     
@@ -30,6 +33,9 @@ public:
     
     // constructs an empty object
     AstroObject(){};
+    
+    // constructs a "bad data" AstroObjet
+    AstroObject(double bad_data);
     
     // constructs object and initializes its variables
     AstroObject(double& ra, double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const bool radians = true);

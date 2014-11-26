@@ -8,6 +8,32 @@
 
 #include "correlation_plate.h"
 
+CorrelationPlate::CorrelationPlate(int bad_data){
+    /**
+     EXPLANATION:
+     Cosntructs a CorrelationPlate instance and initializes all its variables
+     
+     INPUTS:
+     bad_data - a double valued _BAD_DATA_INT_
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     ToStr
+     */
+    if (bad_data != _BAD_DATA_INT_){
+        std::cout << "Error while initializing a CorrelationPlate 'bad data' instance" << std::endl;
+        std::exit;
+    }
+    
+    plate_number_ = _BAD_DATA_INT_;
+    
+}
+
 CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours){
     /**
      EXPLANATION:
@@ -47,6 +73,269 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins
     weight_.resize(num_bins_,0.0);
     num_averaged_pairs_.resize(num_bins_,0);
 
+}
+
+double CorrelationPlate::mean_pi(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for mean_pi_
+     
+     INPUTS:
+     index - index of the selected mean_pi_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+
+    if (index < mean_pi_.size()){
+        return mean_pi_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
+double CorrelationPlate::mean_sigma(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for mean_sigma_
+     
+     INPUTS:
+     index - index of the selected mean_sigma_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < mean_sigma_.size()){
+        return mean_sigma_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+int CorrelationPlate::num_averaged_pairs(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for num_average_pairs_
+     
+     INPUTS:
+     index - index of the selected num_average_pairs_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < num_averaged_pairs_.size()){
+        return num_averaged_pairs_[index];
+    }
+    else{
+        return _BAD_DATA_INT_;
+    }
+}
+
+double CorrelationPlate::weight(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        return weight_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
+double CorrelationPlate::xi(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for xi_
+     
+     INPUTS:
+     index - index of the selected xi_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < xi_.size()){
+        return xi_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
+void CorrelationPlate::set_mean_pi(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for mean_pi_
+     
+     INPUTS:
+     index - index of the selected mean_pi_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < mean_pi_.size()){
+        mean_pi_[index] = value;
+    }
+    else{
+        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
+void CorrelationPlate::set_mean_sigma(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for mean_sigma_
+     
+     INPUTS:
+     index - index of the selected mean_sigma_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < mean_sigma_.size()){
+        mean_sigma_[index] = value;
+    }
+    else{
+        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
+    /**
+     EXPLANATION:
+     Set function for num_average_pairs_
+     
+     INPUTS:
+     index - index of the selected num_average_pairs_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < num_averaged_pairs_.size()){
+        num_averaged_pairs_[index] = value;
+    }
+    else{
+        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
+void CorrelationPlate::set_weight(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        weight_[index] = value;
+    }
+    else{
+        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
+void CorrelationPlate::set_xi(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for xi_
+     
+     INPUTS:
+     index - index of the selected xi_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < xi_.size()){
+        xi_[index] = value;
+    }
+    else{
+        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+    }
 }
 
 void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma){
@@ -120,7 +409,13 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     for (size_t i = 0; i < number_of_objects; i ++){
         
         AstroObject object = object_list.list(plate_number_, i);
-             
+        
+        // checking that the object was loaded successfully
+        if (object.dist() == _BAD_DATA_){
+            std::cout << "TEST: _BAD_DATA_ AstroObject found" << std::endl;
+            continue;
+        }
+        
         double sigma_aux_o = 2.0*object.dist(); // auxiliar variable to compute sigma values
         
         // loop over neighbouring plates
@@ -132,6 +427,11 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
             for (size_t k = 0; k < number_of_spectra; k ++){
                 
                 LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[j], k);
+                // checking that the object was loaded successfully
+                if (lya_spectrum.dist() == _BAD_DATA_){
+                    std::cout << "TEST: _BAD_DATA_ LyaSpectrum found" << std::endl;
+                    continue;
+                }
                 std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
                 
                 // compute angular separation
@@ -153,12 +453,16 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     //std::cout << "TEST: " << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
                     continue;
                 } 
+                if (pair_min_sigma <= 0.1){ // if the spectrym is being paired with its quasar, the whole spectra is discarded
+                    continue;
+                }
                 
                 double pair_max_pi = object.dist()-spectrum[0].dist(); // minimum distance obtained for lowest redshift pixel
                 if (pair_max_pi < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
                     //std::cout << "TEST: spectra rejected because min_pi is too small" << std::endl;
                     continue;
                 }
+                
                 double pair_min_pi = object.dist()-spectrum.back().dist(); // maximum distance obtained for highest redshift pixel
                 if (pair_min_pi > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
                     //std::cout << "TEST: spectra rejected because min_pi is too large" << std::endl;
@@ -173,6 +477,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (sigma > max_sigma){ // if sigma (r_perp) is too large, discard pixel
                         continue;
                     }
+
                     double pi = object.dist()-spectrum[p].dist();
                     if ((pi > max_pi) or (pi <- max_pi)){ // if pi (r_par) is too large or too small, discard pixel
                         continue;
@@ -283,7 +588,7 @@ void CorrelationPlate::Normalize(){
             
             if (weight_[i] == 0.0){
                 // if the weight is zero, complain and exit the function
-                std::cout << "Zero Division Error in Correlation::Normalize, aborting..." << std::endl;
+                std::cout << "Zero Division Error in CorrelationPlate::Normalize, aborting..." << std::endl;
                 return;
             }
             // if the weight is 1.0, normalization is not needed
@@ -338,6 +643,11 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
     bin_file.open(filename.c_str(),std::ofstream::app); // opens the file to append content
     if (bin_file.is_open()){
         LyaPixel pixel = lya_spectrum.spectrum(p);
+        // checking that the object was loaded successfully
+        if (pixel.z() == _BAD_DATA_){
+            std::cout << "TEST: _BAD_DATA_ LyaPixel found" << std::endl;
+            return;
+        }
         
         bin_file << object.angle() << " " << object.z() << " " << lya_spectrum.angle() << " " << pixel.z() << " " << pixel.dist() << " " << p << " " << pixel.forest()-1.0 << " " << pixel.weight() << " " << pi << " " << sigma << std::endl;
         bin_file.close();
