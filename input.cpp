@@ -26,6 +26,18 @@ Input::Input(const std::string& filename){
      NONE
      */
     
+    // look for the path to the folder in whicht the program is being executed
+    running_pwd_ = "";
+    FILE* pipe = popen("pwd", "r");
+    char buffer[128];
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL){
+            running_pwd_ += buffer;
+        }
+    }
+    pclose(pipe);
+    std::cout << "Running from : " << running_pwd_;
+
     // load default values
     std::cout << "Loading default parameters" << std::endl;
     SetDefaultValues();
@@ -45,7 +57,7 @@ Input::Input(const std::string& filename){
     
     // creating folders if required
     std::string command;
-    if (!flag_load_only_){
+    if (flag_write_partial_results_){
         command = "mkdir -p -v " + results_;
         system(command.c_str());
     }
@@ -141,10 +153,14 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // flags
     flag_compute_bootstrap_ = true;
+    flag_compute_covariance_ = true;
+    flag_compute_cross_correlation_ = true;
     flag_compute_plate_neighbours_ = false;
     flag_load_only_ = false;
     flag_plot_catalog_info_ = flag_load_only_;
-    
+    flag_run_baofit_ = true;
+    flag_set_baofit_ = true;
+    flag_write_partial_results_ = false;
     
     // -------------------------------------------------------------
     // input settings
@@ -152,6 +168,7 @@ void Input::SetDefaultValues(){
     dataset1_ = input_ + "DR11Q_alpha_v0.fits";
     dataset1_name_ = "DR11Q";
     dataset1_type_ = "quasar";
+    dataset1_type_options_ = "quasar, dla";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
@@ -168,6 +185,12 @@ void Input::SetDefaultValues(){
     
     
     // -------------------------------------------------------------
+    // fit settings
+    include_distorsions_ = false;
+    baofit_model_root_ = "/Users/iprafols/Downloads/programes/baofit/models/";
+    
+    
+    // -------------------------------------------------------------
     // bin setting
     neighbours_max_distance_ = 4.0*acos(-1.0)/180.0; // (in radians)
     max_pi_ = 50.0; // (in Mpc/h)
@@ -181,7 +204,8 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // bootstrap settings
-    num_bootstrap_ = 10000;    
+    num_bootstrap_ = 10000;
+    
     
     // -------------------------------------------------------------
     // Fidutial model
@@ -231,7 +255,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
      NONE
      */
     
-    if (name == "c"){
+    if (name == "baofit_model_root"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            baofit_model_root_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "c"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             c_ = double(atof(value.c_str()));
@@ -249,6 +283,44 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else if (value == "false" or value == "FALSE" or value == "False"){
                 flag_compute_bootstrap_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_compute_covariance"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_compute_covariance_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_compute_covariance_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_compute_cross_correlation"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_compute_cross_correlation_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_compute_cross_correlation_ = false;
             }
             else{
                 unused_params_ += name + " = " + value + "\n";
@@ -317,6 +389,63 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
+    else if (name == "flag_run_baofit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_run_baofit_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_run_baofit_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_set_baofit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_set_baofit_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_set_baofit_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_write_partial_results"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_write_partial_results_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_write_partial_results_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
     else if (name == "H0"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -349,6 +478,55 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
                 std::cout << "Input file contains an entry for both H0 and h, pick one" << std::endl << "quiting..." << std::endl;
                 std::exit;
             }
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "include_distorsions"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                include_distorsions_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                include_distorsions_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "dataset1"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "dataset1_name"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_name_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "dataset1_type"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_type_ = value;
+            input_flag[name] = true;
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
@@ -483,36 +661,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
                 std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
                 std::exit;
             }
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "dataset1"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset1_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "dataset1_name"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset1_name_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "dataset1_type"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset1_type_ = value;
-            input_flag[name] = true;
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
@@ -703,7 +851,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
-    
+        
     // updating flag_plot_catalog_info_ if necessary
     it = input_flag.find("flag_load_only");
     it2 = input_flag.find("flag_plot_catalog_info");
@@ -773,14 +921,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
         output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
     }
-    
-    // updating results_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("results");    
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        results_ = output_ + "partial_results/";
-    }
-    
+        
     // updating plate_neighbours_ if necessary
     it = input_flag.find("input");
     it2 = input_flag.find("plate_neighbours");
@@ -795,6 +936,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         plots_ = output_ + "plots/";
     }
     
+    // updating results_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("results");    
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        results_ = output_ + "partial_results/";
+    }
+
 }
 
 void Input::WriteLog(){
@@ -827,6 +975,18 @@ void Input::WriteLog(){
         else{
             log << "flag_compute_bootstrap = false" << std::endl;
         }
+        if (flag_compute_covariance_){
+            log << "flag_compute_covariance = true" << std::endl;
+        }
+        else{
+            log << "flag_compute_covariance = false" << std::endl;
+        }
+        if (flag_compute_cross_correlation_){
+            log << "flag_compute_cross_correlation = true" << std::endl;
+        }
+        else{
+            log << "flag_compute_cross_correlation = false" << std::endl;
+        }        
         if (flag_compute_plate_neighbours_){
             log << "flag_compute_plate_neighbours = true" << std::endl;
         }
@@ -844,6 +1004,12 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
+        }
+        if (flag_write_partial_results_){
+            log << "flag_write_partial_results_ = true" << std::endl;
+        }
+        else{
+            log << "flag_write_partial_results_ = false" << std::endl;
         }
         log << std::endl;
         
@@ -872,7 +1038,18 @@ void Input::WriteLog(){
         log << "plots = " << plots_ << std::endl;
         log << std::endl;
         
-        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// fit settings" << std::endl;
+        if (include_distorsions_){
+            log << "include_distorsions = true" << std::endl;
+        }
+        else{
+            log << "include_distorsions = false" << std::endl;
+        }
+        log << "baofit_model_root = " << baofit_model_root_ << std::endl;
+        log << std::endl;
+
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;
         log << "// bin setting" << std::endl;

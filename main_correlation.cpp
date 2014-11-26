@@ -14,6 +14,7 @@
 // classes used
 #include "astro_object.h"
 #include "astro_object_dataset.h"
+#include "baofit_setup.h"
 #include "correlation_plate.h"
 #include "correlation_results.h"
 #include "covariance_matrix.h"
@@ -77,10 +78,9 @@ int main(int argc, char *argv[]){
     // initialize cross-correlation results
     CorrelationResults results(input, kPlateNeighbours);
     
-    {
+    if (input.flag_compute_cross_correlation() or input.flag_load_only() or input.flag_plot_catalog_info()){
         // load quasar dataset
-        std::cout << "Loading quasar dataset" << std::endl;
-        //AstroObjectDataset object_list(input);
+        std::cout << "Loading AstroObjects dataset" << std::endl;
         std::auto_ptr<AstroObjectDataset> object_list;
         if (input.dataset1_type() == "quasar"){
             object_list.reset(new QuasarDataset(input));
@@ -88,9 +88,12 @@ int main(int argc, char *argv[]){
         else if (input.dataset1_type() == "dla"){
             object_list.reset(new DLADataset(input));
         }
+        else{
+            std::cout << "the selected type for dataset1 is not enabled; current options are: " << input.dataset1_type_options() << std::endl;
+        }
         
-        std::cout << "Loaded " << (*object_list).size() << " quasars" << std::endl;
-        std::cout << "Plotting quasar dataset information" << std::endl;
+        std::cout << "Loaded " << (*object_list).size() << " AstroObjects" << std::endl;
+        std::cout << "Plotting AstroObjects dataset information" << std::endl;
         if (input.flag_plot_catalog_info()){
             kPlots.PlotRADECDispersion(*object_list, true);
             kPlots.PlotZHistogram(*object_list, true);
@@ -123,64 +126,80 @@ int main(int argc, char *argv[]){
             return 1;
         }
         
-        // compute distances to the objects (in Mpc/h)
-        {
-            std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
-            InterpolationMap redshift_distance_map(input);
-            (*object_list).SetDistances(redshift_distance_map);
-            spectra_list.SetDistances(redshift_distance_map);
+        // compute the cross-correlation
+        if (input.flag_compute_cross_correlation()){
+            {
+                // compute distances to the objects (in Mpc/h)
+                std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+                InterpolationMap redshift_distance_map(input);
+                (*object_list).SetDistances(redshift_distance_map);
+                spectra_list.SetDistances(redshift_distance_map);
+            }
+            
+            std::cout << "Computing the cross-correlation" << std::endl;
+            results.ComputeCrossCorrelation(*object_list, spectra_list, input);
+            std::cout << "Plotting cross-correlation" << std::endl;
+            kPlots.PlotCrossCorrelation(results, input, true);
+        }
+    }
+    
+    if (input.flag_compute_covariance()){
+        // compute covariance matrix
+        std::cout << "Computing covariance matrix" << std::endl;
+        CovarianceMatrix cov_mat(input);
+        if (input.flag_compute_bootstrap()){
+            cov_mat.ComputeBootstrapCovMat(results.bootstrap());
         }
         
-        // compute the cross-correlation
-        std::cout << "Computing the cross-correlation" << std::endl;
-        //CorrelationResults results(input, kPlateNeighbours);
-        results.ComputeCrossCorrelation(*object_list, spectra_list, input);
-        std::cout << "Plotting cross-correlation" << std::endl;
-        kPlots.PlotCrossCorrelation(results, input, true);
-    }
-    
-    // compute covariance matrix
-    std::cout << "Computing covariance matrix" << std::endl;
-    CovarianceMatrix cov_mat(input);
-    if (input.flag_compute_bootstrap()){
-        cov_mat.ComputeBootstrapCovMat(results.bootstrap());
-    }
-    
-    {
-        /*
-         load objects where the results are stored
-        --> cCovMatrixResults
-         
-         for all cross-correlation bins:
-            
-            load pixel list 1
-            --> cExtendedForestPixelDataset
-                cExtendedForestPixelDataset <-- Dataset
-         
-                --> vector<cExtendedForestPixel> 
-                    cExtendedForestPixel <-- ForestPixel + ra, dec
-         
-            for all cross-correlation bins AFTER this one:
-            
-                * load pixel list 2
-                --> cExtendedForestPixelDataset
-         
-                * do N times:
-                    + randomly select item from pixel_list1 
-                    + retrieve plate neighbours of the selected item's plate
-                    --> cPlateNeighbours::GetNeighboursList
-                    + randomly select item from the subset of pixel_list2 comprised of all the neighbouring plates
-                    + add to covariance matrix
-            
+        {
+            /*
+             load objects where the results are stored
+             --> cCovMatrixResults
+             
+             for all cross-correlation bins:
+             
+             load pixel list 1
+             --> cExtendedForestPixelDataset
+             cExtendedForestPixelDataset <-- Dataset
+             
+             --> vector<cExtendedForestPixel> 
+             cExtendedForestPixel <-- ForestPixel + ra, dec
+             
+             for all cross-correlation bins AFTER this one:
+             
+             * load pixel list 2
+             --> cExtendedForestPixelDataset
+             
+             * do N times:
+             + randomly select item from pixel_list1 
+             + retrieve plate neighbours of the selected item's plate
+             --> cPlateNeighbours::GetNeighboursList
+             + randomly select item from the subset of pixel_list2 comprised of all the neighbouring plates
+             + add to covariance matrix
+             
+             
+             */
+        }
 
-         */
+
     }
     
+    // setup BAOFIT configuration and run fitting program
+    BaofitSetup baofit;
+    if (input.flag_set_baofit()){
+        if (input.flag_compute_bootstrap()){
+            baofit.Set(input,true);
+        }
+        // baofit.Set(input); // full covariance matrix needs to be computed first
+    }
+    if (input.flag_run_baofit()){
+        if (input.flag_compute_bootstrap()){
+            baofit.Run(input, true);
+        }
+        // baofit.Run(input); // full covariance matrix needs to be computed first
+    }
     
-    // save the covariance matrix results
-    //--> cCovMatrixResults::Save()
-    
-    // run the plotting scripts
+    // make the plots
     
     
     // display time required to run the program

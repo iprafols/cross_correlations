@@ -15,6 +15,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 #include <string>
 ////////
 
@@ -39,12 +40,39 @@ public:
     // -------------------------------------------------------------
     // access methods
     
+    // access function for baofit_model_root_
+    std::string baofit_model_root() const {return baofit_model_root_;}
+    
     // access function for c_
     double c() const {return c_;}
             
+    // access function for object_catalog_
+    std::string dataset1() const {return dataset1_;}
+    
+    // access function for object_catalog_name_
+    std::string dataset1_name() const {return dataset1_name_;}
+    
+    // access function for dataset1_type_
+    std::string dataset1_type() const {return dataset1_type_;}
+    
+    // access function for dataset1_type_options_
+    std::string dataset1_type_options() const {return dataset1_type_options_;}
+
+    // access function for dataset2_
+    std::string dataset2() const {return dataset2_;}
+    
+    // access function for dataset2_name_
+    std::string dataset2_name() const {return dataset2_name_;}
+    
     // access function for flag_compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
+    // access function for flag_compute_covariance_
+    bool flag_compute_covariance() const {return flag_compute_covariance_;}
+    
+    // access function for flag_compute_cross_correlation_
+    bool flag_compute_cross_correlation() const {return flag_compute_cross_correlation_;}
+
     // access function for flag_compute_plate_neighbours_
     bool flag_compute_plate_neighbours() const {return flag_compute_plate_neighbours_;}
         
@@ -53,19 +81,25 @@ public:
     
     // access function for flag_plot_catalog_info_
     bool flag_plot_catalog_info() const {return flag_plot_catalog_info_;}
+    
+    // access function for flag_run_baofit_
+    bool flag_run_baofit() const {return flag_run_baofit_;}
+    
+    // access function for flag_set_baofit_
+    bool flag_set_baofit() const {return flag_set_baofit_;}
 
-    // access function for h
+    // access function for h_
     double h() const {return h_;}
+    
+    // access function for flag_write_partial_results_
+    bool flag_write_partial_results() const {return flag_write_partial_results_;}
     
     // access function for H0_
     double h0() const {return h0_;}
+            
+    // access function for include_distorsions_
+    bool include_distorsions() const {return include_distorsions_;}
     
-    // access function for dataset2_
-    std::string dataset2() const {return dataset2_;}
-    
-    // access function for dataset2_name_
-    std::string dataset2_name() const {return dataset2_name_;}
-        
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
@@ -99,15 +133,6 @@ public:
     // access function for num_sigma_bins_
     int num_sigma_bins() const {return num_sigma_bins_;}
     
-    // access function for object_catalog_
-    std::string dataset1() const {return dataset1_;}
-    
-    // access function for object_catalog_name_
-    std::string dataset1_name() const {return dataset1_name_;}
-    
-    // access function for dataset1_type_
-    std::string dataset1_type() const {return dataset1_type_;}
-    
     // access function for output_
     std::string output() const {return output_;}
     
@@ -125,6 +150,9 @@ public:
     
     // access function for results_
     std::string results() const {return results_;}
+    
+    // access function for running_pwd_
+    std::string running_pwd() const {return running_pwd_;}
     
     // access function for step_pi_
     double step_pi() const {return step_pi_;}
@@ -155,17 +183,32 @@ private:
     // -------------------------------------------------------------
     // flags
         
-    // flag to determine whether to compute the bootstrap realizations or not
+    // flag to compute the bootstrap realizations
     bool flag_compute_bootstrap_;
     
-    // flag to determine whether to compute the plate neighbours list or not
+    // flag to compute the covariane matrix
+    bool flag_compute_covariance_;
+    
+    // flag to compute the cross correlation
+    bool flag_compute_cross_correlation_;
+    
+    // flag to compute the plate neighbours list
     bool flag_compute_plate_neighbours_;
     
-    // flag to determine whether to end program after loading the catalogs and plotting their information
+    // flag to end program after loading the catalogs and plotting their information
     bool flag_load_only_;
     
-    // flag to determine whether to plot catalogues info or not
+    // flag to plot catalogues info
     bool flag_plot_catalog_info_;
+    
+    // flag to fit using baofit
+    bool flag_run_baofit_;
+    
+    // flag to set baofit ini file
+    bool flag_set_baofit_;
+    
+    // flag to write partial results
+    bool flag_write_partial_results_;
 
 
     
@@ -186,6 +229,9 @@ private:
     
     // objects type
     std::string dataset1_type_;
+    
+    // enabled objects type
+    std::string dataset1_type_options_;
     
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
@@ -216,6 +262,17 @@ private:
     // partial results directory
     std::string results_;
     
+    
+    
+    // -------------------------------------------------------------
+    // fit settings
+    
+    // flag to include distorsions into the fitting model
+    bool include_distorsions_;
+    
+    // baofit modelroot
+    std::string baofit_model_root_;
+
     
     
     // -------------------------------------------------------------
@@ -301,6 +358,9 @@ private:
     
     // unused parameters
     std::string unused_params_;
+    
+    // running directory
+    std::string running_pwd_;
     
     
     // -------------------------------------------------------------
