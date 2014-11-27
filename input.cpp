@@ -57,7 +57,7 @@ Input::Input(const std::string& filename){
     
     // creating folders if required
     std::string command;
-    if (flag_write_partial_results_){
+    if (flag_write_partial_results_ >= 1){
         command = "mkdir -p -v " + results_;
         system(command.c_str());
     }
@@ -160,7 +160,7 @@ void Input::SetDefaultValues(){
     flag_plot_catalog_info_ = flag_load_only_;
     flag_run_baofit_ = true;
     flag_set_baofit_ = true;
-    flag_write_partial_results_ = false;
+    flag_write_partial_results_ = 0;
     
     // -------------------------------------------------------------
     // input settings
@@ -205,6 +205,7 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // bootstrap settings
     num_bootstrap_ = 10000;
+    bootstrap_results_ = results_ + "bootstrap_realizations/";
     
     
     // -------------------------------------------------------------
@@ -259,6 +260,16 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             baofit_model_root_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "bootstrap_results"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            bootstrap_results_ = value;
             input_flag[name] = true;
         }
         else{
@@ -430,16 +441,7 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
     else if (name == "flag_write_partial_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_write_partial_results_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_write_partial_results_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
+            flag_write_partial_results_ = atoi(value.c_str());
             input_flag[name] = true;
         }
         else{
@@ -838,6 +840,19 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
+    // updating bootstrap_results_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("results");  
+    it3 = input_flag.find("bootstrap_results");
+    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
+        if (it2 != input_flag.end()){
+            bootstrap_results_ = results_ + "bootstrap_realizations/";
+        }
+        else{
+            bootstrap_results_ = output_ + "partial_results/bootstrap_realizations/";
+        }
+    }
+    
     // updating dataset1_ if necessary
     it = input_flag.find("input");
     it2 = input_flag.find("dataset1");
@@ -1005,12 +1020,7 @@ void Input::WriteLog(){
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
         }
-        if (flag_write_partial_results_){
-            log << "flag_write_partial_results_ = true" << std::endl;
-        }
-        else{
-            log << "flag_write_partial_results_ = false" << std::endl;
-        }
+        log << "flag_write_partial_results = " << flag_write_partial_results_ << std::endl;
         log << std::endl;
         
         
@@ -1063,15 +1073,16 @@ void Input::WriteLog(){
         
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;
-        log << "// bootstrap settings" << std:: endl;
-        log << "num_bootstrap = " << num_bootstrap_ << std:: endl;
+        log << "// bootstrap settings" << std::endl;
+        log << "num_bootstrap = " << num_bootstrap_ << std::endl;
+        log << "bootstrap_results = " << bootstrap_results_ << std::endl;
         log << std::endl;
         
         
         log << std::endl;
-        log << "// -------------------------------------------------------------" << std:: endl;
-        log << "// Fidutial model" << std:: endl;
-        log << "h = " << h_ << std:: endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// Fidutial model" << std::endl;
+        log << "h = " << h_ << std::endl;
         log << "wm = " << wm_ << std::endl;
         log << std::endl;
         

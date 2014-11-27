@@ -43,6 +43,9 @@ public:
     // access function for baofit_model_root_
     std::string baofit_model_root() const {return baofit_model_root_;}
     
+    // access function for bootstrap_results_
+    std::string bootstrap_results() const {return bootstrap_results_;}
+    
     // access function for c_
     double c() const {return c_;}
             
@@ -92,7 +95,7 @@ public:
     double h() const {return h_;}
     
     // access function for flag_write_partial_results_
-    bool flag_write_partial_results() const {return flag_write_partial_results_;}
+    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
     
     // access function for H0_
     double h0() const {return h0_;}
@@ -208,7 +211,7 @@ private:
     bool flag_set_baofit_;
     
     // flag to write partial results
-    bool flag_write_partial_results_;
+    size_t flag_write_partial_results_;
 
 
     
@@ -309,6 +312,9 @@ private:
         
     // number of bootstrap realizations
     size_t num_bootstrap_;
+    
+    // bootstrap results folder
+    std::string bootstrap_results_;
     
     
     

@@ -34,7 +34,7 @@ CorrelationPlate::CorrelationPlate(int bad_data){
     
 }
 
-CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours){
+CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t flag_write_partial_results){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
@@ -55,6 +55,7 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins
      FUNCITONS USED:
      ToStr
      */
+    flag_write_partial_results_ = flag_write_partial_results;
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
@@ -392,6 +393,10 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      FUNCITONS USED:
      NONE
      */
+    if (plate_number_ == _NORM_){
+        std::cout << "Warning: Plate number is set to _NORM_. The cross-correlation should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
+        return;
+    }
     
     // load bin settings
     double max_pi = input.max_pi();
@@ -511,7 +516,9 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     AddPair(k_index, spectrum[p], pi, sigma);
                     
                     // write down pair information in bin file
-                    SavePair(k_index, object, lya_spectrum, p, pi, sigma);
+                    if (flag_write_partial_results_ >= 2){
+                        SavePair(k_index, object, lya_spectrum, p, pi, sigma);
+                    }
                     
                 }
             }
@@ -713,7 +720,7 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_write_partial_results_);
     
     // check that both instances have the same number of bins
     if (num_bins_ == other.num_bins()){
@@ -755,7 +762,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_write_partial_results_);
     
     // check that both instances have the same number of bins
     if (num_bins_ == other.num_bins()){

@@ -48,10 +48,13 @@ public:
     CorrelationPlate(int bad_data);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours);
+    CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_write_partial_results);
     
     // -------------------------------------------------------------
     // access methods
+    
+    // access function for flag_write_partial_results_
+    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
     
     // access functions for mean_pi_
     std::vector<double> mean_pi() const {return mean_pi_;}
@@ -138,6 +141,9 @@ public:
     
     
 private:
+    // flag to write partial results
+    size_t flag_write_partial_results_;
+
     // mean value of parallel separation in bin
     std::vector<double> mean_pi_;
     

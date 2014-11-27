@@ -53,6 +53,15 @@ public:
     std::vector<CorrelationPlate> bootstrap() const {return bootstrap_;}
     CorrelationPlate bootstrap(size_t i) const;
     
+    // access function for bootstrap_results_
+    std::string bootstrap_results() const {return bootstrap_results_;}
+    
+    // access function for detailed_results_
+    std::string detailed_results() const {return detailed_results_;}
+    
+    // access function for flag_write_partial_results_
+    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
+    
     // access function for output_base_name_
     std::string output_base_name() const {return output_base_name_;}
     
@@ -79,6 +88,7 @@ public:
     // access function for results_
     std::string results() const {return results_;}
     
+    
     // -------------------------------------------------------------
     // other methods
         
@@ -96,6 +106,15 @@ public:
 private:
     // bootstrap variables
     std::vector<CorrelationPlate> bootstrap_;
+    
+    // bootstrap results folder
+    std::string bootstrap_results_;
+    
+    // detailed results directory (this is where the pairs detailed contribution to the corresponding plate and bin is stored)
+    std::string detailed_results_;
+    
+    // flag to write partial results
+    size_t flag_write_partial_results_;
     
     // output base name
     std::string output_base_name_;
