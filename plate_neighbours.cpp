@@ -26,6 +26,8 @@ PlateNeighbours::PlateNeighbours(const Input& input){
      ComputePlateNeighbours
      */
     
+    flag_verbose_plate_neighbours_ = input.flag_verbose_plate_neighbours();
+    
     std::ifstream plates_file(input.plate_neighbours().c_str());
     if (plates_file.is_open()){
         // read plate neighbours
@@ -34,7 +36,7 @@ PlateNeighbours::PlateNeighbours(const Input& input){
         plates_file.close();
     }
     else{
-        std::cout << "Error: Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
+        std::cout << "Error : In PlateNeighbours::PlateNeighbours : Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
         std::cout << "This may be because the list is not created and the corresponding flag was not set." << std::endl << "Do you want to compute the plate neighbours list? (this may take a while) [y/n]" << std::endl;
         std::string ans = "";
         while (ans == ""){
@@ -54,7 +56,7 @@ PlateNeighbours::PlateNeighbours(const Input& input){
                 plates_file2.close();
             }
             else{
-                std::cout << "Error: Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
+                std::cout << "Error : In PlateNeighbours::PlateNeighbours : Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
                 std::exit;
             }
         }
@@ -115,7 +117,7 @@ void PlateNeighbours::AddPlate(const Plate& plate){
         
     // check whether or not the entry is already existing
     if (plates_.find(plate.plate_number()) != plates_.end()){
-        std::cout << "The given plate is already included" << std::endl;
+        std::cout << "Warning : In PlateNeighbours::AddPlate : The given plate is already included. Ignoring..." << std::endl;
         return;
     }
     
@@ -216,7 +218,13 @@ void PlateNeighbours::ReadPlateNeighbours(std::ifstream& plates_file){
      FUNCITONS USED:
      NONE
      */
+    
+    if (flag_verbose_plate_neighbours_ >= 1){
+        std::cout << "Loading plate list" << std::endl;
+    }
+    
     std::string line;
+    int aux;
     while (getline(plates_file,line)){
         if (line[0] != '#'){
             std::vector<std::string> cols = Split(line," ");
@@ -235,9 +243,14 @@ void PlateNeighbours::ReadPlateNeighbours(std::ifstream& plates_file){
             // add plate
             if (plates_.find(plate_number) == plates_.end()){
                 plates_[plate_number] = neighbours;
+                
+                aux ++;
+                if (flag_verbose_plate_neighbours_ >= 3 or (flag_verbose_plate_neighbours_ >= 2 and aux == aux/100*100)){
+                    std::cout << "Loaded " << aux << " plates" << std::endl;
+                }
             }
             else{
-                std::cout << "Attempted to create an entry for plate " << plate_number << " when the entry already exists. Check plate neighbours file for repeated lines" << std::endl;
+                std::cout << "Warning : In PlateNeighbours::ReadPlateNeighbours : Attempted to create an entry for plate " << plate_number << " when the entry already exists. Check plate neighbours file for repeated lines" << std::endl;
             }
         }
         
@@ -262,7 +275,9 @@ void PlateNeighbours::Save(const std::string& filename){
      NONE
      */
     
-    std::cout << "Saving list of plates and neighbours" << std::endl;
+    if (flag_verbose_plate_neighbours_ >= 1){
+        std::cout << "Saving list of plates and neighbours" << std::endl;
+    }
     
     std::ofstream file(filename.c_str(),std::ofstream::trunc); 
     if (file.is_open()){
@@ -293,7 +308,7 @@ void PlateNeighbours::Save(const std::string& filename){
         file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+        std::cout << "Error : In PlateNeighbours::Save : Unable to open file:" << std::endl << filename << std::endl;
     }
     
 }

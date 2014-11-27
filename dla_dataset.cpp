@@ -27,6 +27,7 @@ DLADataset::DLADataset(const Input& input){
      NONE
      */
     
+    flag_verbose_dla_dataset_ = input.flag_verbose_dla_dataset();    
     name_ = input.dataset1_name();
     Load(input.z_min(), input.z_max(), input.dataset1());
     
@@ -57,6 +58,10 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
     size_t ra_index, dec_index, mpf_index, z_index, pos, pos2;
     int plate, fiber, mjd;
     double ra, dec, z;
+    
+    if (flag_verbose_dla_dataset_ >= 1){
+        std::cout << "Loading DLA dataset" << std::endl;
+    }
     
     // setting size to zero
     size_ = 0;
@@ -98,7 +103,6 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
                     pos2 = mpf.find("-",pos + 1);
                     
                     mjd = atoi(mpf.substr(0, pos).c_str());
-                    plate = atoi(mpf.substr(pos+1, pos2).c_str());
                     fiber = atoi(mpf.substr(pos2+1).c_str());
                                         
                     // create AstroObject
@@ -118,13 +122,21 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
                     
                     // updating number_of_objects_in_plate
                     (*num_objects_in_plate_.find(plate)).second ++;
+                    
+                    if (flag_verbose_dla_dataset_ >= 3 or (flag_verbose_dla_dataset_ >= 2 and size_ == size_/1000*1000)){
+                        std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+                    }
 
                 }
             }
         }
+        if (flag_verbose_dla_dataset_ >= 1){
+            std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+        }
+        file.close();
     }
     else{
-        std::cout << "Error: Unable to open file: " << std::endl << dataset1 << std::endl;
+        std::cout << "Error : In DLADataset::Load : Unable to open file: " << std::endl << dataset1 << std::endl;
         std::exit;
     }
         

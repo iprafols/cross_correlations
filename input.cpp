@@ -93,7 +93,7 @@ void Input::ReadInputValues(const std::string& filename){
      */
     
     if (filename.substr(filename.size()-4,4) != ".ini"){
-        std::cout << "Warning: the input filename shuold have .ini extension. Parameters set to default values, ignoring file..." << std::endl;
+        std::cout << "Warning: in Input::ReadInputValues(filename): The input filename shuold have .ini extension. Parameters set to default values, ignoring file..." << std::endl;
         return;
     }
     
@@ -128,7 +128,7 @@ void Input::ReadInputValues(const std::string& filename){
     }
     
     else{
-        std::cout << "Error: could not read input file. Using default parameters instead" << std::endl;
+        std::cout << "Error : In Input::ReadInputValues : Could not read input file. Using default parameters instead" << std::endl;
     }
 }
     
@@ -161,6 +161,18 @@ void Input::SetDefaultValues(){
     flag_run_baofit_ = true;
     flag_set_baofit_ = true;
     flag_write_partial_results_ = 0;
+    flag_verbose_ = 1;
+    flag_verbose_baofit_setup_ = flag_verbose_;
+    flag_verbose_compute_plate_neighbours_ = flag_verbose_;
+    flag_verbose_correlation_plate_ = flag_verbose_;
+    flag_verbose_correlation_results_ = flag_verbose_;
+    flag_verbose_covariance_matrix_ = flag_verbose_;
+    flag_verbose_dla_dataset_ = flag_verbose_;
+    flag_verbose_lya_spectra_dataset_ = flag_verbose_;
+    flag_verbose_main_ = flag_verbose_;
+    flag_verbose_plate_neighbours_ = flag_verbose_;
+    flag_verbose_quasar_dataset_ = flag_verbose_;
+    
     
     // -------------------------------------------------------------
     // input settings
@@ -442,6 +454,116 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             flag_write_partial_results_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_baofit_setup"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_baofit_setup_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_compute_plate_neighbours"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_compute_plate_neighbours_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_correlation_plate"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_correlation_plate_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_correlation_results"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_correlation_results_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_covariance_matrix"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_covariance_matrix_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_dla_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_dla_dataset_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_lya_spectra_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_lya_spectra_dataset_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_main"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_main_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_plate_neighbours"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_plate_neighbours_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_verbose_quasar_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_quasar_dataset_ = atoi(value.c_str());
             input_flag[name] = true;
         }
         else{
@@ -874,6 +996,76 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_plot_catalog_info_ = flag_load_only_;
     }
     
+    // updating flag_verbose_baofit_setup_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_baofit_setup");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_baofit_setup_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_baofit_setup_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_compute_plate_neighbours");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_compute_plate_neighbours_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_correlation_plate_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_correlation_plate");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_correlation_plate_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_correlation_results_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_correlation_results");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_correlation_results_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_covariance_matrix_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_covariance_matrix");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_covariance_matrix_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_dla_dataset_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_dla_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_dla_dataset_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_lya_spectra_dataset_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_lya_spectra_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_lya_spectra_dataset_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_main_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_main");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_main_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_plate_neighbours_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_plate_neighbours");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_plate_neighbours_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_plate_neighbours_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_quasar_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_quasar_dataset_ = flag_verbose_;
+    }
+
     // updating lya_spectra_dir_ if necessary
     it = input_flag.find("input");
     it2 = input_flag.find("lya_spectra_dir");
@@ -1020,6 +1212,17 @@ void Input::WriteLog(){
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
         }
+        log << "flag_verbose = " << flag_verbose_ << std::endl;
+        log << "flag_verbose_baofit_setup = " << flag_verbose_baofit_setup_ << std::endl;
+        log << "flag_verbose_compute_plate_neighbours = " << flag_verbose_compute_plate_neighbours_ << std::endl;
+        log << "flag_verbose_correlation_plate = " << flag_verbose_correlation_plate_ << std::endl;
+        log << "flag_verbose_correlation_results = " << flag_verbose_correlation_results_ << std::endl;
+        log << "flag_verbose_covariance_matrix_ = " << flag_verbose_covariance_matrix_ << std::endl;
+        log << "flag_verbose_dla_dataset = " << flag_verbose_dla_dataset_ << std::endl;
+        log << "flag_verbose_lya_spectra_dataset = " << flag_verbose_lya_spectra_dataset_ << std::endl;
+        log << "flag_verbose_main = " << flag_verbose_main_ << std::endl;
+        log << "flag_verbose_plate_neighbours = " << flag_verbose_plate_neighbours_ << std::endl;
+        log << "flag_verbose_quasar_dataset = " << flag_verbose_quasar_dataset_ << std::endl;
         log << "flag_write_partial_results = " << flag_write_partial_results_ << std::endl;
         log << std::endl;
         
@@ -1109,7 +1312,7 @@ void Input::WriteLog(){
         log.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << output_ << "log.param" << std::endl;
+        std::cout << "Error : In Input::WriteLog : Unable to open file:" << std::endl << output_ << "log.param" << std::endl;
     }
 }
 
@@ -1139,7 +1342,7 @@ void Input::WriteParams(){
         used_params_file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << output_ << "used.param" << std::endl;
+        std::cout << "Error : In Input::WriteParams : Unable to open file:" << std::endl << output_ << "used.param" << std::endl;
     }
     
     std::ofstream unused_params_file;
@@ -1150,7 +1353,7 @@ void Input::WriteParams(){
         unused_params_file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << output_ << "unused.param" << std::endl;
+        std::cout << "Error : In Input::WriteParams : Unable to open file:" << std::endl << output_ << "unused.param" << std::endl;
     }
 
 }

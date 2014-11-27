@@ -90,12 +90,45 @@ public:
     
     // access function for flag_set_baofit_
     bool flag_set_baofit() const {return flag_set_baofit_;}
-
-    // access function for h_
-    double h() const {return h_;}
     
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
+
+    // access function for flag_verbose_
+    size_t flag_verbose() const {return flag_verbose_;}
+    
+    // access function for flag_verbose_baofit_setup_
+    size_t flag_verbose_baofit_setup() const {return flag_verbose_baofit_setup_;}
+    
+    // access function for flag_verbose_compute_plate_neighbours_
+    size_t flag_verbose_compute_plate_neighbours() const {return flag_verbose_compute_plate_neighbours_;}
+    
+    // access function for flag_verbose_correlation_plate_
+    size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
+    
+    // access function for flag_verbose_correlation_results_
+    size_t flag_verbose_correlation_results() const {return flag_verbose_correlation_results_;}
+    
+    // access function for flag_verbose_covariance_matrix_
+    size_t flag_verbose_covariance_matrix() const {return flag_verbose_covariance_matrix_;}
+    
+    // access function for flag_verbose_dla_dataset_
+    size_t  flag_verbose_dla_dataset() const {return flag_verbose_dla_dataset_;}
+    
+    // access function for flag_verbose_lya_spectra_dataset_
+    size_t flag_verbose_lya_spectra_dataset() const {return flag_verbose_lya_spectra_dataset_;}
+    
+    // access function for flag_verbose_main_
+    size_t flag_verbose_main() const {return flag_verbose_main_;}
+    
+    // access function for flag_verbose_plate_neighbours_
+    size_t flag_verbose_plate_neighbours() const {return flag_verbose_plate_neighbours_;}
+    
+    // access function for flag_verbose_quasar_dataset_
+    size_t flag_verbose_quasar_dataset() const {return flag_verbose_quasar_dataset_;}
+    
+    // access function for h_
+    double h() const {return h_;}    
     
     // access function for H0_
     double h0() const {return h0_;}
@@ -209,6 +242,39 @@ private:
     
     // flag to set baofit ini file
     bool flag_set_baofit_;
+    
+    // verbose flag
+    size_t flag_verbose_;
+        
+    // baofit_setup verbose flag
+    size_t flag_verbose_baofit_setup_;
+
+    // compute_plate_neighbours verbose flag
+    size_t flag_verbose_compute_plate_neighbours_;
+    
+    // correlation_plate verbose flag (only works if flag_verbose_correlation_results_ >= 1)
+    size_t flag_verbose_correlation_plate_;
+    
+    // correlation_results verbose flag
+    size_t flag_verbose_correlation_results_;
+    
+    // covariance_matrix verbose flag
+    size_t flag_verbose_covariance_matrix_;
+
+    // dla_dataset verbose flag
+    size_t flag_verbose_dla_dataset_;
+    
+    // lya_spectra_dataset flag
+    size_t flag_verbose_lya_spectra_dataset_;
+    
+    // main verbose flag
+    size_t flag_verbose_main_;
+
+    // plate_neighbours verbose flag
+    size_t flag_verbose_plate_neighbours_;
+
+    // quasar_dataset verbose flag
+    size_t flag_verbose_quasar_dataset_;
     
     // flag to write partial results
     size_t flag_write_partial_results_;

@@ -34,7 +34,9 @@ CovarianceMatrix::CovarianceMatrix(const Input& input){
     output_base_name_ = input.output() + input.output_base_name();
 
     // initializing covariance matrix, all elements set to 0
-    std::cout << "TEST: initializig covariance matrix" << std::endl;
+    if (flag_verbose_covariance_matrix_ >= 2){
+        std::cout << "Initializig covariance matrix" << std::endl;
+    }
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
             cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
@@ -43,7 +45,9 @@ CovarianceMatrix::CovarianceMatrix(const Input& input){
     
     // initializing bootstrap covariance matrix, all elements set to 0
     if (input.flag_compute_bootstrap()){
-        std::cout << "TEST: initializig bootstrap covariance matrix" << std::endl;
+        if (flag_verbose_covariance_matrix_ >= 2){
+            std::cout << "Initializig bootstrap covariance matrix" << std::endl;
+        }
         for (size_t i = 0; i < num_bins_; i++){
             for (size_t j = i; j < num_bins_; j++){
                 bootstrap_cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
@@ -145,7 +149,10 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
      FUNCITONS USED:
      NONE
      */
-    std::cout << "Computing the covariance matrix using the bootstrap realizations" << std::endl;
+    
+    if (flag_verbose_covariance_matrix_ >= 1){
+        std::cout << "Computing the bootstrap covariance matrix" << std::endl;
+    }
     
     // checking that we have at least two bootstrap realization
     if (bootstrap.size() < 2){
@@ -154,14 +161,8 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
     }
         
     // computing mean values
-    //std::cout << "TEST: printing num_bins_: " << num_bins_ << std::endl;
-    //std::cout << "TEST: computing mean values, enter character to proceed" << std::endl;
     std::vector<double> mean;
-    //std::cout << "TEST: vector created to store mean values, enter character to proceed" << std::endl;
-    //std::cin >> test;
     mean.resize(num_bins_);
-    //std::cout << "TEST: vector resized" << std::endl;
-    //std::cout << "TEST: bootstrap.size() = " << bootstrap.size() << std::endl;
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = 0; j < bootstrap.size(); j++){
             mean[i] += bootstrap[j].xi(i);
@@ -171,7 +172,6 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
     }
     
     // computing covariance matrix
-    //std::cout << "TEST: computing bootstrap covariance matriz" << std::endl;
     for (CovMat::iterator it = bootstrap_cov_mat_.begin(); it != bootstrap_cov_mat_.end(); it ++){
         for (size_t j = 0; j < bootstrap.size(); j++){
             (*it).second += (bootstrap[j].xi((*it).first.first)-mean[(*it).first.first])*(bootstrap[j].xi((*it).first.second)-mean[(*it).first.second]);
@@ -179,7 +179,7 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
         (*it).second /= double(bootstrap.size())-1;
     }
 
-    //std::cout << "TEST: saving bootstrap covariance matrix" << std::endl;
+    // saving covariance matrix
     SaveBootstrapCovMat();
 }
 
@@ -203,11 +203,17 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
      */
     std::string filename;
     
+    if (flag_verbose_covariance_matrix_ >= 1){
+        std::cout << "Saving bootstrap covariance matrix" << std::endl;
+    }
+    
     filename = output_base_name_ + ".bootstrap.cov";
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
         if (file.is_open()){
-            std::cout << "TEST: saving full bootstrap covariance matrix" << std::endl;
+            if (flag_verbose_covariance_matrix_ >= 2){
+                std::cout << "Saving full bootstrap covariance matrix" << std::endl;
+            }
             for (CovMat::iterator it = bootstrap_cov_mat_.begin(); it != bootstrap_cov_mat_.end(); it ++){
                 file << (*it).first.first << " " << (*it).first.second << " " << (*it).second << std::endl;
             }
@@ -215,7 +221,7 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
             file.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+            std::cout << "Error : In CovarianceMatrix::SaveBootstrapCovMat : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
 
@@ -223,7 +229,9 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
         if (file.is_open()){
-            std::cout << "TEST: saving diagonal bootstrap covariance matrix" << std::endl;
+            if (flag_verbose_covariance_matrix_ >= 2){
+                std::cout << "Saving diagonal bootstrap covariance matrix" << std::endl;
+            }
             for (size_t i = 0; i < num_bins_; i++){
                 CovMat::iterator it = bootstrap_cov_mat_.find(std::pair<size_t,size_t>(i,i));
                 file << (*it).first.first << " " << (*it).first.second << " " << (*it).second << std::endl;
@@ -232,7 +240,7 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
             file.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+            std::cout << "Error : In CovarianceMatrix::SaveBootstrapCovMat : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
     

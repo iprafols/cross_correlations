@@ -52,14 +52,20 @@ void ComputePlateNeighbours(const Input& input){
     time_t start_time,end_time;
     time(&start_time);
     
-    std::cout << "Computing plate neighbours list" << std::endl;
+    size_t flag_verbose_compute_plate_neighbours = input.flag_verbose_compute_plate_neighbours();
+    
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Computing plate neighbours list" << std::endl;
+    }
     // load variables
     const std::string kLyaSpectraDir = input.lya_spectra_dir();
     const double kNeighboursMaxDistance = input.neighbours_max_distance();
     // load empty plate map
     PlatesMapSimple<Plate>::map plate_list;
     
-    std::cout << "Reading spectra catalog" << std::endl;
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Reading spectra catalog" << std::endl;
+    }
     std::ifstream catalog(input.dataset2().c_str());
     // open catalog
     int number_of_read_spectra = 0;
@@ -79,26 +85,33 @@ void ComputePlateNeighbours(const Input& input){
             }
             
             number_of_read_spectra ++;
-            if (number_of_read_spectra/100*100 == number_of_read_spectra){
-                std::cout << "read " << number_of_read_spectra << " spectra" << std::endl;
+            if (flag_verbose_compute_plate_neighbours >= 3 or (flag_verbose_compute_plate_neighbours >= 2 and number_of_read_spectra/1000*1000 == number_of_read_spectra)){
+                std::cout << "Loaded " << number_of_read_spectra << " spectra" << std::endl;
             }
             
+        }
+        if (flag_verbose_compute_plate_neighbours >= 1){
+            std::cout << "Loaded " << number_of_read_spectra << " spectra" << std::endl;
         }
         catalog.close();
     }
     else{
-        std::cout << "Error: could not read spectra catalog" << std::endl;
+        std::cout << "Error: In ComputePlateNeighbours : could not read spectra catalog" << std::endl;
         std::exit;
     }
     
     // normalize contents
-    std::cout << "Normalizing mean right ascension and declination for the different plates" << std::endl;
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Normalizing mean right ascension and declination for the different plates" << std::endl;
+    }
     for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){
         (*it).second.Normalize();
     }
     
     // load empty neighbours map
-    std::cout << "Creating neighbours map" << std::endl;
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Creating neighbours map" << std::endl;
+    }
     PlateNeighbours neighbours_list;
     
     // every plate is considered a neighbour of itself
@@ -107,7 +120,9 @@ void ComputePlateNeighbours(const Input& input){
     }
     
     // look for neighbours
-    std::cout << "Looking for neighbours" << std::endl;
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Looking for neighbours" << std::endl;
+    }
     for (PlatesMapSimple<Plate>::map::iterator it = plate_list.begin(); it != plate_list.end(); it ++){ // loop over plates -> plate1
         for (PlatesMapSimple<Plate>::map::iterator it2 = it; it2 != plate_list.end(); it2 ++){ // loop over plates -> plate2
             if (it == it2){
@@ -126,17 +141,18 @@ void ComputePlateNeighbours(const Input& input){
     neighbours_list.Save(input.plate_neighbours());
     
     // display time required to run the program
-    std::cout << "Plate neightbours list computed" << std::endl;
-    time(&end_time);
-    double time_spent = difftime(end_time, start_time);
-    if (time_spent < 60.0){
-        std::cout << "It took " << time_spent << " seconds to compute the neighbours list" << std::endl;
-    }
-    else if (time_spent < 3600.0){
-        std::cout << "It took " << time_spent/60.0 << " minutes to compute the neighbours list" << std::endl;
-    }
-    else{
-        std::cout << "It took " << time_spent/3600.0 << " hours to compute the neighbours list" << std::endl;
-    }
-    
+    if (flag_verbose_compute_plate_neighbours >= 1){
+        std::cout << "Plate neightbours list computed" << std::endl;
+        time(&end_time);
+        double time_spent = difftime(end_time, start_time);
+        if (time_spent < 60.0){
+            std::cout << "It took " << time_spent << " seconds to compute the neighbours list" << std::endl;
+        }
+        else if (time_spent < 3600.0){
+            std::cout << "It took " << time_spent/60.0 << " minutes to compute the neighbours list" << std::endl;
+        }
+        else{
+            std::cout << "It took " << time_spent/3600.0 << " hours to compute the neighbours list" << std::endl;
+        }
+    }    
 }

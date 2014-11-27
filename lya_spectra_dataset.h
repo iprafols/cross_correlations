@@ -44,6 +44,9 @@ public:
     // -------------------------------------------------------------
     // access methods
     
+    // access function for flag_verbose_lya_spectra_dataset_
+    size_t flag_verbose_lya_spectra_dataset() const {return flag_verbose_lya_spectra_dataset_;}
+    
     // access functions for list_
     PlatesMapVector<LyaSpectrum>::map list() const {return list_;}
     std::vector<LyaSpectrum> list(int plate_number) const;
@@ -71,6 +74,9 @@ public:
     
     
 private:
+    // lya_spectra_dataset verbose flag
+    size_t flag_verbose_lya_spectra_dataset_;
+    
     // map with the plates information
     PlatesMapVector<LyaSpectrum>::map list_;
     

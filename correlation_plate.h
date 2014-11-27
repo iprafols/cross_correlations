@@ -48,10 +48,16 @@ public:
     CorrelationPlate(int bad_data);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_write_partial_results);
+    CorrelationPlate(const Input& input, const std::string& results, const int plate_number, const std::vector<int>& plate_neighbours);
+    
+    // constructs object and initializes its variables
+    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results);
     
     // -------------------------------------------------------------
     // access methods
+    
+    // access function for flag_verbose_correlation_plate_
+    size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
     
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
@@ -92,6 +98,9 @@ public:
     // -------------------------------------------------------------
     // set methods
 
+    // set flag_verbose_correlation_plate_
+    void set_flag_verbose_correlation_plate(size_t value) {flag_verbose_correlation_plate_ = value;}
+    
     // set mean_pi_
     void set_mean_pi(size_t index, double value);
     
@@ -141,6 +150,9 @@ public:
     
     
 private:
+    // verbose flag
+    size_t flag_verbose_correlation_plate_;
+
     // flag to write partial results
     size_t flag_write_partial_results_;
 

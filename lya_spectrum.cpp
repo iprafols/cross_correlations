@@ -70,7 +70,7 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error occured in cAstroObjectDataset constructor: couldn't open catalog file: " + filename;
+        throw "Error: in LyaSpectrum::LyaSpectrum : Couldn't open catalog file: " + filename;
     }
     CCfits::ExtHDU& data = pInfile->extension(1);
     

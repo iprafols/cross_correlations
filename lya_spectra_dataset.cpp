@@ -27,6 +27,7 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
      NONE
      */
     
+    flag_verbose_lya_spectra_dataset_ = input.flag_verbose_lya_spectra_dataset();
     name_ = input.dataset2_name();
     Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl());
     
@@ -204,11 +205,16 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
      NONE
      */
     
+    if (flag_verbose_lya_spectra_dataset_ >= 1){
+        std::cout << "Loading lya spectra dataset" << std::endl;
+    }
+    
     // resizing astro_object_pointer
     size_ = FindCatalogLength(lya_spectra_catalog);
 
     // open catalog
     std::ifstream catalog(lya_spectra_catalog.c_str());
+    int aux;
     if (catalog.is_open()){
         std::string file("");        
         while (getline(catalog,file)){
@@ -227,10 +233,20 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
             
             // updating number_of_objects_in_plate
             (*num_objects_in_plate_.find(object.plate())).second ++;
+            
+            aux ++;
+            if (flag_verbose_lya_spectra_dataset_ >= 3 or (flag_verbose_lya_spectra_dataset_ >= 2 and aux == aux/1000*1000)){
+                std::cout << "Loaded " << size_ << " lya spectra" << std::endl;
+            }
         }
+        
+        if (flag_verbose_lya_spectra_dataset_ >= 1){
+            std::cout << "Loaded " << size_ << " lya spectra" << std::endl;
+        }
+        catalog.close();
     }
     else{
-        std::cout << "Error: could not read spectra catalog" << std::endl;
+        std::cout << "Error: in LyaSpectraDataset::Load : Could not read spectra catalog" << std::endl;
     }
 }
 

@@ -32,6 +32,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     
     // set flags from input
     flag_compute_bootstrap_ = input.flag_compute_bootstrap();
+    flag_verbose_correlation_results_ = input.flag_verbose_correlation_results();
     flag_write_partial_results_ = input.flag_write_partial_results();
     
     // setting the number of bins and plates from input
@@ -40,30 +41,32 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     // setting the results directory and the pairs file name from input
     results_ = input.results();
     detailed_results_ = results_ + "detailed_info_bin_";
-    pairs_file_name_ = "detailed_info_plate_";
     output_base_name_ = input.output() + input.output_base_name();
     
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
     for (size_t i = 0; i < plates_list_.size(); i ++){
-        correlation_plates_[plates_list_[i]] = CorrelationPlate(plates_list_[i], num_bins_, detailed_results_, pairs_file_name_, kPlateNeighbours.GetNeighboursList(plates_list_[i]), flag_write_partial_results_);
+        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, detailed_results_, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
     }
     
     // initialization of the normalized cross-correlation variable
-    normalized_correlation_ = CorrelationPlate(_NORM_, num_bins_, "", "error", kPlateNeighbours.GetNeighboursList(_NORM_),0);
+    normalized_correlation_ = CorrelationPlate(input, "", _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
     if (flag_compute_bootstrap_){
         bootstrap_results_ = input.bootstrap_results();
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
-            bootstrap_.push_back(CorrelationPlate(_NORM_, num_bins_, "", "error", kPlateNeighbours.GetNeighboursList(_NORM_),0));
+            bootstrap_.push_back(CorrelationPlate(input, "", _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
         }
 
     }
     
     // creating bin files
-    if (flag_write_partial_results_ >= 2){
+    if (flag_write_partial_results_ >= 1){
+        if (flag_verbose_correlation_results_ >= 2){
+            std::cout << "Creating detailed info files" << std::endl;
+        }
         CreateBinFiles();
     }
 }
@@ -171,16 +174,35 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
      NONE
      */
     
-    for (size_t i = 0; i < plates_list_.size(); i++){
-        std::cout << i << " out of " << plates_list_.size() << " computed" << std::endl;
-        (*correlation_plates_.find(plates_list_[i])).second.ComputeCrossCorrelation(object_list, spectra_list, input);
+    if (input.flag_verbose() >= 1){
+        std::cout << "Computing the cross-correlation" << std::endl;
     }
     
+    // loop over plates
+    for (size_t i = 0; i < plates_list_.size(); i++){
+        
+        PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.find(plates_list_[i]);
+        
+        if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
+            std::cout << i << " out of " << plates_list_.size() << "plates computed" << std::endl;
+        }
+        else{
+            (*it).second.set_flag_verbose_correlation_plate(0);    
+        }
+        
+        // compute cross-correlation in selected plate
+        (*it).second.ComputeCrossCorrelation(object_list, spectra_list, input);
+    }
+    
+    // normalize cross-correlation
     NormalizeCrossCorrelation();
     
-    if (flag_compute_bootstrap_){
+    // compute bootstap realizations
+    if (flag_compute_bootstrap_){        
         ComputeBootstrapRealizations();
     }
+    
+    // save cross-correlation measurements
     SaveCrossCorrelation();
     
 }
@@ -206,8 +228,16 @@ void CorrelationResults::ComputeBootstrapRealizations(){
     int number_of_plates = plates_list_.size();
     int plate_chosen;
     
+    if (flag_verbose_correlation_results_ >= 1){
+        std::cout << "Computing bootstrap realizations" << std::endl;
+    }
+    
     for (size_t i = 0; i < bootstrap_.size(); i ++){
         for (size_t j = 0; j < number_of_plates; j ++){
+            
+            if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
+                std::cout << i << " out of " << bootstrap_.size() << "bootstrap realizatons computed" << std::endl;
+            }
             
             // pick plate
             plate_chosen = rand() % number_of_plates;
@@ -244,8 +274,15 @@ void CorrelationResults::CreateBinFiles(){
         
         // creating directory for the bin
         std::string directory_name = detailed_results_ + ToStr(bin)+"/";
-        std::string command = "mkdir -p -v " + directory_name;
-        system(command.c_str());
+        if (flag_verbose_correlation_results_ >= 2){
+            std::string command = "mkdir -p -v " + directory_name;
+            std::cout << command << std::endl;
+            system(command.c_str());
+        }
+        else{
+            std::string command = "mkdir -p " + directory_name;
+            system(command.c_str());
+        }
         
         // creating bin files for each of the plates
         for (PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.begin(); it != correlation_plates_.end(); it ++){
@@ -259,7 +296,7 @@ void CorrelationResults::CreateBinFiles(){
                 bin_file.close();
             }
             else{
-                std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                std::cout << "Error : In CorrelationResults::CreateBinFiles : Unable to open file:" << std::endl << filename << std::endl;
             }            
             
         }
@@ -285,6 +322,10 @@ void CorrelationResults::NormalizeCrossCorrelation(){
      FUNCITONS USED:
      NONE
      */
+    
+    if (flag_verbose_correlation_results_ >= 1){
+        std::cout << "Normalizing cross-correlation" << std::endl;
+    }
     
     for (size_t i = 0; i < plates_list_.size(); i++){
         
@@ -319,6 +360,9 @@ void CorrelationResults::SaveCrossCorrelation(){
     
     // save plate contribution to cross-correlation in each of the bins
     if (flag_write_partial_results_ >= 1){
+        if (flag_verbose_correlation_results_ >= 1){
+            std::cout << "Saving individual plate contributions to the cross-correlations" << std::endl;
+        }
         for (int bin = 0; bin < num_bins_; bin ++){
             
             filename = results_ + output_base_name_ + ".bin" + ToStr(bin) + ".data";
@@ -337,12 +381,15 @@ void CorrelationResults::SaveCrossCorrelation(){
                 file.close();
             }
             else{
-                std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
             }
         }
     }
     
     // save normalized cross-correlation
+    if (flag_verbose_correlation_results_ >= 1){
+        std::cout << "Saving cross-correlation" << std::endl;
+    }
     filename = output_base_name_ + ".data";
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
@@ -355,7 +402,7 @@ void CorrelationResults::SaveCrossCorrelation(){
             file.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
     filename = output_base_name_ + ".full.data";
@@ -372,12 +419,15 @@ void CorrelationResults::SaveCrossCorrelation(){
             file.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
     
     // save bootstrap realizations
     if (flag_compute_bootstrap_ and flag_write_partial_results_ >= 1){
+        if (flag_verbose_correlation_results_ >= 1){
+            std::cout << "Saving bootstrap realizations" << std::endl;
+        }
         for (size_t i = 0; i < bootstrap_.size(); i ++){
             filename = bootstrap_results_ + output_base_name_ + ".bootstrap" + ToStr(i) + ".data";
             {
@@ -392,7 +442,7 @@ void CorrelationResults::SaveCrossCorrelation(){
                     file.close();
                 }
                 else{
-                    std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
                 }
             }
             
@@ -410,7 +460,7 @@ void CorrelationResults::SaveCrossCorrelation(){
                     file.close();
                 }
                 else{
-                    std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
                 }
             }
             

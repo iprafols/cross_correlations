@@ -34,16 +34,15 @@ CorrelationPlate::CorrelationPlate(int bad_data){
     
 }
 
-CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t flag_write_partial_results){
+CorrelationPlate::CorrelationPlate(const Input& input, const std::string& results, const int plate_number, const std::vector<int>& plate_neighbours){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
      
      INPUTS:
+     input - a Input instance
+     results - name of the folder where detailed information will be stored
      plate_number - an integer with the plate number
-     num_bins - an unsigned integer with the number of bins
-     results - a string with the path to the results directory (missing the bin number)
-     pairs_file_name - a string with the base name of the file storing the pairs information
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      
      OUTPUTS:
@@ -55,6 +54,54 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins
      FUNCITONS USED:
      ToStr
      */
+    
+    flag_verbose_correlation_plate_ = input.flag_verbose_correlation_plate();
+    flag_write_partial_results_ = input.flag_write_partial_results();
+    
+    plate_number_ = plate_number;
+    plate_neighbours_ = plate_neighbours;
+    num_bins_ = input.num_bins();
+    if (plate_number_ == _NORM_){
+        results_ = "";
+        pairs_file_name_ = "";
+    }
+    else{
+        results_ = results;
+        pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
+    }
+    
+    xi_.resize(num_bins_,0.0);
+    mean_pi_.resize(num_bins_,0.0);
+    mean_sigma_.resize(num_bins_,0.0);
+    weight_.resize(num_bins_,0.0);
+    num_averaged_pairs_.resize(num_bins_,0);
+    
+}
+
+CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
+    /**
+     EXPLANATION:
+     Cosntructs a CorrelationPlate instance and initializes all its variables
+     
+     INPUTS:
+     input - a Input instance
+     results - name of the folder where detailed information will be stored
+     plate_number - an integer with the plate number
+     plate_neighbours - a vector containing the plate numbers of the neighbouring plates
+     flag_verbose_correlation_plate - correlation_plate verbose flag
+     flag_write_partial_results_ - flag to write partial results
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     ToStr
+     */
+    
+    flag_verbose_correlation_plate_ = flag_verbose_correlation_plate;
     flag_write_partial_results_ = flag_write_partial_results;
     
     plate_number_ = plate_number;
@@ -62,18 +109,19 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const size_t num_bins
     num_bins_ = num_bins;
     if (plate_number_ == _NORM_){
         results_ = "";
+        pairs_file_name_ = "";
     }
     else{
         results_ = results;
+        pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
     }
-    pairs_file_name_ = pairs_file_name;
     
     xi_.resize(num_bins_,0.0);
     mean_pi_.resize(num_bins_,0.0);
     mean_sigma_.resize(num_bins_,0.0);
     weight_.resize(num_bins_,0.0);
     num_averaged_pairs_.resize(num_bins_,0);
-
+    
 }
 
 double CorrelationPlate::mean_pi(size_t index) const {
@@ -228,7 +276,7 @@ void CorrelationPlate::set_mean_pi(size_t index, double value){
         mean_pi_[index] = value;
     }
     else{
-        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CorrelationPlate::set_mean_pi(index,value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -255,7 +303,7 @@ void CorrelationPlate::set_mean_sigma(size_t index, double value){
         mean_sigma_[index] = value;
     }
     else{
-        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CorrelationPlate::set_mean_sigma(index,value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
@@ -281,7 +329,7 @@ void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
         num_averaged_pairs_[index] = value;
     }
     else{
-        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CorrelationPlate::set_num_average_pairs(index,value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -308,7 +356,7 @@ void CorrelationPlate::set_weight(size_t index, double value){
         weight_[index] = value;
     }
     else{
-        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CorrelationPlate::set_weight(index,value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -335,7 +383,7 @@ void CorrelationPlate::set_xi(size_t index, double value){
         xi_[index] = value;
     }
     else{
-        std::cout << "the given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CorrelationPlate::set_xi(index,value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -394,7 +442,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      NONE
      */
     if (plate_number_ == _NORM_){
-        std::cout << "Warning: Plate number is set to _NORM_. The cross-correlation should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The cross-correlation should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
         return;
     }
     
@@ -408,7 +456,9 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     
     size_t number_of_objects = object_list.num_objects_in_plate(plate_number_);
     
-    std::cout << "computing cross-correlation in plate " << plate_number_ << "; in this plate there are " << number_of_objects << " AstroObjects" << std::endl;
+    if (flag_verbose_correlation_plate_ >= 1){
+        std::cout << "Computing cross-correlation in plate " << plate_number_ << ". In this plate there are " << number_of_objects << " AstroObjects" << std::endl;
+    }
 
     // loop over AstroObjects
     for (size_t i = 0; i < number_of_objects; i ++){
@@ -417,7 +467,9 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
         
         // checking that the object was loaded successfully
         if (object.dist() == _BAD_DATA_){
-            std::cout << "TEST: _BAD_DATA_ AstroObject found" << std::endl;
+            if (flag_verbose_correlation_plate_ >= 2){
+                std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
+            }
             continue;
         }
         
@@ -434,7 +486,9 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                 LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[j], k);
                 // checking that the object was loaded successfully
                 if (lya_spectrum.dist() == _BAD_DATA_){
-                    std::cout << "TEST: _BAD_DATA_ LyaSpectrum found" << std::endl;
+                    if (flag_verbose_correlation_plate_ >= 2){
+                        std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
+                    }
                     continue;
                 }
                 std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
@@ -453,24 +507,46 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                 // check if all pixels in the spectrum are too far apart
                 double pair_min_sigma = sqrt(sigma_aux*spectrum[0].dist()); // minimum distance obtained for lowest redshift pixel
                 if (pair_min_sigma > max_sigma){ // if the minimum value for sigma (r_perp) is too large, the whole spectra is discarded
-                    //std::cout << "TEST: spectra rejected because min_sigma is too large. value = " << pair_min_sigma << std::endl;
-                    //std::cout << "TEST: ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                    //std::cout << "TEST: " << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                    if (flag_verbose_correlation_plate_ >= 2){
+                        std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            std::cout << "min_sigma = " << pair_min_sigma << std::endl;
+                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                        }
+                    }
                     continue;
                 } 
-                if (pair_min_sigma <= 0.1){ // if the spectrym is being paired with its quasar, the whole spectra is discarded
+                if (pair_min_sigma <= 0.1){ // if the spectrum is being paired with its quasar, the whole spectra is discarded
+                    if (flag_verbose_correlation_plate_ >= 2){
+                        std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
+                    }
                     continue;
                 }
                 
                 double pair_max_pi = object.dist()-spectrum[0].dist(); // minimum distance obtained for lowest redshift pixel
                 if (pair_max_pi < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
-                    //std::cout << "TEST: spectra rejected because min_pi is too small" << std::endl;
+                    if (flag_verbose_correlation_plate_ >= 2){
+                        std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            std::cout << "max_pi = " << pair_max_pi << std::endl;
+                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                        }
+                    }
                     continue;
                 }
                 
                 double pair_min_pi = object.dist()-spectrum.back().dist(); // maximum distance obtained for highest redshift pixel
                 if (pair_min_pi > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
-                    //std::cout << "TEST: spectra rejected because min_pi is too large" << std::endl;
+                    if (flag_verbose_correlation_plate_ >= 2){
+                        std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            std::cout << "min_pi = " << pair_min_pi << std::endl;
+                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                        }
+                    }
                     continue;
                 }
                 
@@ -480,35 +556,50 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     // compute pi and sigma
                     double sigma = sqrt(sigma_aux*spectrum[p].dist());
                     if (sigma > max_sigma){ // if sigma (r_perp) is too large, discard pixel
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            std::cout << "Pixel rejected: sigma is too large" << std::endl;
+                            std::cout << "sigma = " << sigma << std::endl;
+                        }
                         continue;
                     }
 
                     double pi = object.dist()-spectrum[p].dist();
                     if ((pi > max_pi) or (pi <- max_pi)){ // if pi (r_par) is too large or too small, discard pixel
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
+                            std::cout << "pi = " << pi << std::endl;
+                        }
                         continue;
                     }
                     
-                    //std::cout << "TEST: accepted pixel" << std::endl;
                     // locate pi pixel (i_index)
                     int i_index = int(pi/step_pi)+num_pi_bins/2;
                     if (pi<0.0){
                         i_index -= 1;
                     }
                     if (i_index < 0){
-                        //std::cout << "TEST: pi = " << pi << "; step_pi = " << step_pi << "; pi/step_pi = " << pi/step_pi << "; int(pi/step_pi) = " << int(pi/step_pi) << std::endl;
+                        if (flag_verbose_correlation_plate_ >= 2){
+                            std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index << std::endl;
+                        }
+                        continue;
                     }
 
                     
                     // locate sigma pixel (j_index)
                     int j_index = int(sigma/step_sigma);
                     if (j_index < 0){
-                        //std::cout << "TEST: sigma = " << sigma << "; step_sigma = " << step_sigma << "; sigma/step_sigma = " << sigma/step_sigma << "; int(sigma/step_sigma) = " << int(sigma/step_sigma) << "; sqrt(sigma_aux*spectrum[p].dist()) = " << sqrt(sigma_aux*spectrum[p].dist()) << "; sigma_aux*spectrum[p].dist() = " << sigma_aux*spectrum[p].dist() << "; sigma_aux = " << sigma_aux << "; spectrum[p].dist() = " << spectrum[p].dist() << "; sigma_aux_o = " << sigma_aux_o << "; cos_theta = " << cos_theta <<                        std::endl;
+                        if (flag_verbose_correlation_plate_ >= 2){
+                            std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index << std::endl;
+                        }
+                        continue;
                     }
                     
                     // locate xi pixel (k)
                     int k_index = i_index*num_sigma_bins+j_index;
-                    if (k_index < 0 or i_index < 0 or j_index < 0){
-                        //std::cout << "TEST: i_index = " << i_index << " j_index = " << j_index << " k_index = " << k_index << std::endl;
+                    if (k_index < 0){
+                        if (flag_verbose_correlation_plate_ >= 2){
+                            std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index << std::endl;
+                        }
                         continue;
                         
                     }
@@ -595,7 +686,7 @@ void CorrelationPlate::Normalize(){
             
             if (weight_[i] == 0.0){
                 // if the weight is zero, complain and exit the function
-                std::cout << "Zero Division Error in CorrelationPlate::Normalize, aborting..." << std::endl;
+                std::cout << "Zero Division Error in CorrelationPlate::Normalize. Aborting..." << std::endl;
                 return;
             }
             // if the weight is 1.0, normalization is not needed
@@ -612,7 +703,7 @@ void CorrelationPlate::Normalize(){
     }
     else{
         // if plate number is not _NORM_, the instance is not supposed to normalize
-        std::cout << "Warning: Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
     }
     
 }
@@ -652,7 +743,9 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
         LyaPixel pixel = lya_spectrum.spectrum(p);
         // checking that the object was loaded successfully
         if (pixel.z() == _BAD_DATA_){
-            std::cout << "TEST: _BAD_DATA_ LyaPixel found" << std::endl;
+            if (flag_verbose_correlation_plate_ >= 2){
+                std::cout << "_BAD_DATA_ LyaPixel found. Ignoring..." << std::endl;
+            }
             return;
         }
         
@@ -660,7 +753,7 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
         bin_file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+        std::cout << "Error : In CorrelationPlate::SavePair : Unable to open file:" << std::endl << filename << std::endl;
     }
 
 }
@@ -696,7 +789,7 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
     }
     // if they don't, complain
     else{
-        std::cout << "Warning: Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
     }
     
     
@@ -720,7 +813,7 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_write_partial_results_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
     
     // check that both instances have the same number of bins
     if (num_bins_ == other.num_bins()){
@@ -737,7 +830,7 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
     
     // if they don't, complain
     else{
-        std::cout << "Warning: Trying to subtract CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::operator- : Trying to subtract CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
     }
     
     return temp;
@@ -762,7 +855,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_write_partial_results_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
     
     // check that both instances have the same number of bins
     if (num_bins_ == other.num_bins()){
@@ -778,7 +871,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     }
     // if they don't, complain
     else{
-        std::cout << "Warning: Trying to multiply CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::operator* : Trying to multiply CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
     }
             
     return temp;

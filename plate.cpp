@@ -35,7 +35,7 @@ Plate::Plate(const std::string& filename){
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "cPlate::cPlate(" + filename + ") failed";
+        throw "Error : In Plate::Plate : " + filename + " failed";
     }
 
     // define a reference for clarity
@@ -112,7 +112,7 @@ void Plate::Normalize(){
     
     // check that the plate has not already been normalized
     if (number_of_objects_ == _NORM_){
-        std::cout << "Error: plate has already been normalized; skipping normalization" << std::endl;
+        std::cout << "Warning: in Plate::Normalize : Plate has already been normalized. Ignoring..." << std::endl;
         return;
     }
     angle_ /= number_of_objects_;
@@ -139,7 +139,7 @@ void Plate::UpdateRADECValues(const Plate& plate){
     
     // check that the plate numbers are indeed the same
     if (plate_number_ != plate.plate_number()){
-        std::cout << "Error: plates numbers are not the same; skipping addition of ra and dec values" << std::endl;
+        std::cout << "Error: in Plate::UpdateRADECValues : plates numbers are not the same. skipping addition of ra and dec values" << std::endl;
         return;
     }
     angle_ += plate.angle();

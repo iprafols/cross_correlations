@@ -8,6 +8,28 @@
 
 #include "baofit_setup.h"
 
+BaofitSetup::BaofitSetup(const Input& input){
+    /**
+     EXPLANATION:
+     Runs baofit
+     
+     INPUTS:
+     input - object of type Input
+     bootstrap - a boolean specifying if the bootstrap covariance matrix is to be used
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     BaofitSetup
+     Input
+     
+     FUNCITONS USED:
+     NONE
+     */
+    flag_verbose_baofit_setup_ = input.flag_verbose_baofit_setup();
+}
+
 void BaofitSetup::Run(const Input& input, const bool bootstrap){
     /**
      EXPLANATION:
@@ -29,25 +51,37 @@ void BaofitSetup::Run(const Input& input, const bool bootstrap){
      */
     std::string command;
     
+    if (flag_verbose_baofit_setup_ >= 1){
+        std::cout << "Running BAOFIT" << std::endl;
+    }
+    
     // changing to output directory
     command = "cd " + input.output();
-    std::cout << command << std::endl;
+    if (flag_verbose_baofit_setup_ >= 1){
+        std::cout << command << std::endl;
+    }
     system(command.c_str());
     
     if (bootstrap){
         command = "baofit -i " + input.output_base_name() + "_baofit.bootstrap.diag.ini > " + input.output_base_name() + "_baofit.bootstrap.diag.log";
-        std::cout << command << std::endl;
+        if (flag_verbose_baofit_setup_ >= 1){
+            std::cout << command << std::endl;
+        }
         system(command.c_str());
     }
     else{
         command = "baofit -i " + input.output_base_name() + "_baofit.bootstrap.diag.ini > " + input.output_base_name() + "_baofit.bootstrap.diag..log";
-        std::cout << command << std::endl;
+        if (flag_verbose_baofit_setup_ >= 1){
+            std::cout << command << std::endl;
+        }
         system(command.c_str());
     }
     
     // changing back to call directory
     command = "cd " + input.running_pwd();
-    std::cout << command;
+    if (flag_verbose_baofit_setup_ >= 1){
+        std::cout << command;
+    }
     system(command.c_str());
     
 }
@@ -71,12 +105,17 @@ void BaofitSetup::Set(const Input& input, const bool bootstrap){
      FUNCITONS USED:
      NONE
      */
+    if (flag_verbose_baofit_setup_ >= 1){
+        std::cout << "Setting BAOFIT ini file" << std::endl;
+    }
     
     if (bootstrap){
         WriteIniFile(input,true);
         std::string command;
         command = "cp " + input.output() + input.output_base_name() + ".data " + input.output() + input.output_base_name() + ".bootstrap.diag.data";
-        std::cout << command << std::endl;
+        if (flag_verbose_baofit_setup_ >= 1){
+            std::cout << command << std::endl;
+        }
         system(command.c_str());
     }
     else{
@@ -218,6 +257,6 @@ void BaofitSetup::WriteIniFile(const Input& input, const bool bootstrap){
         file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << std::endl;
+        std::cout << "Error : In BaofitSetup::WriteIniFile : Unable to open file:" << std::endl << filename << std::endl;
     }
 }

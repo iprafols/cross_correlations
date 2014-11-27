@@ -59,6 +59,9 @@ public:
     // access function for detailed_results_
     std::string detailed_results() const {return detailed_results_;}
     
+    // access function for flag_verbose_correlation_results_
+    size_t flag_verbose_correlation_results() const {return flag_verbose_correlation_results_;}
+    
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
     
@@ -77,10 +80,7 @@ public:
     
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
-        
-    // access function for pairs_file_name_
-    std::string pairs_file_name() const {return pairs_file_name_;}
-    
+            
     // access functions for plates_list_
     std::vector<int> plates_list() const {return plates_list_;}
     int plates_list(int index) const;
@@ -113,6 +113,9 @@ private:
     // detailed results directory (this is where the pairs detailed contribution to the corresponding plate and bin is stored)
     std::string detailed_results_;
     
+    // correlation_results verbose flag
+    size_t flag_verbose_correlation_results_;
+    
     // flag to write partial results
     size_t flag_write_partial_results_;
     
@@ -127,9 +130,6 @@ private:
 
     // number of bins
     size_t num_bins_;
-        
-    // pairs file name
-    std::string pairs_file_name_;
     
     // normalized cross-correlation
     CorrelationPlate normalized_correlation_;

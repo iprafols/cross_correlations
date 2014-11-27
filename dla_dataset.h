@@ -43,8 +43,22 @@ public:
     // constructs object and initializes its variables
     DLADataset(const Input& input);
     
+    // -------------------------------------------------------------
+    // access methods
+    
+    // access function for flag_verbose_dla_dataset_
+    size_t flag_verbose_dla_dataset() const {return flag_verbose_dla_dataset_;}
+
+    // -------------------------------------------------------------
+    // other methods
+    
     // load the dataset
     void Load(const double& z_min, const double& z_max, const std::string& dataset1);
+    
+private:
+    
+    // dla_dataset verbose flag
+    size_t flag_verbose_dla_dataset_;
 
 };
 

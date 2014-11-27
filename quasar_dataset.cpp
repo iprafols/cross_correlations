@@ -27,7 +27,8 @@ QuasarDataset::QuasarDataset(const Input& input){
      FUNCITONS USED:
      NONE
      */
-    
+
+    flag_verbose_quasar_dataset_ = input.flag_verbose_quasar_dataset();
     name_ = input.dataset1_name();
     Load(input.z_min(), input.z_max(), input.dataset1());
     
@@ -53,7 +54,10 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
      FUNCITONS USED:
      NONE
      */
-    
+    if (flag_verbose_quasar_dataset_ >= 1){
+        std::cout << "Loading quasar dataset" << std::endl;
+    }
+
     // setting the catalog columns to be read
     std::vector<std::string> fields(8);
     fields[0] = "PLATE";
@@ -74,7 +78,7 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error occured in AstroObjectDataset constructor: couldn't open catalog file: " + dataset1;
+        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + dataset1;
     }
     CCfits::ExtHDU& data = pInfile->extension(1);
     
@@ -130,7 +134,14 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
             // updating number_of_objects_in_plate
             (*num_objects_in_plate_.find(plate[i])).second ++;
             
+            if (flag_verbose_quasar_dataset_ >= 3 or (flag_verbose_quasar_dataset_ >= 2 and size_ == size_/1000*1000)){
+                std::cout << "Loaded " << size_ << " quasars" << std::endl;
+            }
+
+            
         }
     }
-    
+    if (flag_verbose_quasar_dataset_ >= 1){
+        std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+    }
 }

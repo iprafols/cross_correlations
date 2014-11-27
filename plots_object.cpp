@@ -80,7 +80,7 @@ void PlotsObject::MakePlottingMakefile() const{
         file.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << ".py" << std::endl;
+        std::cout << "Error :  In PlotsObject::MakePlottingMakefile : Unable to open file:" << std::endl << filename << ".py" << std::endl;
     }    
 }
 
@@ -153,7 +153,7 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << ".py" << std::endl;
+            std::cout << "Error : In PlotsObject::PlotCrossCorrelation : Unable to open file:" << std::endl << filename << ".py" << std::endl;
         }
     }
     
@@ -196,7 +196,7 @@ void PlotsObject::PlotRADECDispersion(const Dataset& dataset, const bool update_
         result.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << ".dat" << std::endl;
+        std::cout << "Error : In PlotsObject::PlotRADECDispersion : Unable to open file:" << std::endl << filename << ".dat" << std::endl;
     }
     
     // checking if the script has to be rewriten
@@ -243,7 +243,7 @@ void PlotsObject::PlotRADECDispersion(const Dataset& dataset, const bool update_
             script.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << ".py" << std::endl;
+            std::cout << "Error : In PlotsObject::PlotRADECDispersion : Unable to open file:" << std::endl << filename << ".py" << std::endl;
         }
     }
     
@@ -285,7 +285,7 @@ void PlotsObject::PlotZHistogram(const Dataset& dataset, const bool update_scrip
         result.close();
     }
     else{
-        std::cout << "Unable to open file:" << std::endl << filename << ".dat" << std::endl;
+        std::cout << "Error : In PlotsObject::PlotZHistogram : Unable to open file:" << std::endl << filename << ".dat" << std::endl;
     }
     
     // checking if the script has to be rewriten
@@ -324,7 +324,7 @@ void PlotsObject::PlotZHistogram(const Dataset& dataset, const bool update_scrip
             script.close();
         }
         else{
-            std::cout << "Unable to open file:" << std::endl << filename << ".py" << std::endl;
+            std::cout << "Error : In PlotsObject::PlotZHistogram : Unable to open file:" << std::endl << filename << ".py" << std::endl;
         }
 
     }

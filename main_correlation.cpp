@@ -65,6 +65,7 @@ int main(int argc, char *argv[]){
         input_filename += argv[1];
     }
     Input input(input_filename);
+    size_t flag_verbose_main = input.flag_verbose_main();
     const PlotsObject kPlots(input);
 
     // check whether or not the plate list needs to be computed
@@ -72,7 +73,6 @@ int main(int argc, char *argv[]){
         ComputePlateNeighbours(input);
     }
     // load plate list
-    std::cout << "Loading plate list" << std::endl;
     const PlateNeighbours kPlateNeighbours(input);
         
     // initialize cross-correlation results
@@ -80,7 +80,6 @@ int main(int argc, char *argv[]){
     
     if (input.flag_compute_cross_correlation() or input.flag_load_only() or input.flag_plot_catalog_info()){
         // load quasar dataset
-        std::cout << "Loading AstroObjects dataset" << std::endl;
         std::auto_ptr<AstroObjectDataset> object_list;
         if (input.dataset1_type() == "quasar"){
             object_list.reset(new QuasarDataset(input));
@@ -89,39 +88,44 @@ int main(int argc, char *argv[]){
             object_list.reset(new DLADataset(input));
         }
         else{
-            std::cout << "the selected type for dataset1 is not enabled; current options are: " << input.dataset1_type_options() << std::endl;
+            std::cout << "The selected type for dataset1 is not enabled. Current options are: " << input.dataset1_type_options() << std::endl;
+            return 0;
         }
-        
-        std::cout << "Loaded " << (*object_list).size() << " AstroObjects" << std::endl;
-        std::cout << "Plotting AstroObjects dataset information" << std::endl;
         if (input.flag_plot_catalog_info()){
+            if (flag_verbose_main >= 2){
+                std::cout << "Plotting dataset1 information" << std::endl;
+            }
             kPlots.PlotRADECDispersion(*object_list, true);
             kPlots.PlotZHistogram(*object_list, true);
         }
         
         // load spectra dataset
-        std::cout << "Loading spectra dataset" << std::endl;
         LyaSpectraDataset spectra_list(input);
-        std::cout << "Loaded " << spectra_list.size() << " spectra" << std::endl;
-        std::cout << "Plotting spectra dataset information" << std::endl;
         if (input.flag_plot_catalog_info()){
+            if (flag_verbose_main >= 2){
+                std::cout << "Plotting spectra dataset information" << std::endl;
+            }
             kPlots.PlotRADECDispersion(spectra_list, true);
             kPlots.PlotZHistogram(spectra_list, true);
         }
         
         // check load_only flag and end program if set
         if (input.flag_load_only()){
-            std::cout << "End of program" << std::endl;
+            if (flag_verbose_main >= 1){
+                std::cout << "End of program" << std::endl;
+            }
             time(&end_time);
             double time_spent = difftime(end_time, start_time);
-            if (time_spent < 60.0){
-                std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
-            }
-            else if (time_spent < 3600.0){
-                std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
-            }
-            else{
-                std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
+            if (flag_verbose_main >= 1){
+                if (time_spent < 60.0){
+                    std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
+                }
+                else if (time_spent < 3600.0){
+                    std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
+                }
+                else{
+                    std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
+                }
             }
             return 1;
         }
@@ -130,22 +134,24 @@ int main(int argc, char *argv[]){
         if (input.flag_compute_cross_correlation()){
             {
                 // compute distances to the objects (in Mpc/h)
-                std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+                if (flag_verbose_main >= 1){
+                    std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+                }
                 InterpolationMap redshift_distance_map(input);
                 (*object_list).SetDistances(redshift_distance_map);
                 spectra_list.SetDistances(redshift_distance_map);
             }
-            
-            std::cout << "Computing the cross-correlation" << std::endl;
+            // compute cross-correlations
             results.ComputeCrossCorrelation(*object_list, spectra_list, input);
-            std::cout << "Plotting cross-correlation" << std::endl;
+            if (flag_verbose_main >= 2){
+                std::cout << "Plotting cross-correlation" << std::endl;
+            }
             kPlots.PlotCrossCorrelation(results, input, true);
         }
     }
     
     if (input.flag_compute_covariance()){
         // compute covariance matrix
-        std::cout << "Computing covariance matrix" << std::endl;
         CovarianceMatrix cov_mat(input);
         if (input.flag_compute_bootstrap()){
             cov_mat.ComputeBootstrapCovMat(results.bootstrap());
@@ -185,7 +191,7 @@ int main(int argc, char *argv[]){
     }
     
     // setup BAOFIT configuration and run fitting program
-    BaofitSetup baofit;
+    BaofitSetup baofit(input);
     if (input.flag_set_baofit()){
         if (input.flag_compute_bootstrap()){
             baofit.Set(input,true);
@@ -203,18 +209,21 @@ int main(int argc, char *argv[]){
     
     
     // display time required to run the program
-    std::cout << "End of program" << std::endl;
+    if (flag_verbose_main >= 1){
+        std::cout << "End of program" << std::endl;
+    }
     time(&end_time);
     double time_spent = difftime(end_time, start_time);
-    if (time_spent < 60.0){
-        std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
+    if (flag_verbose_main >= 1){
+        if (time_spent < 60.0){
+            std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
+        }
+        else if (time_spent < 3600.0){
+            std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
+        }
+        else{
+            std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
+        }
     }
-    else if (time_spent < 3600.0){
-        std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
-    }
-    else{
-        std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
-    }
-    
     return 1;
 }

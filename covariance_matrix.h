@@ -50,6 +50,9 @@ public:
     CovMat cov_mat() const {return cov_mat_;}
     double cov_mat(size_t i, size_t j) const;
     
+    // access function for flag_verbose_covariance_matrix_
+    size_t flag_verbose_covariance_matrix() const {return flag_verbose_covariance_matrix_;}
+    
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
 
@@ -72,6 +75,9 @@ private:
     
     // covariance matrix
     CovMat cov_mat_;
+    
+    // covariance_matrix verbose flag
+    size_t flag_verbose_covariance_matrix_;
     
     // number of bins
     size_t num_bins_;

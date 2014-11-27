@@ -47,6 +47,9 @@ public:
     // -------------------------------------------------------------
     // access methods
     
+    // access function for flag_verbose_plate_neighbours_
+    size_t  flag_verbose_plate_neighbours() const {return flag_verbose_plate_neighbours_;}
+    
     // access function for plates_
     PlatesMapVector<Plate>::map plates() const {return plates_;}
     
@@ -74,6 +77,9 @@ public:
 
     
 private:
+    // plate_neighours verbose flag
+    size_t flag_verbose_plate_neighbours_;
+    
     // list of plates with the corresponding neighbours
     PlatesMapVector<Plate>::map plates_;
 

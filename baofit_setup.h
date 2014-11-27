@@ -35,6 +35,14 @@ public:
     // constructs empty object
     BaofitSetup(){};
     
+    // constructs object
+    BaofitSetup(const Input& input);
+    
+    // -------------------------------------------------------------
+    // other methods
+    
+    // access function for flag_verbose_baofit_setup_
+    size_t flag_verbose_baofit_setup() const {return flag_verbose_baofit_setup_;}
     
     // -------------------------------------------------------------
     // other methods
@@ -46,6 +54,9 @@ public:
     void Set(const Input& input, const bool boostrap = false);
 
 private:
+    
+    // verbose flag
+    size_t flag_verbose_baofit_setup_;
 
     // writes ini file required to run baofit
     void WriteIniFile(const Input& input, const bool boostrap = false);
