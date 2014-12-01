@@ -204,6 +204,18 @@ int main(int argc, char *argv[]){
         }
         // baofit.Run(input); // full covariance matrix needs to be computed first
     }
+    if (input.flag_set_baofit_best_fit()){
+        if (input.flag_compute_bootstrap()){
+            baofit.SetBestFit(input,true);
+        }
+        // baofit.SetBestFit(input); // full covariance matrix needs to be computed first
+    }
+    if (input.flag_run_baofit_best_fit()){
+        if (input.flag_compute_bootstrap()){
+            baofit.RunBestFit(input, true);
+        }
+        // baofit.RunBestFit(input); // full covariance matrix needs to be computed first        
+    }
     
     // make the plots
     

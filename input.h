@@ -40,6 +40,9 @@ public:
     // -------------------------------------------------------------
     // access methods
     
+    // access function for best_fit_
+    std::string best_fit() const {return best_fit_;}
+    
     // access function for baofit_model_root_
     std::string baofit_model_root() const {return baofit_model_root_;}
     
@@ -67,6 +70,9 @@ public:
     // access function for dataset2_name_
     std::string dataset2_name() const {return dataset2_name_;}
     
+    // access function for fit_
+    std::string fit() const {return fit_;}
+    
     // access function for flag_compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
@@ -88,8 +94,14 @@ public:
     // access function for flag_run_baofit_
     bool flag_run_baofit() const {return flag_run_baofit_;}
     
+    // access function for flag_run_baofit_best_fit_
+    bool flag_run_baofit_best_fit() const {return flag_run_baofit_best_fit_;}
+    
     // access function for flag_set_baofit_
     bool flag_set_baofit() const {return flag_set_baofit_;}
+    
+    // access function for flag_set_baofit_best_fit_
+    bool flag_set_baofit_best_fit() const {return flag_set_baofit_best_fit_;}
     
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
@@ -237,11 +249,17 @@ private:
     // flag to plot catalogues info
     bool flag_plot_catalog_info_;
     
-    // flag to fit using baofit
+    // flag to run baofit
     bool flag_run_baofit_;
+    
+    // flag to run baofit with with all the parameters fixed to the best-fit model
+    bool flag_run_baofit_best_fit_;    
     
     // flag to set baofit ini file
     bool flag_set_baofit_;
+    
+    // flag to set baofit with with all the parameters fixed to the best-fit model
+    bool flag_set_baofit_best_fit_;    
     
     // verbose flag
     size_t flag_verbose_;
@@ -341,6 +359,12 @@ private:
     
     // baofit modelroot
     std::string baofit_model_root_;
+    
+    // directory where the fit results will be saved
+    std::string fit_;
+    
+    // directory where the best-fit predictions will be saved
+    std::string best_fit_;
 
     
     

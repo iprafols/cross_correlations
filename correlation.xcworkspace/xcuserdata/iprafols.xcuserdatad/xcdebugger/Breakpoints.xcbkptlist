@@ -13,9 +13,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "153"
-         endingLineNumber = "153"
-         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
-         landmarkType = "5">
+         endingLineNumber = "153">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -28,7 +26,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "175"
          endingLineNumber = "175"
-         landmarkName = "CorrelationPlate::weight(size_t index)"
+         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -84,7 +82,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "160"
          endingLineNumber = "160"
-         landmarkName = "CorrelationPlate::weight(size_t index)"
+         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -98,7 +96,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "165"
          endingLineNumber = "165"
-         landmarkName = "CorrelationPlate::weight(size_t index)"
+         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -111,7 +109,9 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "154"
-         endingLineNumber = "154">
+         endingLineNumber = "154"
+         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
+         landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -124,7 +124,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "182"
          endingLineNumber = "182"
-         landmarkName = "CorrelationPlate::xi(size_t index)"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -138,7 +138,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "189"
          endingLineNumber = "189"
-         landmarkName = "CorrelationPlate::xi(size_t index)"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -152,7 +152,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "196"
          endingLineNumber = "196"
-         landmarkName = "CorrelationPlate::xi(size_t index)"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -166,7 +166,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "202"
          endingLineNumber = "202"
-         landmarkName = "CorrelationPlate::xi(size_t index)"
+         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -179,9 +179,7 @@
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "126"
-         endingLineNumber = "126"
-         landmarkName = "CorrelationPlate::mean_sigma(size_t index)"
-         landmarkType = "5">
+         endingLineNumber = "126">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "Yes"
@@ -194,7 +192,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "143"
          endingLineNumber = "143"
-         landmarkName = "CorrelationPlate::num_averaged_pairs(size_t index)"
+         landmarkName = "CorrelationPlate::mean_pi(size_t index)"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -63,6 +63,14 @@ Input::Input(const std::string& filename){
     }
     command = "mkdir -p -v " + plots_;
     system(command.c_str());
+    if (flag_set_baofit_){
+        command = "mkdir -p -v " + fit_;
+        system(command.c_str());
+    }
+    if (flag_set_baofit_best_fit_){
+        command = "mkdir -p -v " + best_fit_;
+        system(command.c_str());
+    }
     
     // write the used and unused parameters from the .ini file
     if (filename != ""){
@@ -159,8 +167,9 @@ void Input::SetDefaultValues(){
     flag_load_only_ = false;
     flag_plot_catalog_info_ = flag_load_only_;
     flag_run_baofit_ = true;
+    flag_run_baofit_best_fit_ = true;
     flag_set_baofit_ = true;
-    flag_write_partial_results_ = 0;
+    flag_set_baofit_best_fit_ = true;
     flag_verbose_ = 1;
     flag_verbose_baofit_setup_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;
@@ -172,6 +181,7 @@ void Input::SetDefaultValues(){
     flag_verbose_main_ = flag_verbose_;
     flag_verbose_plate_neighbours_ = flag_verbose_;
     flag_verbose_quasar_dataset_ = flag_verbose_;
+    flag_write_partial_results_ = 0;
     
     
     // -------------------------------------------------------------
@@ -200,6 +210,8 @@ void Input::SetDefaultValues(){
     // fit settings
     include_distorsions_ = false;
     baofit_model_root_ = "/Users/iprafols/Downloads/programes/baofit/models/";
+    fit_ = output_ + "fit/";
+    best_fit_ = output_ + "best_fit/";
     
     
     // -------------------------------------------------------------
@@ -278,6 +290,16 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
+    else if (name == "best_fit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            best_fit_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
     else if (name == "bootstrap_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -292,6 +314,16 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             c_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "fit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            fit_ = value;
             input_flag[name] = true;
         }
         else{
@@ -962,6 +994,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
+    //updating fit_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("best_fit");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        best_fit_ = output_ + "best_fit/";
+    }
+
     // updating bootstrap_results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("results");  
@@ -989,6 +1028,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
         
+    //updating fit_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("fit");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        fit_ = output_ + "fit/";
+    }
+
     // updating flag_plot_catalog_info_ if necessary
     it = input_flag.find("flag_load_only");
     it2 = input_flag.find("flag_plot_catalog_info");
@@ -1212,6 +1258,30 @@ void Input::WriteLog(){
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
         }
+        if (flag_run_baofit_){
+            log << "flag_run_baofit = true" << std::endl;
+        }
+        else{
+            log << "flag_run_baofit = false" << std::endl;
+        }
+        if (flag_run_baofit_best_fit_){
+            log << "flag_run_baofit_best_fit = true" << std::endl;
+        }
+        else{
+            log << "flag_run_baofit_best_fit = false" << std::endl;
+        }
+        if (flag_set_baofit_){
+            log << "flag_set_baofit = true" << std::endl;
+        }
+        else{
+            log << "flag_set_baofit = false" << std::endl;
+        }
+        if (flag_set_baofit_best_fit_){
+            log << "flag_set_baofit = true" << std::endl;
+        }
+        else{
+            log << "flag_set_baofit = false" << std::endl;
+        }
         log << "flag_verbose = " << flag_verbose_ << std::endl;
         log << "flag_verbose_baofit_setup = " << flag_verbose_baofit_setup_ << std::endl;
         log << "flag_verbose_compute_plate_neighbours = " << flag_verbose_compute_plate_neighbours_ << std::endl;
@@ -1261,6 +1331,8 @@ void Input::WriteLog(){
             log << "include_distorsions = false" << std::endl;
         }
         log << "baofit_model_root = " << baofit_model_root_ << std::endl;
+        log << "fit = " << fit_ << std::endl;
+        log << "best_fit = " << best_fit_ << std::endl;
         log << std::endl;
 
         log << std::endl;

@@ -48,10 +48,17 @@ public:
     // other methods
     
     // Runs baofit
-    void Run (const Input& input, const bool boostrap = false);
+    void Run(const Input& input, const bool boostrap = false);
+    
+    // Runs baofit with all the parameters fixed to the best-fit model
+    void RunBestFit(const Input& input, const bool boostrap = false);
 
     // Sets ini file
     void Set(const Input& input, const bool boostrap = false);
+
+    // Sets ini file with all the parameters fixed to the best-fit model
+    void SetBestFit(const Input& input, const bool boostrap = false);
+
 
 private:
     
@@ -60,6 +67,9 @@ private:
 
     // writes ini file required to run baofit
     void WriteIniFile(const Input& input, const bool boostrap = false);
+    
+    // writes ini file required to run baofit with all the parameters fixed to the best-fit model
+    void WriteBestFitIniFile(const Input& input, const bool bootstrap = false);
     
 };
 
