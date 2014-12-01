@@ -104,27 +104,30 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
                     
                     mjd = atoi(mpf.substr(0, pos).c_str());
                     fiber = atoi(mpf.substr(pos2+1).c_str());
-                                        
-                    // create AstroObject
-                    AstroObject object(ra, dec, plate, fiber, mjd, z, false);
                     
-                    // adding object to list_
-                    if (list_.find(plate) == list_.end()){
-                        // if necessary, create new entry
-                        std::vector<AstroObject> v;
-                        list_[plate] = v;
-                        num_objects_in_plate_[plate] = 0;
-                    }
-                    (*list_.find(plate)).second.push_back(object);
-                    
-                    // updating size_
-                    size_ ++;
-                    
-                    // updating number_of_objects_in_plate
-                    (*num_objects_in_plate_.find(plate)).second ++;
-                    
-                    if (flag_verbose_dla_dataset_ >= 3 or (flag_verbose_dla_dataset_ >= 2 and size_ == size_/1000*1000)){
-                        std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+                    if (z > z_min and z < z_max){
+                        // create AstroObject
+                        AstroObject object(ra, dec, plate, fiber, mjd, z, false);
+                        
+                        // adding object to list_
+                        if (list_.find(plate) == list_.end()){
+                            // if necessary, create new entry
+                            std::vector<AstroObject> v;
+                            list_[plate] = v;
+                            num_objects_in_plate_[plate] = 0;
+                        }
+                        (*list_.find(plate)).second.push_back(object);
+                        
+                        // updating size_
+                        size_ ++;
+                        
+                        // updating number_of_objects_in_plate
+                        (*num_objects_in_plate_.find(plate)).second ++;
+                        
+                        if (flag_verbose_dla_dataset_ >= 3 or (flag_verbose_dla_dataset_ >= 2 and size_ == size_/1000*1000)){
+                            std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+                        }
+
                     }
 
                 }
