@@ -202,29 +202,31 @@ void BaofitSetup::WriteIniFile(const Input& input, const bool bootstrap){
         if (input.include_distorsions()){
             file << "model-config = value[cont-kc]=0.02" << std::endl;
             file << "model-config = value[cont-pc]=1" << std::endl;
+            file << std::endl;
+            file << "## Distorsion priors" << std::endl;
+            file << "model-config = boxprior[cont-kc] @ (0,0.1)" << std::endl;
+            file << "model-config = gaussprior[cont-kc] @ (0,0.02)" << std::endl;
+            file << "model-config = boxprior[cont-pc] @ (0,3)" << std::endl;
+            file << "model-config = gaussprior[cont-pc] @ (0,4)" << std::endl;
+            file << "# Broadband distortion model" << std::endl;
+            file << "#dist-add = rP,rT=0:2,-3:1" << std::endl;
+            file << std::endl;
+
         }
         else{
             file << "#model-config = value[cont-kc]=0.02" << std::endl;
             file << "#model-config = value[cont-pc]=1" << std::endl;
-        }
-        file << std::endl;
-        file << "## Distorsion priors" << std::endl;
-        if (input.include_distorsions()){
-            file << "modelconfig = boxprior[cont-kc] @ (0,0.1)" << std::endl;
-            file << "modelconfig = gaussprior[cont-kc] @ (0,0.02)" << std::endl;
-            file << "model-config = boxprior[cont-pc] @ (0,3)" << std::endl;
-            file << "model-config = gaussprior[cont-pc] @ (0,4)" << std::endl;
-        }
-        else{
-            file << "#modelconfig = boxprior[cont-kc] @ (0,0.1)" << std::endl;
-            file << "#modelconfig = gaussprior[cont-kc] @ (0,0.02)" << std::endl;
+            file << std::endl;
+            file << "## Distorsion priors" << std::endl;
+            file << "#model-config = boxprior[cont-kc] @ (0,0.1)" << std::endl;
+            file << "#model-config = gaussprior[cont-kc] @ (0,0.02)" << std::endl;
             file << "#model-config = boxprior[cont-pc] @ (0,3)" << std::endl;
             file << "#model-config = gaussprior[cont-pc] @ (0,4)" << std::endl;
+            file << std::endl;
+            file << "# Broadband distortion model" << std::endl;
+            file << "dist-add = rP,rT=0:2,-3:1" << std::endl;
+            file << std::endl;
         }
-        file << std::endl;
-        file << "# Broadband distortion model" << std::endl;
-        file << "dist-add = rP,rT=0:2,-3:1" << std::endl;
-        file << std::endl;
         file << "### Data Options #############################################" << std::endl;
         file << std::endl;
         if (input.flag_compute_bootstrap()){
