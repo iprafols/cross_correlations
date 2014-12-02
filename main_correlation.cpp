@@ -218,7 +218,27 @@ int main(int argc, char *argv[]){
     }
     
     // make the plots
-    
+    if (input.flag_plot()){
+        if (flag_verbose_main >= 1){
+            std::cout << "Plotting results" << std::endl;
+        }
+        std::string command;
+        command = "cd " + input.plots();
+        if (flag_verbose_main >= 1){
+            std::cout << command << std::endl;
+        }
+        system(command.c_str());
+        command = "make --keep-going";
+        if (flag_verbose_main >= 1){
+            std::cout << command << std::endl;
+        }
+        system(command.c_str());
+        command = "cd " + input.running_pwd();
+        if (flag_verbose_main >= 1){
+            std::cout << command << std::endl;
+        }
+        system(command.c_str());
+    }
     
     // display time required to run the program
     if (flag_verbose_main >= 1){

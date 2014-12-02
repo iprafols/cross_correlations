@@ -88,6 +88,9 @@ public:
     // access function for  flag_load_only_
     bool flag_load_only() const {return flag_load_only_;}
     
+    // access function for flag_plot_
+    bool flag_plot() const {return flag_plot_;}
+    
     // access function for flag_plot_catalog_info_
     bool flag_plot_catalog_info() const {return flag_plot_catalog_info_;}
     
@@ -245,6 +248,9 @@ private:
     
     // flag to end program after loading the catalogs and plotting their information
     bool flag_load_only_;
+    
+    // flag to plot results
+    bool flag_plot_;
     
     // flag to plot catalogues info
     bool flag_plot_catalog_info_;

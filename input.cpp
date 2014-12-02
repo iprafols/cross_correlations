@@ -165,6 +165,7 @@ void Input::SetDefaultValues(){
     flag_compute_cross_correlation_ = true;
     flag_compute_plate_neighbours_ = false;
     flag_load_only_ = false;
+    flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
     flag_run_baofit_ = true;
     flag_run_baofit_best_fit_ = true;
@@ -414,6 +415,25 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else if (value == "false" or value == "FALSE" or value == "False"){
                 flag_load_only_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+        }
+    }
+    else if (name == "flag_plot"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_plot_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_plot_ = false;
             }
             else{
                 unused_params_ += name + " = " + value + "\n";
@@ -1251,6 +1271,12 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_load_only = false" << std::endl;
+        }
+        if (flag_plot_){
+            log << "flag_plot = true" << std::endl;
+        }
+        else{
+            log << "flag_plot = false" << std::endl;
         }
         if (flag_plot_catalog_info_){
             log << "flag_plot_catalog_info = true" << std::endl;
