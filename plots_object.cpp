@@ -25,7 +25,7 @@ PlotsObject::PlotsObject(const Input& input){
      FUNCITONS USED:
      NONE
      */
-    plots_dir_ = input.plots();
+    plots_dir_ = input.output() + input.plots();
     output_base_name_ = input.output_base_name();
     MakePlottingMakefile();
 }
@@ -129,11 +129,11 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script << "num_sigma_bins = " << input.num_sigma_bins() << std::endl;
             script << "num_pi_bins = " << input.num_pi_bins() << std::endl;
             script << std::endl;
-            script << "filename = '" << input.fit() << output_base_name_ << "_residuals.dat'" << std::endl;
+            script << "filename = '../" << input.fit() << output_base_name_ << "_residuals.dat'" << std::endl;
             script << "data = np.genfromtxt(filename)" << std::endl;
-            script << "filename = '" << input.best_fit() << output_base_name_ << "_residuals.dat'" << std::endl;
+            script << "filename = '../" << input.best_fit() << output_base_name_ << "_residuals.dat'" << std::endl;
             script << "data_all = np.genfromtxt(filename)" << std::endl;
-            script << "filename = '" << input.best_fit() << output_base_name_ << "_altresiduals.dat'" << std::endl;
+            script << "filename = '../" << input.best_fit() << output_base_name_ << "_altresiduals.dat'" << std::endl;
             script << "data_iso = np.genfromtxt(filename)" << std::endl;
                         script << std::endl;
             script << "# plotting sigma bins" << std::endl;

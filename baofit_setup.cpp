@@ -56,7 +56,7 @@ void BaofitSetup::Run(const Input& input, const bool bootstrap){
     }
     
     // changing to fit directory
-    command = "cd " + input.fit();
+    command = "cd " + input.output() + input.fit();
     if (flag_verbose_baofit_setup_ >= 1){
         std::cout << command << std::endl;
     }
@@ -112,7 +112,7 @@ void BaofitSetup::RunBestFit(const Input& input, const bool bootstrap){
     }
     
     // changing to fit directory
-    command = "cd " + input.best_fit();
+    command = "cd " + input.output() + input.best_fit();
     if (flag_verbose_baofit_setup_ >= 1){
         std::cout << command << std::endl;
     }
@@ -241,12 +241,12 @@ void BaofitSetup::WriteBestFitIniFile(const Input& input, const bool bootstrap){
     size_t ini, end;
     
     if (bootstrap){
-        filename = input.best_fit() + input.output_base_name() + "_baofit.bootstrap.diag.ini";
-        fit_config_filename = input.fit() + input.output_base_name() + + "_baofit.bootstrap.diag_fit.config";
+        filename = input.output() + input.best_fit() + input.output_base_name() + "_baofit.bootstrap.diag.ini";
+        fit_config_filename = input.output() + input.fit() + input.output_base_name() + + "_baofit.bootstrap.diag_fit.config";
     }
     else{
-        filename = input.best_fit() + input.output_base_name() + "_baofit.ini";
-        fit_config_filename = input.fit() + input.output_base_name() + + "_baofit_fit.config";
+        filename = input.output() + input.best_fit() + input.output_base_name() + "_baofit.ini";
+        fit_config_filename = input.output() + input.fit() + input.output_base_name() + + "_baofit_fit.config";
     }
     
     std::ofstream file(filename.c_str(),std::ofstream::trunc);
@@ -363,10 +363,10 @@ void BaofitSetup::WriteIniFile(const Input& input, const bool bootstrap){
     
     std::string filename;
     if (bootstrap){
-        filename = input.fit() + input.output_base_name() + "_baofit.bootstrap.diag.ini";
+        filename = input.output() + input.fit() + input.output_base_name() + "_baofit.bootstrap.diag.ini";
     }
     else{
-        filename = input.fit() + input.output_base_name() + "_baofit.ini";
+        filename = input.output() + input.fit() + input.output_base_name() + "_baofit.ini";
     }
     
     std::ofstream file(filename.c_str(),std::ofstream::trunc); 

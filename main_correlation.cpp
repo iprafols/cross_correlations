@@ -223,7 +223,7 @@ int main(int argc, char *argv[]){
             std::cout << "Plotting results" << std::endl;
         }
         std::string command;
-        command = "cd " + input.plots();
+        command = "cd " + input.output() + input.plots();
         if (flag_verbose_main >= 1){
             std::cout << command << std::endl;
         }

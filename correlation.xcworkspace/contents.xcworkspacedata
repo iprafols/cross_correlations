@@ -152,6 +152,9 @@
       location = "group:preguntes.rtf">
    </FileRef>
    <FileRef
+      location = "group:TODO.rtf">
+   </FileRef>
+   <FileRef
       location = "group:makefile">
    </FileRef>
 </Workspace>

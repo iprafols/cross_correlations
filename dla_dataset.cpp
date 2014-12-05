@@ -103,6 +103,7 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
                     pos2 = mpf.find("-",pos + 1);
                     
                     mjd = atoi(mpf.substr(0, pos).c_str());
+                    plate = atoi(mpf.substr(pos+1, pos2).c_str());
                     fiber = atoi(mpf.substr(pos2+1).c_str());
                     
                     if (z > z_min and z < z_max){

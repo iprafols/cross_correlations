@@ -204,15 +204,15 @@ void Input::SetDefaultValues(){
     output_ = "output/";
     output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
     results_ = output_ + "partial_results/";
-    plots_ = output_ + "plots/";
+    plots_ = "plots/";
     
     
     // -------------------------------------------------------------
     // fit settings
     include_distorsions_ = false;
     baofit_model_root_ = "/Users/iprafols/Downloads/programes/baofit/models/";
-    fit_ = output_ + "fit/";
-    best_fit_ = output_ + "best_fit/";
+    fit_ = "fit/";
+    best_fit_ = "best_fit/";
     
     
     // -------------------------------------------------------------
@@ -291,16 +291,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "best_fit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            best_fit_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
     else if (name == "bootstrap_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -315,16 +305,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             c_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
-    else if (name == "fit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            fit_ = value;
             input_flag[name] = true;
         }
         else{
@@ -872,16 +852,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
         }
     }
-    else if (name == "plots"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            plots_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
-        }
-    }
     else if (name == "input"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1014,13 +984,6 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
-    //updating fit_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("best_fit");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        best_fit_ = output_ + "best_fit/";
-    }
-
     // updating bootstrap_results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("results");  
@@ -1046,13 +1009,6 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it2 = input_flag.find("dataset2");
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
-    }
-        
-    //updating fit_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("fit");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        fit_ = output_ + "fit/";
     }
 
     // updating flag_plot_catalog_info_ if necessary
@@ -1201,14 +1157,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         plate_neighbours_ = input_ + "plate_neighbours.dat";
     }
-    
-    //updating plots_ if necessary
-    it = input_flag.find("output");
-    it2 = input_flag.find("plots");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        plots_ = output_ + "plots/";
-    }
-    
+        
     // updating results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("results");    
@@ -1344,7 +1293,6 @@ void Input::WriteLog(){
         log << "output = " << output_ << std::endl;
         log << "output_base_name = " << output_base_name_ << std::endl;
         log << "results = " << results_ << std::endl;
-        log << "plots = " << plots_ << std::endl;
         log << std::endl;
         
         log << std::endl;
@@ -1357,8 +1305,6 @@ void Input::WriteLog(){
             log << "include_distorsions = false" << std::endl;
         }
         log << "baofit_model_root = " << baofit_model_root_ << std::endl;
-        log << "fit = " << fit_ << std::endl;
-        log << "best_fit = " << best_fit_ << std::endl;
         log << std::endl;
 
         log << std::endl;

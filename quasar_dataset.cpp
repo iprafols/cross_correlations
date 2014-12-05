@@ -142,6 +142,6 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
         }
     }
     if (flag_verbose_quasar_dataset_ >= 1){
-        std::cout << "Loaded " << size_ << " DLAs" << std::endl;
+        std::cout << "Loaded " << size_ << " quasars" << std::endl;
     }
 }

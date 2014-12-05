@@ -184,7 +184,7 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
         PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.find(plates_list_[i]);
         
         if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
-            std::cout << i << " out of " << plates_list_.size() << "plates computed" << std::endl;
+            std::cout << i << " out of " << plates_list_.size() << " plates computed" << std::endl;
         }
         else{
             (*it).second.set_flag_verbose_correlation_plate(0);    
@@ -233,12 +233,9 @@ void CorrelationResults::ComputeBootstrapRealizations(){
     }
     
     for (size_t i = 0; i < bootstrap_.size(); i ++){
+
         for (size_t j = 0; j < number_of_plates; j ++){
-            
-            if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
-                std::cout << i << " out of " << bootstrap_.size() << "bootstrap realizatons computed" << std::endl;
-            }
-            
+                        
             // pick plate
             plate_chosen = rand() % number_of_plates;
             
@@ -248,6 +245,10 @@ void CorrelationResults::ComputeBootstrapRealizations(){
         }
         
         bootstrap_[i].Normalize();
+        
+        if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
+            std::cout << i << " out of " << bootstrap_.size() << " bootstrap realizatons computed" << std::endl;
+        }
         
     }
 }
