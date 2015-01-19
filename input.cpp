@@ -57,11 +57,13 @@ Input::Input(const std::string& filename){
     
     // creating folders if required
     std::string command;
+    command = "mkdir -p -v " + output_;
+    system(command.c_str());
     if (flag_write_partial_results_ >= 1){
         command = "mkdir -p -v " + results_;
         system(command.c_str());
     }
-    command = "mkdir -p -v " + plots_;
+    command = "mkdir -p -v " + output_ + plots_;
     system(command.c_str());
     if (flag_set_baofit_){
         command = "mkdir -p -v " + fit_;

@@ -67,7 +67,7 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
     fields[4] = "DEC";
     fields[5] = "Z_VI";
     fields[6] = "PSFMAG";
-    fields[7] = "SPECPRIMARY";
+    //fields[7] = "SPECPRIMARY";
     
     // construct fits object
     std::auto_ptr<CCfits::FITS> pInfile; 
@@ -100,13 +100,13 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
     data.column(fields[4]).read(dec,1,nobj); // dec
     data.column(fields[5]).read(z,1,nobj); // z
     data.column(fields[6]).readArrays(psf_mag,1,nobj); // magnitudes
-    data.column(fields[7]).read(specprimary_flag,1,nobj); // specprimary
+    //data.column(fields[7]).read(specprimary_flag,1,nobj); // specprimary
     
     // setting size to zero and creating entries in list_ map
     size_ = 0;
     for (int i=0;i<nobj;i++){
         // this is to avoid repeated objects
-        if (specprimary_flag[i] > 0){            
+        //if (specprimary_flag[i] > 0){
             
             if (list_.find(plate[i]) == list_.end()){
                 std::vector<AstroObject> v;
@@ -114,13 +114,14 @@ void QuasarDataset::Load(const double& z_min, const double& z_max, const std::st
                 num_objects_in_plate_[plate[i]] = 0;
             }
             
-        }
+        //}
     }
     
     // adding objects to list_ and to list_by_plate
     for (int i=0;i<nobj;i++){
         // this is to avoid repeated objects
-        if ((specprimary_flag[i] > 0) and (z_min <= z[i] and z[i] <= z_max) and not (ra[i] == 0.0 and dec[i] == 0.0)){
+        //if ((specprimary_flag[i] > 0) and (z_min <= z[i] and z[i] <= z_max) and not (ra[i] == 0.0 and dec[i] == 0.0)){
+        if ((z_min <= z[i] and z[i] <= z_max) and not (ra[i] == 0.0 and dec[i] == 0.0)){
             
             // create AstroObject
             AstroObject object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], false);
