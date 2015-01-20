@@ -21,6 +21,8 @@
 // classes needed
 #include "correlation_plate.h"
 #include "input.h"
+#include "plate_neighbours.h"
+#include "pair_dataset.h"
 ////////
 
 // functions needed
@@ -67,6 +69,10 @@ public:
     // compute covariance matrix from bootstrap realizations
     void ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap);
     
+    // compute covariance matrix
+    void ComputeCovMat(const Input& input, const PlateNeighbours& kPlateNeighbours);
+
+    
     
     
 private:
@@ -84,7 +90,6 @@ private:
     
     // output base name
     std::string output_base_name_;
-    
     
     // -------------------------------------------------------------
     // methods

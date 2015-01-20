@@ -141,7 +141,7 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
     }
     else{
         std::cout << "Error : In DLADataset::Load : Unable to open file: " << std::endl << dataset1 << std::endl;
-        std::exit;
+        std::exit(EXIT_FAILURE);
     }
         
 }

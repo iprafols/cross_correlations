@@ -73,6 +73,9 @@ public:
     // access function for fit_
     std::string fit() const {return fit_;}
     
+    // access function for detailed_results_
+    std::string detailed_results() const {return detailed_results_;}
+    
     // access function for flag_compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
@@ -136,6 +139,9 @@ public:
     // access function for flag_verbose_main_
     size_t flag_verbose_main() const {return flag_verbose_main_;}
     
+    // access function for flag_verbose_pair_dataset_
+    size_t flag_verbose_pair_dataset() const {return flag_verbose_pair_dataset_;}
+    
     // access function for flag_verbose_plate_neighbours_
     size_t flag_verbose_plate_neighbours() const {return flag_verbose_plate_neighbours_;}
     
@@ -189,7 +195,10 @@ public:
     
     // access function for output_base_name_
     std::string output_base_name() const {return output_base_name_;}
-        
+    
+    // access function for pairs_file_name_
+    std::string pairs_file_name() const {return pairs_file_name_;}
+    
     // acces function for plate_neighbours_
     std::string plate_neighbours() const {return plate_neighbours_;}
     
@@ -294,13 +303,16 @@ private:
     // main verbose flag
     size_t flag_verbose_main_;
 
+    // pairs dataset verbose flag
+    size_t flag_verbose_pair_dataset_;
+
     // plate_neighbours verbose flag
     size_t flag_verbose_plate_neighbours_;
 
     // quasar_dataset verbose flag
     size_t flag_verbose_quasar_dataset_;
     
-    // flag to write partial results
+    // flag to write partial results (ignored if flag_compute_covariance_ is set)
     size_t flag_write_partial_results_;
 
 
@@ -343,6 +355,9 @@ private:
     // -------------------------------------------------------------
     // output settings
     
+    // basename of the directory where the pairs' detailed information will be stored
+    std::string detailed_results_;
+
     // output directory
     std::string output_;
     
@@ -354,6 +369,9 @@ private:
     
     // partial results directory
     std::string results_;
+    
+    // basename of the files where the pairs' detailed information will be stored
+    std::string pairs_file_name_;
     
     
     

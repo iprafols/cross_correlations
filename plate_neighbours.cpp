@@ -57,11 +57,11 @@ PlateNeighbours::PlateNeighbours(const Input& input){
             }
             else{
                 std::cout << "Error : In PlateNeighbours::PlateNeighbours : Unable to open file: " << std::endl << input.plate_neighbours() << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
-            std::exit;
+            std::exit(EXIT_FAILURE);
         }
     }
     

@@ -97,7 +97,7 @@ void ComputePlateNeighbours(const Input& input){
     }
     else{
         std::cout << "Error: In ComputePlateNeighbours : could not read spectra catalog" << std::endl;
-        std::exit;
+        std::exit(EXIT_FAILURE);
     }
     
     // normalize contents

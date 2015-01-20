@@ -27,21 +27,20 @@ CorrelationPlate::CorrelationPlate(int bad_data){
      */
     if (bad_data != _BAD_DATA_INT_){
         std::cout << "Error while initializing a CorrelationPlate 'bad data' instance" << std::endl;
-        std::exit;
+        std::exit(EXIT_FAILURE);
     }
     
     plate_number_ = _BAD_DATA_INT_;
     
 }
 
-CorrelationPlate::CorrelationPlate(const Input& input, const std::string& results, const int plate_number, const std::vector<int>& plate_neighbours){
+CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
      
      INPUTS:
      input - a Input instance
-     results - name of the folder where detailed information will be stored
      plate_number - an integer with the plate number
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      
@@ -66,8 +65,8 @@ CorrelationPlate::CorrelationPlate(const Input& input, const std::string& result
         pairs_file_name_ = "";
     }
     else{
-        results_ = results;
-        pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
+        results_ = input.detailed_results();
+        pairs_file_name_ = input.pairs_file_name() + ToStr(plate_number_);
     }
     
     xi_.resize(num_bins_,0.0);

@@ -182,6 +182,7 @@ void Input::SetDefaultValues(){
     flag_verbose_dla_dataset_ = flag_verbose_;
     flag_verbose_lya_spectra_dataset_ = flag_verbose_;
     flag_verbose_main_ = flag_verbose_;
+    flag_verbose_pair_dataset_ = flag_verbose_;
     flag_verbose_plate_neighbours_ = flag_verbose_;
     flag_verbose_quasar_dataset_ = flag_verbose_;
     flag_write_partial_results_ = 0;
@@ -206,6 +207,8 @@ void Input::SetDefaultValues(){
     output_ = "output/";
     output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
     results_ = output_ + "partial_results/";
+    detailed_results_ = results_ + "detailed_info_bin_";
+    pairs_file_name_ = "detailed_info_plate_";
     plots_ = "plots/";
     
     
@@ -290,7 +293,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "bootstrap_results"){
@@ -300,7 +304,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "c"){
@@ -310,7 +315,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_compute_bootstrap"){
@@ -329,7 +335,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_compute_covariance"){
@@ -348,7 +355,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_compute_cross_correlation"){
@@ -367,7 +375,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_compute_plate_neighbours"){
@@ -386,7 +395,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_load_only"){
@@ -405,7 +415,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_plot"){
@@ -424,7 +435,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_plot_catalog_info"){
@@ -443,7 +455,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_run_baofit"){
@@ -462,7 +475,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_set_baofit"){
@@ -481,7 +495,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_write_partial_results"){
@@ -491,7 +506,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose"){
@@ -501,7 +517,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_baofit_setup"){
@@ -511,7 +528,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_compute_plate_neighbours"){
@@ -521,7 +539,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_correlation_plate"){
@@ -531,7 +550,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_correlation_results"){
@@ -541,7 +561,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_covariance_matrix"){
@@ -551,7 +572,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<    std::endl;
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_dla_dataset"){
@@ -561,7 +583,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_lya_spectra_dataset"){
@@ -571,7 +594,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_main"){
@@ -581,7 +605,19 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_pair_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_pair_dataset_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_plate_neighbours"){
@@ -591,7 +627,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "flag_verbose_quasar_dataset"){
@@ -601,7 +638,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "H0"){
@@ -615,12 +653,12 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both H0 and h, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit;
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "h"){
@@ -634,11 +672,12 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both H0 and h, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "include_distorsions"){
@@ -657,7 +696,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "dataset1"){
@@ -667,7 +707,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "dataset1_name"){
@@ -677,7 +718,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "dataset1_type"){
@@ -687,7 +729,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "dataset2"){
@@ -697,7 +740,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<        std::endl;
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "dataset2_name"){
@@ -707,7 +751,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "lya_spectra_dir"){
@@ -717,7 +762,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "lya_wl"){
@@ -727,7 +773,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "max_pi"){
@@ -737,7 +784,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "max_sigma"){
@@ -747,7 +795,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "neighbours_max_distance"){
@@ -757,7 +806,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "num_bootstrap"){
@@ -767,7 +817,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "num_pi_bins"){
@@ -780,11 +831,12 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<    std::endl;
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "num_plates"){
@@ -794,7 +846,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "num_points_interpolation"){
@@ -804,7 +857,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "num_sigma_bins"){
@@ -817,11 +871,12 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "output"){
@@ -831,7 +886,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "output_base_name"){
@@ -841,7 +897,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "plate_neighbours"){
@@ -851,7 +908,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "input"){
@@ -861,7 +919,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "results"){
@@ -871,7 +930,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "step_pi"){
@@ -884,12 +944,13 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "step_sigma"){
@@ -902,11 +963,12 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else{
                 std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
-                std::exit;
+                std::exit(EXIT_FAILURE);
             }
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "wm"){
@@ -916,7 +978,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "z_max"){
@@ -926,7 +989,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "z_max_interpolation"){
@@ -936,7 +1000,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "z_min"){
@@ -946,7 +1011,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else if (name == "z_min_interpolation"){
@@ -956,7 +1022,8 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::exit;
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
         }
     }
     else{
@@ -1011,6 +1078,18 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it2 = input_flag.find("dataset2");
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
+    }
+    
+    // updating detailed_results_ if necessary
+    it = input_flag.find("output");
+    it2 = input_flag.find("results");
+    if (it != input_flag.end() or it2 != input_flag.end()){
+        if (it2 != input_flag.end()){
+            detailed_results_ = results_ + "detailed_info_bin_";
+        }
+        else{
+            detailed_results_ =  output_ + "partial_results/detailed_info_bin_";
+        }
     }
 
     // updating flag_plot_catalog_info_ if necessary
@@ -1076,6 +1155,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_verbose_main_ = flag_verbose_;
     }
     
+    // updating flag_verbose_pair_dataset_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_pair_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_pair_dataset_ = flag_verbose_;
+    }
+
     // updating flag_verbose_plate_neighbours_ if necessary
     it = input_flag.find("flag_verbose");
     it2 = input_flag.find("flag_verbose_plate_neighbours");
@@ -1268,6 +1354,7 @@ void Input::WriteLog(){
         log << "flag_verbose_dla_dataset = " << flag_verbose_dla_dataset_ << std::endl;
         log << "flag_verbose_lya_spectra_dataset = " << flag_verbose_lya_spectra_dataset_ << std::endl;
         log << "flag_verbose_main = " << flag_verbose_main_ << std::endl;
+        log << "flag_verbose_pair_dataset = " << flag_verbose_pair_dataset_ << std::endl;
         log << "flag_verbose_plate_neighbours = " << flag_verbose_plate_neighbours_ << std::endl;
         log << "flag_verbose_quasar_dataset = " << flag_verbose_quasar_dataset_ << std::endl;
         log << "flag_write_partial_results = " << flag_write_partial_results_ << std::endl;

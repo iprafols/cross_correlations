@@ -48,7 +48,7 @@ public:
     CorrelationPlate(int bad_data);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const Input& input, const std::string& results, const int plate_number, const std::vector<int>& plate_neighbours);
+    CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
     CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results);

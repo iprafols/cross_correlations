@@ -8,8 +8,8 @@
  */
 
 
-#ifndef _DLADataset_h
-#define _DLADdataset_h
+#ifndef _QuasarDataset_h
+#define _QuasarDataset_h
 
 // libraries needed
 #include <iostream>

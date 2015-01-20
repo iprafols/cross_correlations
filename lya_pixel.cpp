@@ -27,7 +27,7 @@ LyaPixel::LyaPixel(double bad_data){
      */
     if (bad_data != _BAD_DATA_){
         std::cout << "Error while initializing a LyaPixel 'bad data' instance" << std::endl;
-        std::exit;
+        std::exit(EXIT_FAILURE);
     }
     
     forest_ = _BAD_DATA_;

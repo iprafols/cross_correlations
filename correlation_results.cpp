@@ -34,36 +34,37 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     flag_compute_bootstrap_ = input.flag_compute_bootstrap();
     flag_verbose_correlation_results_ = input.flag_verbose_correlation_results();
     flag_write_partial_results_ = input.flag_write_partial_results();
+    flag_compute_covariance_ =  input.flag_compute_covariance();
     
-    // setting the number of bins and plates from input
+    // setting the number of bins from input
     num_bins_ = input.num_bins();
     
     // setting the results directory and the pairs file name from input
     results_ = input.results();
-    detailed_results_ = results_ + "detailed_info_bin_";
+    detailed_results_ = input.detailed_results();
     output_base_name_ = input.output() + input.output_base_name();
     
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
     for (size_t i = 0; i < plates_list_.size(); i ++){
-        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, detailed_results_, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
+        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
     }
     
     // initialization of the normalized cross-correlation variable
-    normalized_correlation_ = CorrelationPlate(input, "", _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
+    normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
     if (flag_compute_bootstrap_){
         bootstrap_results_ = input.bootstrap_results();
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
-            bootstrap_.push_back(CorrelationPlate(input, "", _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
+            bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
         }
 
     }
     
     // creating bin files
-    if (flag_write_partial_results_ >= 1){
+    if (flag_write_partial_results_ >= 1 or flag_compute_covariance_){
         if (flag_verbose_correlation_results_ >= 2){
             std::cout << "Creating detailed info files" << std::endl;
         }

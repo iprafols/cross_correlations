@@ -27,12 +27,15 @@ CovarianceMatrix::CovarianceMatrix(const Input& input){
      NONE
      */
     
-    // setting the number of bins and plates from input
+    // set flags from input
+    flag_verbose_covariance_matrix_ = input.flag_verbose_covariance_matrix();
+    
+    // setting the number of bins from input
     num_bins_ = input.num_bins();
     
-    // output settings
+    // setting the results directory and the pairs file name from input
     output_base_name_ = input.output() + input.output_base_name();
-
+    
     // initializing covariance matrix, all elements set to 0
     if (flag_verbose_covariance_matrix_ >= 2){
         std::cout << "Initializig covariance matrix" << std::endl;
@@ -181,6 +184,54 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
 
     // saving covariance matrix
     SaveBootstrapCovMat();
+}
+
+void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& kPlateNeighbours){
+    /**
+     EXPLANATION:
+     Computes the covariance matrix
+     
+     INPUTS:
+     kPlateNeighbours - a PlateNeighbours instance containing the list of plates
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CovarianceMatrix
+     PlateNeighbours
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    std::vector<int> plates = kPlateNeighbours.GetPlatesList();
+    
+    if (flag_verbose_covariance_matrix_ >= 1){
+        std::cout << "Computing the covariance matrix" << std::endl;
+    }
+    
+    // loop over regions (1st index: i)
+    for (size_t i = 0; i < num_bins_; i++){
+        
+        // reading pairs from region i
+        PairDataset pairs_region_i(input, i, plates);
+        
+        // loop over regions (2n index: j)
+        for (size_t j = i; j < num_bins_; j++){
+            
+            // reading pairs from region j
+            PairDataset pairs_region_j(input, j, plates);
+            
+            // computing covariance matrix
+            
+            
+        }
+        
+    }
+    
+    // saving covariance matrix
+    //SaveCovMat();
 }
 
 void CovarianceMatrix::SaveBootstrapCovMat(){

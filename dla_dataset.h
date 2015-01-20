@@ -9,7 +9,7 @@
 
 
 #ifndef _DLADataset_h
-#define _DLADdataset_h
+#define _DLADataset_h
 
 // libraries needed
 #include <cstdlib>

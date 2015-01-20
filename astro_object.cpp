@@ -28,7 +28,7 @@ AstroObject::AstroObject(double bad_data){
      */
     if (bad_data != _BAD_DATA_){
         std::cout << "Error while initializing a AstroObject 'bad data' instance" << std::endl;
-        std::exit;
+        std::exit(EXIT_FAILURE);
     }
 
     z_ = _BAD_DATA_;

@@ -74,6 +74,9 @@ public:
     
     // access function for compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
+    
+    // access function for flag_compute_covariance_
+    bool flag_compute_covariance() const {return flag_compute_covariance_;}
 
     // access function for normalized_correlation_
     CorrelationPlate normalized_correlation() const {return normalized_correlation_;}
@@ -127,6 +130,9 @@ private:
     
     // boolean to specify whether or not to compute the bootstrap realizations
     bool flag_compute_bootstrap_;
+    
+    // boolean to specify whether or not to compute the covariance matrix
+    bool flag_compute_covariance_;
 
     // number of bins
     size_t num_bins_;

@@ -157,7 +157,8 @@ int main(int argc, char *argv[]){
             cov_mat.ComputeBootstrapCovMat(results.bootstrap());
         }
         
-        {
+        cov_mat.ComputeCovMat(input, kPlateNeighbours);
+            
             /*
              load objects where the results are stored
              --> cCovMatrixResults
@@ -185,9 +186,6 @@ int main(int argc, char *argv[]){
              
              
              */
-        }
-
-
     }
     
     // setup BAOFIT configuration and run fitting program
