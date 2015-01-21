@@ -24,7 +24,7 @@ EXECUTABLE_CORRELATION = programs/correlation.run
 
 # this variable contains the list of sources
 SOURCES = $(wildcard *.cpp)
-SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp baofit_setup.cpp correlation_plate.cpp correlation_results.cpp covariance_matrix.cpp dataset.cpp dla_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp pair.cpp pair_dataset.cpp plate.cpp plate_neighbours.cpp plots_object.cpp quasar_dataset.cpp sphere_point.cpp
+SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp baofit_setup.cpp correlation_plate.cpp correlation_results.cpp covariance_matrix.cpp dataset.cpp dla_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp pair.cpp pair_dataset.cpp plate.cpp plate_neighbours.cpp plots_object.cpp quasar_dataset.cpp sphere_point.cpp z_dist_interpolation_map.cpp
 SOURCES_PLOT = $(wildcard ./output/plots/*.py)
 
 # this variable contains the list of object files
