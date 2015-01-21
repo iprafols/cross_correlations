@@ -21,6 +21,7 @@
 
 // classes needed
 #include "dataset.h"
+#include "z_dist_interpolation_map.h"
 #include "pair.h"
 #include "plate_neighbours.h"
 ////////
@@ -75,9 +76,16 @@ public:
     void Load(const std::vector<int>& plates);
     
     // set the distance to every object in the dataset (disabled)
-    void SetDistances(const InterpolationMap& redshift_distance_map){};
+    void SetDistances(const ZDistInterpolationMap& redshift_distance_map){};
     
+    // -------------------------------------------------------------
+    // other methods
     
+    // return list of plates
+    std::vector<int> GetPlatesList() const;
+    
+    // return number of pairs in plate entry
+    size_t GetNumberPairs(int plate) const;
     
     
     

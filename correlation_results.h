@@ -113,9 +113,18 @@ private:
     // bootstrap results folder
     std::string bootstrap_results_;
     
+    // map containing the correlation in the different plates
+    PlatesMapSimple<CorrelationPlate>::map correlation_plates_;
+    
     // detailed results directory (this is where the pairs detailed contribution to the corresponding plate and bin is stored)
     std::string detailed_results_;
     
+    // boolean to specify whether or not to compute the bootstrap realizations
+    bool flag_compute_bootstrap_;
+    
+    // boolean to specify whether or not to compute the covariance matrix
+    bool flag_compute_covariance_;
+
     // correlation_results verbose flag
     size_t flag_verbose_correlation_results_;
     
@@ -125,15 +134,8 @@ private:
     // output base name
     std::string output_base_name_;
     
-    // map containing the correlation in the different plates
-    PlatesMapSimple<CorrelationPlate>::map correlation_plates_;
     
-    // boolean to specify whether or not to compute the bootstrap realizations
-    bool flag_compute_bootstrap_;
     
-    // boolean to specify whether or not to compute the covariance matrix
-    bool flag_compute_covariance_;
-
     // number of bins
     size_t num_bins_;
     

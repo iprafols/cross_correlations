@@ -81,7 +81,7 @@ void PlateNeighbours::AddNeighbours(const Plate& plate1, const Plate& plate2){
      
      CLASSES USED:
      Plate
-     PLateNeighbours
+     PlateNeighbours
      
      FUNCITONS USED:
      ToStr
@@ -109,7 +109,7 @@ void PlateNeighbours::AddPlate(const Plate& plate){
      plates - a vector containg the list of used plates
      
      CLASSES USED:
-     PLateNeighbours
+     PlateNeighbours
      
      FUNCITONS USED:
      ToStr
@@ -126,6 +126,40 @@ void PlateNeighbours::AddPlate(const Plate& plate){
 
 }
 
+bool PlateNeighbours::AreNeighbours(const int plate1, const int plate2) const{
+    /**
+     EXPLANATION:
+     Returns a vector conatining the plate number of all the neighbours of a specified plate
+     
+     INPUTS:
+     plate1,2 - plate numbers of the plate from which to check neighbourhood
+     
+     OUTPUTS:
+     ans - a boolean specifying if they are neighbours
+     
+     CLASSES USED:
+     PlateNeighbours
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // locate plate
+    PlatesMapVector<Plate>::map::const_iterator it = plates_.find(plate1);
+    
+    if (it == plates_.end()){
+        return false;
+    }
+    else{
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            if (plate2 == (*it).second[i].plate_number()){
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
 std::vector<int> PlateNeighbours::GetNeighboursList(int plate) const{
     /**
      EXPLANATION:
@@ -138,7 +172,7 @@ std::vector<int> PlateNeighbours::GetNeighboursList(int plate) const{
      neighbours - a vector containg the list of used plates
      
      CLASSES USED:
-     PLateNeighbours
+     PlateNeighbours
      
      FUNCITONS USED:
      NONE
@@ -185,7 +219,7 @@ std::vector<int> PlateNeighbours::GetPlatesList() const {
      plates - a vector containg the list of used plates
      
      CLASSES USED:
-     PLateNeighbours
+     PlateNeighbours
      
      FUNCITONS USED:
      NONE
@@ -269,7 +303,7 @@ void PlateNeighbours::Save(const std::string& filename){
      NONE
      
      CLASSES USED:
-     PLateNeighbours
+     PlateNeighbours
      
      FUNCITONS USED:
      NONE

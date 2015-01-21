@@ -132,6 +132,35 @@ int PairDataset::FindCatalogLength(const std::string& filename){
     return length - 1;
 }
 
+std::vector<int> PairDataset::GetPlatesList() const {
+    /**
+     EXPLANATION:
+     Returns a vector conatining the plate number of all the used plates
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     plates - a vector containg the list of used plates
+     
+     CLASSES USED:
+     PLateNeighbours
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    std::vector<int> plates_list;
+    plates_list.reserve(list_.size());
+    
+    for (PlatesMapVector<Pair>::map::const_iterator it = list_.begin(); it != list_.end(); it ++){
+        plates_list.push_back((*it).first);
+    }
+    
+    return plates_list;
+}
+
+
 void PairDataset::Load(const std::vector<int>& plates){
     /**
      EXPLANATION:
@@ -237,3 +266,29 @@ void PairDataset::Load(const std::vector<int>& plates){
     }
 }
 
+size_t PairDataset::GetNumberPairs(int plate) const{
+    /**
+     EXPLANATION:
+     Returns the number of pairs contained in the specified plate
+     
+     INPUTS:
+     plate - an integer representing a plate number
+     
+     OUTPUTS:
+     num - number of pairs contained in the specified plate
+     
+     CLASSES USED:
+     PairDataset
+     
+     FUNCITONS USED:
+     NONE
+     */
+    PlatesMapVector<Pair>::map::const_iterator it = list_.find(plate);
+    
+    if (it == list_.end()){
+        return 0;
+    }
+    else{
+        return (*it).second.size();
+    }
+}

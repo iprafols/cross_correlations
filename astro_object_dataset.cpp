@@ -127,7 +127,7 @@ void AstroObjectDataset::GiveZ(std::ostream& out) const{
     
 }
 
-void AstroObjectDataset::SetDistances(const InterpolationMap& redshift_distance_map){
+void AstroObjectDataset::SetDistances(const ZDistInterpolationMap& redshift_distance_map){
     /**
      EXPLANATION:
      Sets the distance to every object in the dataset

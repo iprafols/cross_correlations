@@ -21,6 +21,7 @@
 // classes needed
 #include "correlation_plate.h"
 #include "input.h"
+#include "lya_auto_interpolation_map.h"
 #include "plate_neighbours.h"
 #include "pair_dataset.h"
 ////////

@@ -68,7 +68,13 @@ public:
     
     // add plate entry
     void AddPlate(const Plate& plate);
-        
+    
+    // check whether or not two plates are neighbours
+    bool AreNeighbours(const int plate1, const int plate2) const;
+    bool AreNeighbours(const Plate& plate1, const int plate2) const {return AreNeighbours(plate1.plate_number(), plate2);}
+    bool AreNeighbours(const int plate1, const Plate& plate2) const {return AreNeighbours(plate1, plate2.plate_number());}
+    bool AreNeighbours(const Plate& plate1, const Plate& plate2) const {return AreNeighbours(plate1.plate_number(), plate2.plate_number());}
+   
     // save list of plates into file
     void Save(const std::string& filename);
 

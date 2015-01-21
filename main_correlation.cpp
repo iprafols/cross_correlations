@@ -20,6 +20,7 @@
 #include "covariance_matrix.h"
 #include "dla_dataset.h"
 #include "input.h"
+#include "z_dist_interpolation_map.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
 #include "plots_object.h"
@@ -137,7 +138,7 @@ int main(int argc, char *argv[]){
                 if (flag_verbose_main >= 1){
                     std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
                 }
-                InterpolationMap redshift_distance_map(input);
+                ZDistInterpolationMap redshift_distance_map(input);
                 (*object_list).SetDistances(redshift_distance_map);
                 spectra_list.SetDistances(redshift_distance_map);
             }

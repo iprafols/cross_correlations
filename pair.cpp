@@ -29,9 +29,7 @@ Pair::Pair(double bad_data){
         std::cout << "Error while initializing a Pair 'bad data' instance" << std::endl;
         std::exit(EXIT_FAILURE);
     }
-    
-    spectrum_ra_ = _BAD_DATA_;
-    spectrum_dec_ = _BAD_DATA_;
+
     pixel_number_ = _BAD_DATA_INT_;
     pixel_dist_ = _BAD_DATA_;
     pixel_weight_ = _BAD_DATA_;
@@ -58,8 +56,8 @@ Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pix
      FUNCITONS USED:
      NONE
      */
-    spectrum_ra_ = spectrum_ra;
-    spectrum_dec_ = spectrum_dec;
+    SpherePoint angle(spectrum_ra, spectrum_dec);
+    spectrum_angle_ = angle;
     pixel_number_ = pixel_number;
     pixel_dist_ = pixel_dist;
     pixel_weight_ = pixel_weight;

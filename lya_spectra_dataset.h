@@ -22,7 +22,7 @@
 // classes needed
 #include "dataset.h"
 #include "input.h"
-#include "interpolation_map.h"
+#include "z_dist_interpolation_map.h"
 #include "lya_spectrum.h"
 ////////
 
@@ -68,7 +68,7 @@ public:
     void Load(const std::string& object_list, const std::string& lya_spectra_dir, const double& lya_wl);
 
     // set the distance to every object in the dataset
-    void SetDistances(const InterpolationMap& redshift_distance_map);
+    void SetDistances(const ZDistInterpolationMap& redshift_distance_map);
     
     
     

@@ -16,7 +16,7 @@
 ////////
 
 // classes needed
-#include "pair.h"
+#include "sphere_point.h"
 ////////
 
 // functions needed
@@ -51,12 +51,9 @@ public:
     // pixel weight
     double pixel_weight() const {return pixel_weight_;}
     
-    // spectrum declination
-    double spectrum_dec() const {return spectrum_dec_;}
-    
-    // spectrum right ascention
-    double spectrum_ra() const {return spectrum_ra_;}
-    
+    // spectrum angle
+    SpherePoint spectrum_angle() const {return spectrum_angle_;}
+
     // -------------------------------------------------------------
     // other methods
     
@@ -74,11 +71,9 @@ private:
     // pixel weight
     double pixel_weight_;
     
-    // spectrum declination
-    double spectrum_dec_;
+    // spectrum angle
+    SpherePoint spectrum_angle_;
     
-    // spectrum right ascention
-    double spectrum_ra_;
 
     
 };

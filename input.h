@@ -157,6 +157,8 @@ public:
     // access function for include_distorsions_
     bool include_distorsions() const {return include_distorsions_;}
     
+    // access function for lya_auto_correlation_
+    std::string lya_auto_correlation() const {return lya_auto_correlation_;}
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
@@ -180,6 +182,9 @@ public:
     
     // access function for num_pi_bins_
     int num_pi_bins() const {return num_pi_bins_;}
+    
+    // access function for num_bins_lya_auto_correlation_
+    int num_bins_lya_auto_correlation() const {return num_bins_lya_auto_correlation_;}
     
     // access function for num_plates_
     int num_plates() const {return num_plates_;}
@@ -213,6 +218,9 @@ public:
     
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
+    
+    // access function for step_lya_auto_correlation_
+    double step_lya_auto_correlation() const {return step_lya_auto_correlation_;}
     
     // access function for step_pi_
     double step_pi() const {return step_pi_;}
@@ -320,12 +328,6 @@ private:
     // -------------------------------------------------------------
     // input settings
     
-    // input directory
-    std::string input_;
-    
-    // number of plates 
-    int num_plates_;
-    
     // objects catalog filename
     std::string dataset1_;
     
@@ -338,17 +340,33 @@ private:
     // enabled objects type
     std::string dataset1_type_options_;
     
-    // name of the file containing the plate neighbours
-    std::string plate_neighbours_;
-    
-    // spectra directory
-    std::string lya_spectra_dir_;
-    
     // spectra catalog filename
     std::string dataset2_;
     
     // spectra catalog name
     std::string dataset2_name_;
+    
+    // input directory
+    std::string input_;
+    
+    // name of the file containing the lyman-alpha auto-correlation
+    std::string lya_auto_correlation_;
+    
+    // spectra directory
+    std::string lya_spectra_dir_;
+    
+    // number of plates
+    int num_plates_;
+    
+    // number of bins in the lyman-alpha auto-correlation
+    int num_bins_lya_auto_correlation_;
+    
+    // name of the file containing the plate neighbours
+    std::string plate_neighbours_;
+    
+    // step value of parallel separation in the lyman-alpha auto-correlation (in Mpc/h)
+    double step_lya_auto_correlation_;
+
     
     
     

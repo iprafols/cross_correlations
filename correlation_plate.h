@@ -56,6 +56,9 @@ public:
     // -------------------------------------------------------------
     // access methods
     
+    // access function for flag_compute_covariance_
+    bool flag_compute_covariance() const {return flag_compute_covariance_;}
+    
     // access function for flag_verbose_correlation_plate_
     size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
     
@@ -150,6 +153,9 @@ public:
     
     
 private:
+    // boolean to specify whether or not to compute the covariance matrix
+    bool flag_compute_covariance_;
+    
     // verbose flag
     size_t flag_verbose_correlation_plate_;
 

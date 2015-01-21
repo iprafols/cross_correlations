@@ -18,7 +18,7 @@
 
 // classes needed
 #include "astro_object.h"
-#include "interpolation_map.h"
+#include "z_dist_interpolation_map.h"
 ////////
 
 // functions needed
@@ -53,7 +53,7 @@ public:
     virtual void GiveZ(std::ostream& out) const = 0;
     
     // set the distance to every object in the dataset
-    virtual void SetDistances(const InterpolationMap& redshift_distance_map) = 0;
+    virtual void SetDistances(const ZDistInterpolationMap& redshift_distance_map) = 0;
         
 
     

@@ -32,15 +32,12 @@ public:
     // constructs an empty object
     InterpolationMap(){};
     
-    // constructs object and initializes its variables
-    InterpolationMap(const Input& input);
-    
     // -------------------------------------------------------------
     // access methods
     
     // access functions for interpolation_map_
     std::map<double,double> interpolation_map() const {return interpolation_map_;}
-    double interpolation_map(double first) const {return (*interpolation_map_.find(first)).second;}
+    double interpolation_map(double first) const;
     double interpolation_map(std::map<double,double>::iterator it) const;
     
     // -------------------------------------------------------------
@@ -49,7 +46,7 @@ public:
     // Compute the distances corresponding to the given redshift by using linear interpolation
     double LinearInterpolation(const double& z) const;
     
-private:
+protected:
     
     std::map<double,double> interpolation_map_;
     

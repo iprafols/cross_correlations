@@ -250,7 +250,7 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     }
 }
 
-void LyaSpectraDataset::SetDistances(const InterpolationMap& redshift_distance_map){
+void LyaSpectraDataset::SetDistances(const ZDistInterpolationMap& redshift_distance_map){
     /**
      EXPLANATION:
      Sets the distance to every object in the dataset

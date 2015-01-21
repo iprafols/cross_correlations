@@ -54,8 +54,10 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
      ToStr
      */
     
+    // set flags from input
     flag_verbose_correlation_plate_ = input.flag_verbose_correlation_plate();
     flag_write_partial_results_ = input.flag_write_partial_results();
+    flag_compute_covariance_ =  input.flag_compute_covariance();
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
@@ -606,7 +608,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     AddPair(k_index, spectrum[p], pi, sigma);
                     
                     // write down pair information in bin file
-                    if (flag_write_partial_results_ >= 2){
+                    if (flag_write_partial_results_ >= 1 or flag_compute_covariance_){
                         SavePair(k_index, object, lya_spectrum, p, pi, sigma);
                     }
                     

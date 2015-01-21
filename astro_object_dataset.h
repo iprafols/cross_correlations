@@ -25,7 +25,7 @@
 #include "astro_object.h"
 #include "dataset.h"
 #include "input.h"
-#include "interpolation_map.h"
+#include "z_dist_interpolation_map.h"
 ////////
 
 // functions needed
@@ -67,7 +67,7 @@ public:
     virtual void Load(const double& z_min, const double& z_max, const std::string& dataset1) =0;
     
     // set the distance to every object in the dataset
-    void SetDistances(const InterpolationMap& redshift_distance_map);
+    void SetDistances(const ZDistInterpolationMap& redshift_distance_map);
 
     
     

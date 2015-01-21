@@ -210,22 +210,87 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
     if (flag_verbose_covariance_matrix_ >= 1){
         std::cout << "Computing the covariance matrix" << std::endl;
     }
+    // load interpolation map
+    LyaAutoInterpolationMap lya_auto_correlation_map(input);
+    double add;
     
     // loop over regions (1st index: i)
     for (size_t i = 0; i < num_bins_; i++){
         
-        // reading pairs from region i
-        PairDataset pairs_region_i(input, i, plates);
+        // reading pairs from bin i
+        PairDataset pair_dataset_i(input, i, plates);
+        std::vector<int> plates_bin_i = pair_dataset_i.GetPlatesList();
         
         // loop over regions (2n index: j)
         for (size_t j = i; j < num_bins_; j++){
             
+            // checking that the desired covariance matrix element is existent
+            CovMat::iterator it = cov_mat_.find(std::pair<int, int>(i, j));
+            if (it == cov_mat_.end()){
+                std::cout << "Warning : In CovarianceMatrix::ComputeCovMat : Element " << i << ", " << j << " of the covariance matrix not found. Ignoring..."  << std::endl;
+                continue;
+            }
+
             // reading pairs from region j
-            PairDataset pairs_region_j(input, j, plates);
+            PairDataset pair_dataset_j(input, j, plates);
+            std::vector<int> plates_bin_j = pair_dataset_j.GetPlatesList();
             
             // computing covariance matrix
-            
-            
+            // loop over plates in bin i
+            for (size_t plates_i = 0; plates_i < plates_bin_i.size(); plates_i ++){
+                // loop over plates in bin j
+                for (size_t plates_j = 0; plates_j < plates_bin_j.size(); plates_j ++){
+                    
+                    // check that the plates are neighbours
+                    if (kPlateNeighbours.AreNeighbours(plates_bin_i[plates_i], plates_bin_j[plates_j])){
+                        
+                        // loop over pairs in bin i
+                        for (size_t pairs_i = 0; pairs_i < pair_dataset_i.GetNumberPairs(plates_bin_i[plates_i]); pairs_i ++){
+                            
+                            Pair object_i = pair_dataset_i.list(plates_bin_i[plates_i], pairs_i);
+                            
+                            double sigma_aux = 2.0*object_i.pixel_dist(); // auxiliar variable to compute sigma values
+                            
+                            
+                            // loop over pairs in bin j
+                            for (size_t pairs_j = 0; pairs_j < pair_dataset_j.GetNumberPairs(plates_bin_j[plates_j]); pairs_j ++){
+                                
+                                Pair object_j = pair_dataset_j.list(plates_bin_j[plates_j], pairs_j);
+                                
+                                double cos_theta = object_i.spectrum_angle().CosAngularDistance(object_j.spectrum_angle());
+                                
+                                // compute sigma
+                                double sigma;
+                                if (cos_theta == 1.0){
+                                    sigma = 0.0;
+                                }
+                                else{
+                                    sigma = sqrt(sigma_aux*(1.0-cos_theta)*object_j.pixel_dist()); // auxiliar variable to compute sigma values
+                                }
+                                
+                                // compute pi
+                                double pi = object_i.pixel_dist() - object_j.pixel_dist();
+                                
+                                // add to covariance matrix
+                                if (sigma < 0.01){
+                                    if (pi >= 0.0){
+                                        add = lya_auto_correlation_map.LinearInterpolation(pi);
+                                    }
+                                    else{
+                                       add =  lya_auto_correlation_map.LinearInterpolation(-pi);
+                                    }
+                                    if (add == _BAD_DATA_){
+                                        (*it).second += add;
+                                        if (object_i.pixel_number() == object_j.pixel_number()){
+                                            (*it).second += 1/object_i.pixel_weight();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         
     }
