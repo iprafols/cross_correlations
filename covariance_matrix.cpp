@@ -296,7 +296,7 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
     }
     
     // saving covariance matrix
-    //SaveCovMat();
+    SaveCovMat();
 }
 
 void CovarianceMatrix::SaveBootstrapCovMat(){
@@ -363,6 +363,49 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
     
 }
 
+void CovarianceMatrix::SaveBootstrapCovMat(){
+    /**
+     EXPLANATION:
+     Saves the bootstrap covariance matrix
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     CovarianceMatrix
+     
+     FUNCITONS USED:
+     NONE
+     */
+    std::string filename;
+    
+    if (flag_verbose_covariance_matrix_ >= 1){
+        std::cout << "Saving bootstrap covariance matrix" << std::endl;
+    }
+    
+    filename = output_base_name_ + ".cov";
+    {
+        std::ofstream file(filename.c_str(),std::ofstream::trunc);
+        if (file.is_open()){
+            if (flag_verbose_covariance_matrix_ >= 2){
+                std::cout << "Saving full covariance matrix" << std::endl;
+            }
+            for (CovMat::iterator it = cov_mat_.begin(); it != cov_mat_.end(); it ++){
+                file << (*it).first.first << " " << (*it).first.second << " " << (*it).second << std::endl;
+            }
+            
+            file.close();
+        }
+        else{
+            std::cout << "Error : In CovarianceMatrix::SaveCovMat : Unable to open file:" << std::endl << filename << std::endl;
+        }
+    }
+    
+}
 
 
 

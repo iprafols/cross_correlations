@@ -98,6 +98,9 @@ private:
     // save the bootstrap covariance matrix
     void SaveBootstrapCovMat();
     
+    // save the bootstrap covariance matrix
+    void SaveBootstrapCovMat();
+    
 };
 
 
