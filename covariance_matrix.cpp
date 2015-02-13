@@ -363,10 +363,10 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
     
 }
 
-void CovarianceMatrix::SaveBootstrapCovMat(){
+void CovarianceMatrix::SaveCovMat(){
     /**
      EXPLANATION:
-     Saves the bootstrap covariance matrix
+     Saves the covariance matrix
      
      INPUTS:
      NONE
@@ -384,7 +384,7 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
     std::string filename;
     
     if (flag_verbose_covariance_matrix_ >= 1){
-        std::cout << "Saving bootstrap covariance matrix" << std::endl;
+        std::cout << "Saving covariance matrix" << std::endl;
     }
     
     filename = output_base_name_ + ".cov";

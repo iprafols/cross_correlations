@@ -35,9 +35,13 @@ public:
     
     // constructs empty objects
     Plate(){};
+    
+    // constructs object and initializes its variables assigning zero values
+    Plate(const int& plate_number);
+
     // constructs object and initializes its variables
     Plate(const std::string& filename);
-
+    
     // -------------------------------------------------------------
     // access methods
     
@@ -67,6 +71,7 @@ public:
     
     // updates the values of right ascension and declination
     void UpdateRADECValues(const Plate& plate);
+    void UpdateRADECValues(const SpherePoint& angle);
 
     
     

@@ -77,116 +77,91 @@ int main(int argc, char *argv[]){
     const PlateNeighbours kPlateNeighbours(input);
         
     // initialize cross-correlation results
-    CorrelationResults results(input, kPlateNeighbours);
-    
-    if (input.flag_compute_cross_correlation() or input.flag_load_only() or input.flag_plot_catalog_info()){
-        // load quasar dataset
-        std::auto_ptr<AstroObjectDataset> object_list;
-        if (input.dataset1_type() == "quasar"){
-            object_list.reset(new QuasarDataset(input));
-        }
-        else if (input.dataset1_type() == "dla"){
-            object_list.reset(new DLADataset(input));
-        }
-        else{
-            std::cout << "The selected type for dataset1 is not enabled. Current options are: " << input.dataset1_type_options() << std::endl;
-            return 0;
-        }
-        if (input.flag_plot_catalog_info()){
-            if (flag_verbose_main >= 2){
-                std::cout << "Plotting dataset1 information" << std::endl;
-            }
-            kPlots.PlotRADECDispersion(*object_list, true);
-            kPlots.PlotZHistogram(*object_list, true);
-        }
+    std::vector<CorrelationPlate> results_bootstrap;
+    {
+        CorrelationResults results(input, kPlateNeighbours);
         
-        // load spectra dataset
-        LyaSpectraDataset spectra_list(input);
-        if (input.flag_plot_catalog_info()){
-            if (flag_verbose_main >= 2){
-                std::cout << "Plotting spectra dataset information" << std::endl;
+        if (input.flag_compute_cross_correlation() or input.flag_load_only() or input.flag_plot_catalog_info()){
+            // load quasar dataset
+            std::auto_ptr<AstroObjectDataset> object_list;
+            if (input.dataset1_type() == "quasar"){
+                object_list.reset(new QuasarDataset(input));
             }
-            kPlots.PlotRADECDispersion(spectra_list, true);
-            kPlots.PlotZHistogram(spectra_list, true);
-        }
-        
-        // check load_only flag and end program if set
-        if (input.flag_load_only()){
-            if (flag_verbose_main >= 1){
-                std::cout << "End of program" << std::endl;
+            else if (input.dataset1_type() == "dla"){
+                object_list.reset(new DLADataset(input));
             }
-            time(&end_time);
-            double time_spent = difftime(end_time, start_time);
-            if (flag_verbose_main >= 1){
-                if (time_spent < 60.0){
-                    std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
-                }
-                else if (time_spent < 3600.0){
-                    std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
-                }
-                else{
-                    std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
-                }
+            else{
+                std::cout << "Error : The selected type for dataset1 is not enabled. Current options are: " << input.dataset1_type_options() << std::endl;
+                return 1;
             }
-            return 1;
-        }
-        
-        // compute the cross-correlation
-        if (input.flag_compute_cross_correlation()){
-            {
-                // compute distances to the objects (in Mpc/h)
+            if (input.flag_plot_catalog_info()){
+                if (flag_verbose_main >= 2){
+                    std::cout << "Plotting dataset1 information" << std::endl;
+                }
+                kPlots.PlotRADECDispersion(*object_list, true);
+                kPlots.PlotZHistogram(*object_list, true);
+            }
+            
+            // load spectra dataset
+            LyaSpectraDataset spectra_list(input);
+            if (input.flag_plot_catalog_info()){
+                if (flag_verbose_main >= 2){
+                    std::cout << "Plotting spectra dataset information" << std::endl;
+                }
+                kPlots.PlotRADECDispersion(spectra_list, true);
+                kPlots.PlotZHistogram(spectra_list, true);
+            }
+            
+            // check load_only flag and end program if set
+            if (input.flag_load_only()){
                 if (flag_verbose_main >= 1){
-                    std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+                    std::cout << "End of program" << std::endl;
                 }
-                ZDistInterpolationMap redshift_distance_map(input);
-                (*object_list).SetDistances(redshift_distance_map);
-                spectra_list.SetDistances(redshift_distance_map);
+                time(&end_time);
+                double time_spent = difftime(end_time, start_time);
+                if (flag_verbose_main >= 1){
+                    if (time_spent < 60.0){
+                        std::cout << "Program lasted " << time_spent << " seconds" << std::endl;
+                    }
+                    else if (time_spent < 3600.0){
+                        std::cout << "Program lasted " << time_spent/60.0 << " minutes" << std::endl;
+                    }
+                    else{
+                        std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
+                    }
+                }
+                return 1;
             }
-            // compute cross-correlations
-            results.ComputeCrossCorrelation(*object_list, spectra_list, input);
-            if (flag_verbose_main >= 2){
-                std::cout << "Plotting cross-correlation" << std::endl;
+            
+            // compute the cross-correlation
+            if (input.flag_compute_cross_correlation()){
+                {
+                    // compute distances to the objects (in Mpc/h)
+                    if (flag_verbose_main >= 1){
+                        std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
+                    }
+                    ZDistInterpolationMap redshift_distance_map(input);
+                    (*object_list).SetDistances(redshift_distance_map);
+                    spectra_list.SetDistances(redshift_distance_map);
+                }
+                // compute cross-correlations
+                results.ComputeCrossCorrelation(*object_list, spectra_list, input);
+                if (flag_verbose_main >= 2){
+                    std::cout << "Plotting cross-correlation" << std::endl;
+                }
+                kPlots.PlotCrossCorrelation(results, input, true);
             }
-            kPlots.PlotCrossCorrelation(results, input, true);
         }
+        results_bootstrap = results.bootstrap();
     }
-    
     if (input.flag_compute_covariance()){
         // compute covariance matrix
         CovarianceMatrix cov_mat(input);
         if (input.flag_compute_bootstrap()){
-            cov_mat.ComputeBootstrapCovMat(results.bootstrap());
+            cov_mat.ComputeBootstrapCovMat(results_bootstrap);
         }
         
         cov_mat.ComputeCovMat(input, kPlateNeighbours);
-            
-            /*
-             load objects where the results are stored
-             --> cCovMatrixResults
-             
-             for all cross-correlation bins:
-             
-             load pixel list 1
-             --> cExtendedForestPixelDataset
-             cExtendedForestPixelDataset <-- Dataset
-             
-             --> vector<cExtendedForestPixel> 
-             cExtendedForestPixel <-- ForestPixel + ra, dec
-             
-             for all cross-correlation bins AFTER this one:
-             
-             * load pixel list 2
-             --> cExtendedForestPixelDataset
-             
-             * do N times:
-             + randomly select item from pixel_list1 
-             + retrieve plate neighbours of the selected item's plate
-             --> cPlateNeighbours::GetNeighboursList
-             + randomly select item from the subset of pixel_list2 comprised of all the neighbouring plates
-             + add to covariance matrix
-             
-             
-             */
     }
     
     // setup BAOFIT configuration and run fitting program
@@ -256,5 +231,5 @@ int main(int argc, char *argv[]){
             std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
         }
     }
-    return 1;
+    return 0;
 }

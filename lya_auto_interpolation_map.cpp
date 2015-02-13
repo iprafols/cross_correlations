@@ -51,6 +51,7 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input){
         }
     }
     else{
-        std::cout << "Error: in LyaAutoInterpolationMap::LyaAutoInterpolationMap : Could not data" << std::endl;
+        std::cout << "Error: in LyaAutoInterpolationMap::LyaAutoInterpolationMap : Could not read file" << std::endl;
+        std::cout << input.lya_auto_correlation() << std::endl;
     }
 }

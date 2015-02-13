@@ -12,6 +12,7 @@
 
 #include <map>
 #include <utility>
+#include <string>
 #include <vector>
 
 template <typename T> 

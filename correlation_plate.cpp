@@ -68,7 +68,7 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     }
     else{
         results_ = input.detailed_results();
-        pairs_file_name_ = input.pairs_file_name() + ToStr(plate_number_);
+        pairs_file_name_ = "/" + input.pairs_file_name() + ToStr(plate_number_);
     }
     
     xi_.resize(num_bins_,0.0);
@@ -750,7 +750,7 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
             return;
         }
         
-        bin_file << object.angle() << " " << object.z() << " " << lya_spectrum.angle() << " " << pixel.z() << " " << pixel.dist() << " " << p << " " << pixel.forest()-1.0 << " " << pixel.weight() << " " << pi << " " << sigma << std::endl;
+        bin_file << lya_spectrum.angle() << " " << pixel.dist() << " " << p << " " << pixel.weight() << std::endl;
         bin_file.close();
     }
     else{

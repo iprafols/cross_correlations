@@ -8,6 +8,35 @@
 
 #include "plate.h"
 
+Plate::Plate(const int& plate_number){
+    /**
+     EXPLANATION:
+     Cosntructs a Plate instance and initializes all its variables assigning zero values
+     
+     INPUTS:
+     plate_number - an integer containing the plate number
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     Plate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // set plate number
+    plate_number_ = plate_number;
+    
+    // set number of averaged objects to 1
+    number_of_objects_ = 0.0;
+    
+    // set position angle
+    SpherePoint angle(0.0, 0.0);
+    angle_ = angle;
+}
+
 Plate::Plate(const std::string& filename){
     /**
      EXPLANATION:
@@ -144,5 +173,27 @@ void Plate::UpdateRADECValues(const Plate& plate){
     }
     angle_ += plate.angle();
     number_of_objects_ += plate.number_of_objects();
+}
+
+void Plate::UpdateRADECValues(const SpherePoint& angle){
+    /**
+     EXPLANATION:
+     Adds the specified ra and dec values and increases number_of_objects_ by 1
+     
+     INPUTS:
+     angle - SpherePoint object containing the ra and dec values to add
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     Plate
+     
+     FUNCITONS USED:
+     NONE
+     */
+
+    angle_ += angle;
+    number_of_objects_ += 1.0;
 }
 

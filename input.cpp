@@ -66,11 +66,11 @@ Input::Input(const std::string& filename){
     command = "mkdir -p -v " + output_ + plots_;
     system(command.c_str());
     if (flag_set_baofit_){
-        command = "mkdir -p -v " + fit_;
+        command = "mkdir -p -v " + output_ + fit_;
         system(command.c_str());
     }
     if (flag_set_baofit_best_fit_){
-        command = "mkdir -p -v " + best_fit_;
+        command = "mkdir -p -v " + output_ + best_fit_;
         system(command.c_str());
     }
     
@@ -190,13 +190,13 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // input settings
-    input_ = "../catalogues";
+    input_ = "/triforce/catalogues/"; // Note: default value must always start with "/"
     dataset1_ = input_ + "DR11Q_alpha_v0.fits";
     dataset1_name_ = "DR11Q";
     dataset1_type_ = "quasar";
     dataset1_type_options_ = "quasar, dla";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
-    lya_auto_correlation_ = input_ + "BOSSDR11LyaF.data";
+    lya_auto_correlation_ = input_ + "BOSSDR9LyaF.data";
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     dataset2_name_ = "DR11LyaF";
@@ -320,6 +320,61 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset1"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset1_name"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_name_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset1_type"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset1_type_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset2"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset2_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<        std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset2_name"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset2_name_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -483,6 +538,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "flag_run_baofit_best_fit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_run_baofit_best_fit_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_run_baofit_best_fit_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "flag_set_baofit"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -500,6 +575,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_set_baofit_best_fit"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_set_baofit_best_fit_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_set_baofit_best_fit_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -704,58 +799,14 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "dataset1"){
+    else if (name == "input"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
-            dataset1_ = value;
+            input_ = value;
             input_flag[name] = true;
         }
         else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "dataset1_name"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset1_name_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "dataset1_type"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset1_type_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "dataset2"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset2_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<        std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "dataset2_name"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            dataset2_name_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -938,17 +989,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "input"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            input_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
     else if (name == "results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1109,6 +1149,9 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset1_ = input_ + "DR11Q_alpha_v0.fits";
     }
+    else if (it2 != input_flag.end() and dataset1_[0] != '/'){
+        dataset1_ = input_ + dataset1_;
+    }
     
     // updating dataset2_ if necessary
     it = input_flag.find("input");
@@ -1116,7 +1159,10 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     }
-    
+    else if (it2 != input_flag.end() and dataset2_[0] != '/'){
+        dataset2_ = input_ + dataset2_;
+    }
+
     // updating detailed_results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("results");
@@ -1217,7 +1263,10 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it = input_flag.find("input");
     it2 = input_flag.find("lya_auto_correlation");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_auto_correlation_ = input_ + "BOSSDR11LyaF.data";
+        lya_auto_correlation_ = input_ + "BOSSDR9LyaF.data";
+    }
+    else if (it2 != input_flag.end() and lya_auto_correlation_[0] != '/'){
+        lya_auto_correlation_ = input_ + lya_auto_correlation_;
     }
 
     // updating lya_spectra_dir_ if necessary
@@ -1226,7 +1275,10 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     }
-    
+    else if (it2 != input_flag.end() and lya_spectra_dir_[0] != '/'){
+        lya_spectra_dir_ = input_ + lya_spectra_dir_;
+    }
+
     // updating num_bins_ if necessary
     it = input_flag.find("max_pi");
     it2 = input_flag.find("step_pi");
@@ -1289,7 +1341,10 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         plate_neighbours_ = input_ + "plate_neighbours.dat";
     }
-        
+    else if (it2 != input_flag.end() and plate_neighbours_[0] != '/'){
+        plate_neighbours_ = input_ + plate_neighbours_;
+    }
+    
     // updating results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("results");    

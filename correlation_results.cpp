@@ -294,7 +294,7 @@ void CorrelationResults::CreateBinFiles(){
             // writing headers in file (open the file erasing the previous content)
             std::ofstream bin_file(filename.c_str(),std::ofstream::trunc); 
             if (bin_file.is_open()){
-                bin_file << "# object_RA object_DEC object_Z spectrum_RA spectrum_DEC pixel_Z pixel_dist pixel_number pixel_delta pixel_w pi sigma\n";
+                bin_file << "# spectrum_RA spectrum_DEC pixel_dist pixel_number pixel_w\n";
                 bin_file.close();
             }
             else{

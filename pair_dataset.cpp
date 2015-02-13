@@ -122,12 +122,19 @@ int PairDataset::FindCatalogLength(const std::string& filename){
      */
     
     std::string cmd = "wc -l " + filename;
-    char path[PATH_MAX];
+    if (flag_verbose_pair_dataset_ >= 2){
+        std::cout << cmd << std::endl;
+    }
+    std::cout << "pas 0; ";
+    char path[10];
+    std::cout << "pas 1; ";
     FILE* pipe = popen(cmd.c_str(),"r");
     
-    fgets(path, PATH_MAX, pipe);
-    
+    std::cout << "pas 2; ";
+    fgets(path, 10, pipe);
+    std::cout << "pas 3; ";
     int length = atoi(strtok(path," "));
+    std::cout << "pas 4; length = " << length << std::endl;
     
     return length - 1;
 }
@@ -185,7 +192,7 @@ void PairDataset::Load(const std::vector<int>& plates){
     int pixel_number;
     std::string filename, line;
     
-    if (flag_verbose_pair_dataset_ >= 1){
+    if (flag_verbose_pair_dataset_ >= 2){
         std::cout << "Loading " << name_ << std::endl;
     }
     
@@ -196,72 +203,107 @@ void PairDataset::Load(const std::vector<int>& plates){
     for (size_t i = 0; i < plates.size(); i++){
         
         // checking if the selected plate has any contributions to this bin
+        if (flag_verbose_pair_dataset_ >= 3){
+            std::cout << "checking plate " << plates[i] << std::endl;
+        }
         filename = pairs_file_name_ + ToStr(plates[i]);
         std::ifstream file(filename.c_str());
         if (file.is_open()){
             
             if (list_.find(plates[i]) == list_.end()){
                 std::vector<Pair> v;
-                num_objects_in_plate_[plates[i]] = FindCatalogLength(filename);
-                v.reserve(num_objects_in_plate_[plates[i]]);
                 list_[plates[i]] = v;
+                /*int num_objects = FindCatalogLength(filename);
+                if (flag_verbose_pair_dataset_ >= 2){
+                    std::cout << "There are " << num_objects << " pairs in this plate" << std::endl;
+                }
+                /*if (num_objects > 0){
+                    num_objects_in_plate_[plates[i]] = num_objects;
+                    v.reserve(num_objects);
+                    list_[plates[i]] = v;
+                }
+                else{
+                    continue;
+                }*/
+            }
+            else {
+                if (flag_verbose_pair_dataset_ >= 1){
+                    std::cout << "Warning : In PairDataset::Load : This plate has already been checked out, ignoring..." << std::endl;
+                }
+                continue;
             }
             
+            
+            PlatesMapVector<Pair>::map::iterator list_it = list_.find(plates[i]);
+            if (list_it == list_.end()){
+                if (flag_verbose_pair_dataset_ >= 1){
+                    std::cout << "Warning : In PairDataset::Load : Plate entry was not properly created, ignoring..." << std::endl;
+                }
+                continue;
+            }
             read_column_names = true;
             // reading catalog
             while (getline(file, line)){
-                if (line[0] != '#'){
-                    std::vector<std::string> cols = Split(line," ");
+                std::vector<std::string> cols = Split(line," ");
                     
-                    // get the column number for each variable
-                    if (read_column_names){
-                        for (size_t i = 0; i < cols.size(); i++){
-                            if (cols[i] == "spectrum_RA"){
-                                spectrum_ra_index = i;
-                            }
-                            else if (cols[i] == "spectrum_DEC"){
-                                spectrum_dec_index = i;
-                            }
-                            else if (cols[i] == "pixel_number"){
-                                pixel_number_index = i;
-                            }
-                            else if (cols[i] == "pixel_dist"){
-                                pixel_dist_index = i;
-                            }
-                            else if (cols[i] == "pixel_w"){
-                                pixel_weight_index = i;
-                            }
-                        }
-                        read_column_names = false;
+                // get the column number for each variable
+                if (read_column_names){
+                    if (flag_verbose_pair_dataset_ >= 4){
+                        std::cout << "Reading header" << std::endl;
                     }
-                    
-                    // read entries
-                    else{
-                        spectrum_ra = atof(cols[spectrum_ra_index].c_str());
-                        spectrum_dec = atof(cols[spectrum_dec_index].c_str());
-                        pixel_number = atoi(cols[pixel_number_index].c_str());
-                        pixel_dist = atof(cols[pixel_dist_index].c_str());
-                        pixel_weight = atof(cols[pixel_weight_index].c_str());
-                        
-                        // create Pair
-                        Pair object(spectrum_ra, spectrum_dec, pixel_number, pixel_dist, pixel_weight);
-                        
-                        // adding Pair to list
-                        (*list_.find(plates[i])).second.push_back(object);
-                        
-                        // updating size_
-                        size_ ++;
-                        
-                        if (flag_verbose_pair_dataset_ >= 3 or (flag_verbose_pair_dataset_ >= 2 and size_ == size_/1000*1000)){
-                            std::cout << "Loaded " << size_ << " pairs" << std::endl;
+                    for (size_t i = 0; i < cols.size(); i++){
+                        if (cols[i] == "spectrum_RA"){
+                            spectrum_ra_index = i - 1;
                         }
+                        else if (cols[i] == "spectrum_DEC"){
+                            spectrum_dec_index = i - 1;
+                        }
+                        else if (cols[i] == "pixel_number"){
+                            pixel_number_index = i - 1;
+                        }
+                        else if (cols[i] == "pixel_dist"){
+                            pixel_dist_index = i - 1;
+                        }
+                        else if (cols[i] == "pixel_w"){
+                            pixel_weight_index = i - 1;
+                        }
+                    }
+                    read_column_names = false;
+                }
+                
+                // read entries
+                else{
+                    if (flag_verbose_pair_dataset_ >= 4){
+                        std::cout << "Reading entry" << std::endl;
+                    }
+                    spectrum_ra = atof(cols[spectrum_ra_index].c_str());
+                    spectrum_dec = atof(cols[spectrum_dec_index].c_str());
+                    pixel_number = atoi(cols[pixel_number_index].c_str());
+                    pixel_dist = atof(cols[pixel_dist_index].c_str());
+                    pixel_weight = atof(cols[pixel_weight_index].c_str());
+                    
+                    // create Pair
+                    Pair object(spectrum_ra, spectrum_dec, pixel_number, pixel_dist, pixel_weight);
+                        
+                    // adding Pair to list
+                    (*list_it).second.push_back(object);
+                    
+                    // updating size_
+                    size_ ++;
+                    
+                    if (flag_verbose_pair_dataset_ >= 4 or (flag_verbose_pair_dataset_ >= 2 and size_ == size_/100000*100000)){
+                        std::cout << "Loaded " << size_ << " pairs" << std::endl;
                     }
                 }
             }
+            file.close();
+        }
+        else if (flag_verbose_pair_dataset_ >= 2){
+            std::cout << "There are no pairs found in this plate " << std::endl;
         }
     }
     
-    if (flag_verbose_pair_dataset_ >= 1){
+    if (flag_verbose_pair_dataset_ >= 2){
         std::cout << "Loaded " << size_ << " pairs" << std::endl;
     }
 }
