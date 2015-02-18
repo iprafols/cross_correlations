@@ -25,6 +25,7 @@
 #include "lya_pixel.h"
 #include "lya_spectra_dataset.h"
 #include "lya_spectrum.h"
+#include "pair.h"
 #include "plate.h"
 #include "sphere_point.h"
 ////////
@@ -121,6 +122,13 @@ public:
     
     
     // -------------------------------------------------------------
+    // static methods
+    
+    // static variables initializer
+    static void InitializeStatic(const Input& input);
+
+    
+    // -------------------------------------------------------------
     // other methods
 
     // compute cross-correlation
@@ -149,7 +157,6 @@ public:
     CorrelationPlate operator* (const CorrelationPlate& other);
 
 
-    
     
     
 private:
@@ -191,13 +198,29 @@ private:
     
     
     // -------------------------------------------------------------
+    // static variables
+    
+    // pairs information
+    static std::vector<std::vector<Pair> > pairs_information_;
+    
+    // maximum number of pairs stored in each bin
+    static size_t max_pairs_;
+    
+    // position inside pairs_information_ of the next pair information
+    static std::vector<size_t> position_;
+    
+    // -------------------------------------------------------------
     // other methods
     
     // adding contribution to xi in the specified bin
     void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
     
+    // keeps the pair information for latter storage
+    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);
+    
     // write down pair information in bin file
-    void SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma);
+    void SavePairs(const int& k_index);
+    //void SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma);
     
 };
 

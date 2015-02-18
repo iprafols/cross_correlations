@@ -46,6 +46,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
+    CorrelationPlate::InitializeStatic(input);
     for (size_t i = 0; i < plates_list_.size(); i ++){
         correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
     }
@@ -274,6 +275,62 @@ void CorrelationResults::CreateBinFiles(){
     
     for (int bin = 0; bin < num_bins_; bin ++){
         
+        std::string file = detailed_results_ + ToStr(bin) + ".fits";
+        if (flag_verbose_correlation_results_ >= 1){
+            std::cout << "creating file:" << std::endl << file << std::endl;
+        }
+        
+        // removing previous bin file
+        remove(file.c_str());
+        
+        // construct fits object
+        std::auto_ptr<CCfits::FITS> pFits(0);
+        
+        try{
+            pFits.reset(new CCfits::FITS(file, CCfits::Write));
+            
+        }
+        catch(CCfits::FITS::CantOpen){
+            
+            throw "Error: Couldn't open file";
+        }
+        
+        // define columns
+        size_t rows = 0;
+        std::vector<std::string> colName(5);
+        std::vector<std::string> colFormat(5);
+        std::vector<std::string> colUnits(5);
+        
+        colName[0] = "spectrum RA";
+        colFormat[0] = "D";
+        colUnits[0] = "rad";
+        
+        colName[1] = "spectrum DEC";
+        colFormat[1] = "D";
+        colUnits[1] = "rad";
+        
+        colName[2] = "pixel dist";
+        colFormat[2] = "D";
+        colUnits[2] = "h^{-1}Mpc";
+        
+        colName[3] = "pixel number";
+        colFormat[3] = "I";
+        colUnits[3] = "";
+        
+        colName[4] = "pixel weight";
+        colFormat[4] = "D";
+        colUnits[4] = "";
+        
+        // create a header data unit for each of the plates
+        for (PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.begin(); it != correlation_plates_.end(); it ++){
+            
+            std::string hduName = ToStr((*it).first);
+            CCfits::Table* newTable = (*pFits).addTable(hduName, rows, colName, colFormat, colUnits);
+        }
+        
+        
+        /*
+         OLD STUFF
         // creating directory for the bin
         std::string directory_name = detailed_results_ + ToStr(bin)+"/";
         if (flag_verbose_correlation_results_ >= 2){
@@ -302,7 +359,7 @@ void CorrelationResults::CreateBinFiles(){
             }            
             
         }
-        
+        */
     }
 }
 

@@ -68,7 +68,11 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     }
     else{
         results_ = input.detailed_results();
+        pairs_file_name_ = ToStr(plate_number_);
+        /*
+         OLD STUFF
         pairs_file_name_ = "/" + input.pairs_file_name() + ToStr(plate_number_);
+         */
     }
     
     xi_.resize(num_bins_,0.0);
@@ -609,11 +613,24 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     
                     // write down pair information in bin file
                     if (flag_write_partial_results_ >= 1 or flag_compute_covariance_){
+                        KeepPair(k_index, lya_spectrum, p);
+                        /* 
+                         OLD STUFF
                         SavePair(k_index, object, lya_spectrum, p, pi, sigma);
+                         */
                     }
                     
                 }
             }
+        }
+    }
+    
+    for (size_t i = 0; i < num_bins_; i++){
+        if (CorrelationPlate::position_[i] > 0){
+            SavePairs(i);
+        }
+        else{
+            std::cout << "in bin " << i << " plate " << plate_number_ << " has either no pairs or else exactly " << max_pairs_ << std::endl;
         }
     }
 }
@@ -663,6 +680,72 @@ std::string CorrelationPlate::InfoHeader(){
     return "xi mean_pi mean_sigma weight num_averaged_pairs plate";
 }
 
+void CorrelationPlate::InitializeStatic(const Input& input){
+    /**
+     EXPLANATION:
+     Initializes the static variables
+     
+     INPUTS:
+     input - a Input instance
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     Pairs
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    std::vector<Pair> v;
+    v.resize(max_pairs_);
+    
+    for (size_t i = 0; i < input.num_bins(); i++){
+        CorrelationPlate::pairs_information_.push_back(v);
+        CorrelationPlate::position_.push_back(0);
+    }
+    
+}
+
+void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number){
+    /**
+     EXPLANATION:
+     Keeps the pair information to save at an appropiate time
+     
+     INPUTS:
+     k_index - an integer specifying the pair's bin
+     lya_spectrum - a LyaSpectrum instance
+     pixel_number - an unsigned integral with the position of the pixel contributing to the pair
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     AstroObject
+     CorrelationPlate
+     LyaPixel
+     LyaSpectrum
+     SpherePoint
+     
+     FUNCITONS USED:
+     ToStr
+     */
+    
+    LyaPixel pixel = lya_spectrum.spectrum(pixel_number);
+    SpherePoint angle = lya_spectrum.angle();
+    
+    Pair pair(angle.ra(), angle.dec(), pixel_number, pixel.dist(), pixel.weight());
+    
+    CorrelationPlate::pairs_information_[k_index][CorrelationPlate::position_[k_index]] = pair;
+    CorrelationPlate::position_[k_index] ++;
+    
+    if (CorrelationPlate::position_[k_index] == CorrelationPlate::max_pairs_){
+        SavePairs(k_index);
+    }
+}
+
 void CorrelationPlate::Normalize(){
     /**
      EXPLANATION:
@@ -709,7 +792,74 @@ void CorrelationPlate::Normalize(){
     
 }
 
-void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma){
+void CorrelationPlate::SavePairs(const int& k_index){
+    /**
+     EXPLANATION:
+     Writes down pair information in bin file
+     
+     INPUTS:
+     k_index - an integer specifying the pair's bin
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     AstroObject
+     CorrelationPlate
+     LyaPixel
+     LyaSpectrum
+     SpherePoint
+     
+     FUNCITONS USED:
+     ToStr
+     */
+    
+    std::string filename;
+    filename = results_ + ToStr(k_index) + ".fits";
+    
+    // construct fits object
+    std::auto_ptr<CCfits::FITS> pFits(0);
+    
+    try{
+        pFits.reset(new CCfits::FITS(filename,CCfits::Write));
+    }
+    catch(CCfits::FITS::CantOpen){
+        throw "Error : In CorrelationPlate::SavePairs : Unable to open file: \n " + ToStr(filename);
+    }
+    // read table from file
+    CCfits::ExtHDU& table = (*pFits).extension(pairs_file_name_);
+    
+    long NAXIS2 = table.axis(1);
+    size_t size = CorrelationPlate::position_[k_index];
+    
+    // prepare variables to write in the table
+    
+    std::valarray<double> spectrum_ra(size);
+    std::valarray<double> spectrum_dec(size);
+    std::valarray<double> pixel_dist(size);
+    std::valarray<int> pixel_number(size);
+    std::valarray<double> pixel_weight(size);
+    
+    for (size_t i = 0; i < size; i++){
+        spectrum_ra[i] = CorrelationPlate::pairs_information_[k_index][i].spectrum_ra();
+        spectrum_dec[i] = CorrelationPlate::pairs_information_[k_index][i].spectrum_dec();
+        pixel_dist[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_dist();
+        pixel_number[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_number();
+        pixel_weight[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_weight();
+    }
+    
+    // write data in the table
+    table.column("spectrum RA").write(spectrum_ra,NAXIS2+1);
+    table.column("spectrum DEC").write(spectrum_dec,NAXIS2+1);
+    table.column("pixel dist").write(pixel_dist,NAXIS2+1);
+    table.column("pixel number").write(pixel_number,NAXIS2+1);
+    table.column("pixel weight").write(pixel_weight,NAXIS2+1);
+    
+    
+    CorrelationPlate::position_[k_index] = 0;
+}
+
+/*void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma){
     /**
      EXPLANATION:
      Writes down pair information in bin file
@@ -735,8 +885,11 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
      FUNCITONS USED:
      ToStr
      */
-    std::string filename;
-    filename = results_ + ToStr(k_index) + pairs_file_name_;
+    
+
+    /*
+     OLD STUFF
+     filename = results_ + ToStr(k_index) + pairs_file_name_;
     
     std::ofstream bin_file;
     bin_file.open(filename.c_str(),std::ofstream::app); // opens the file to append content
@@ -757,7 +910,7 @@ void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, c
         std::cout << "Error : In CorrelationPlate::SavePair : Unable to open file:" << std::endl << filename << std::endl;
     }
 
-}
+}*/
 
 void CorrelationPlate::operator+= (const CorrelationPlate& other){
     /**
@@ -878,4 +1031,8 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     return temp;
     
 }
-   
+
+size_t CorrelationPlate::max_pairs_ = 10000;
+std::vector<size_t> CorrelationPlate::position_;
+std::vector<std::vector<Pair> > CorrelationPlate::pairs_information_;
+

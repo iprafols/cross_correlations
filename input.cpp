@@ -212,7 +212,7 @@ void Input::SetDefaultValues(){
     output_base_name_ = dataset1_name_ + "-" + dataset2_name_;
     results_ = output_ + "partial_results/";
     detailed_results_ = results_ + "detailed_info_bin_";
-    pairs_file_name_ = "detailed_info_plate_";
+    //pairs_file_name_ = "detailed_info_plate_";
     plots_ = "plots/";
     
     

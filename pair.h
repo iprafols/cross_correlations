@@ -53,6 +53,13 @@ public:
     
     // spectrum angle
     SpherePoint spectrum_angle() const {return spectrum_angle_;}
+    
+    // spectrm right asention
+    double spectrum_ra() const {return spectrum_angle_.ra();}
+    
+    // spectrm declination
+    double spectrum_dec() const {return spectrum_angle_.dec();}
+
 
     // -------------------------------------------------------------
     // other methods
