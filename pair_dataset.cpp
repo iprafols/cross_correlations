@@ -32,7 +32,11 @@ PairDataset::PairDataset(const Input& input, const size_t bin, const std::vector
     flag_verbose_pair_dataset_ = input.flag_verbose_pair_dataset();
     name_ = "pairs in bin " + ToStr(bin);
     bin_ = bin;
+    pairs_file_name_ = input.detailed_results() + ToStr(bin) + ".fits";
+    /*
+     OLD STUFF
     pairs_file_name_ = input.detailed_results() + ToStr(bin) + "/" + input.pairs_file_name();
+     */
     
     Load(plates);
     
@@ -199,6 +203,98 @@ void PairDataset::Load(const std::vector<int>& plates){
     // setting size to zero
     size_ = 0;
     
+    // setting the catalog columns to be read
+    std::vector<std::string> fields(5);
+    fields[0] = "spectrum RA";
+    fields[1] = "spectrum DEC";
+    fields[2] = "pixel number";
+    fields[3] = "pixel dist";
+    fields[4] = "pixel weight";
+    
+    // construct fits object
+    std::auto_ptr<CCfits::FITS> pInfile;
+    
+    try{
+        
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(pairs_file_name_,CCfits::Read));
+        
+    } catch(CCfits::FITS::CantOpen x) {
+        
+        throw "Error: in PairDataset::Load : Couldn't open catalog file: " + pairs_file_name_;
+    }
+    
+    for (size_t i = 0; i < plates.size(); i++){
+        
+        if (flag_verbose_pair_dataset_ >= 3){
+            std::cout << "Loading plate " + ToStr(plates[i]) << std::endl;
+        }
+        
+        CCfits::ExtHDU& data = (*pInfile).extension(ToStr(plates[i]));
+        
+        // number of lines in the file
+        long NAXIS2 = data.axis(1);
+        size_t nobj = NAXIS2;
+        if (nobj == 0){
+            continue;
+        }
+
+        // this will store the information
+        std::valarray<double> spectrum_ra, spectrum_dec, pixel_dist, pixel_weight;
+        std::valarray<int> pixel_number;
+        
+        // reading data
+        data.column(fields[0]).read(spectrum_ra,1,nobj); // spectra ra
+        data.column(fields[1]).read(spectrum_dec,1,nobj); // spectra dec
+        data.column(fields[3]).read(pixel_number,1,nobj); // pixel numbers
+        data.column(fields[2]).read(pixel_dist,1,nobj); // pixel distances
+        data.column(fields[4]).read(pixel_weight,1,nobj); // pixel weights
+        
+        // creating entries in list_ map
+        if (list_.find(plates[i]) == list_.end()){
+            std::vector<Pair> v;
+            list_[plates[i]] = v;
+            num_objects_in_plate_[plates[i]] = 0;
+        }
+        
+        // adding objects to list_
+        for (int j = 0; j < nobj; j++){
+            
+            // create Pair
+            Pair object(spectrum_ra[j], spectrum_dec[j], pixel_number[j], pixel_dist[j], pixel_weight[j]);
+            
+            // adding object to list_
+            (*list_.find(plates[i])).second.push_back(object);
+            
+            // updating size_
+            size_ ++;
+            
+            // updating number_of_objects_in_plate
+            (*num_objects_in_plate_.find(plates[i])).second ++;
+            
+            if (flag_verbose_pair_dataset_ >= 4 or (flag_verbose_pair_dataset_ >= 3 and size_ == size_/1000*1000)){
+                std::cout << "Loaded " << size_ << " pairs" << std::endl;
+            }
+            
+            
+        }
+        
+    }
+    
+    if (flag_verbose_pair_dataset_ >= 1){
+        std::cout << "Loaded " << size_ << " pairs" << std::endl;
+    }
+    
+}
+    
+    
+  
+    
+   
+    
+    
+/*    // setting size to zero
+    size_ = 0;
+    
     // loop over plates
     for (size_t i = 0; i < plates.size(); i++){
         
@@ -213,18 +309,18 @@ void PairDataset::Load(const std::vector<int>& plates){
             if (list_.find(plates[i]) == list_.end()){
                 std::vector<Pair> v;
                 list_[plates[i]] = v;
-                /*int num_objects = FindCatalogLength(filename);
+                int num_objects = FindCatalogLength(filename);
                 if (flag_verbose_pair_dataset_ >= 2){
                     std::cout << "There are " << num_objects << " pairs in this plate" << std::endl;
                 }
-                /*if (num_objects > 0){
+                if (num_objects > 0){
                     num_objects_in_plate_[plates[i]] = num_objects;
                     v.reserve(num_objects);
                     list_[plates[i]] = v;
                 }
                 else{
                     continue;
-                }*/
+                }
             }
             else {
                 if (flag_verbose_pair_dataset_ >= 1){
@@ -306,7 +402,7 @@ void PairDataset::Load(const std::vector<int>& plates){
     if (flag_verbose_pair_dataset_ >= 2){
         std::cout << "Loaded " << size_ << " pairs" << std::endl;
     }
-}
+}*/
 
 size_t PairDataset::GetNumberPairs(int plate) const{
     /**

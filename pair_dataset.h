@@ -17,6 +17,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <CCfits>
 ////////
 
 // classes needed
