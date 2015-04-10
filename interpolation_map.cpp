@@ -80,6 +80,11 @@ double InterpolationMap::LinearInterpolation(const double& first) const{
     std::map<double,double>::const_iterator it,it2;
 
     it = interpolation_map_.lower_bound(first);
+    
+    if (it == interpolation_map_.end()){
+        return _BAD_DATA_;
+    }
+    
     // no interpolation needed if distance is already computed for the given redshift
     if ((*it).first == first){
         return (*it).second;

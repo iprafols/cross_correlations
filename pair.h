@@ -37,7 +37,7 @@ public:
     Pair(double bad_data);
     
     // constructs object and initializes its variables
-    Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight);
+    Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight, const double& pixel_z);
     
     // -------------------------------------------------------------
     // access methods
@@ -50,6 +50,9 @@ public:
     
     // pixel weight
     double pixel_weight() const {return pixel_weight_;}
+    
+    // pixel redshift
+    double pixel_z() const {return pixel_z_;}
     
     // spectrum angle
     SpherePoint spectrum_angle() const {return spectrum_angle_;}
@@ -77,6 +80,9 @@ private:
     
     // pixel weight
     double pixel_weight_;
+    
+    // pixel redshift
+    double pixel_z_;
     
     // spectrum angle
     SpherePoint spectrum_angle_;

@@ -297,9 +297,9 @@ void CorrelationResults::CreateBinFiles(){
         
         // define columns
         size_t rows = 0;
-        std::vector<std::string> colName(5);
-        std::vector<std::string> colFormat(5);
-        std::vector<std::string> colUnits(5);
+        std::vector<std::string> colName(6);
+        std::vector<std::string> colFormat(6);
+        std::vector<std::string> colUnits(6);
         
         colName[0] = "spectrum RA";
         colFormat[0] = "D";
@@ -320,6 +320,10 @@ void CorrelationResults::CreateBinFiles(){
         colName[4] = "pixel weight";
         colFormat[4] = "D";
         colUnits[4] = "";
+        
+        colName[5] = "pixel z";
+        colFormat[5] = "D";
+        colUnits[5] = "";
         
         // create a header data unit for each of the plates
         for (PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.begin(); it != correlation_plates_.end(); it ++){

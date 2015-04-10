@@ -34,10 +34,10 @@ OBJECTS_PLATE_NEIGHBOURS = $(patsubst %.cpp,build/%.o,$(SOURCES_PLATE_NEIGHBOURS
 OBJECTS_PLOT = $(patsubst %.py,%.pyc,$(SOURCES_PLOT))
 
 # this variables sets the options passed to the compiler for compilation only
-CFLAGS = -c $(INCLUDE) $(LIBRARY)
+CFLAGS = -c $(INCLUDE) $(LIBRARY) -fopenmp
 # this variable sets the options passed to the compiler for linking
-LFLAGS = $(INCLUDE) $(LIBRARY) -Wall
-#LFLAGS = $(INCLUDE) $(LIBRARY) -fopenmp -Wall
+#LFLAGS = $(INCLUDE) $(LIBRARY) -Wall
+LFLAGS = $(INCLUDE) $(LIBRARY) -fopenmp -Wall
 
 
 #

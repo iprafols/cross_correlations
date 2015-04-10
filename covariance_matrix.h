@@ -16,6 +16,9 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include "omp.h"
+
+#include <iomanip>
 ////////
 
 // classes needed
@@ -95,12 +98,23 @@ private:
     // -------------------------------------------------------------
     // methods
     
+    // computes the total weight in a given PairDataset
+    double ComputeTotalWeight(const PairDataset& pair_dataset, const std::vector<int>& plates_list);
+    
     // save the bootstrap covariance matrix
     void SaveBootstrapCovMat();
     
     // save the bootstrap covariance matrix
     void SaveCovMat();
     
+    // -------------------------------------------------------------
+    // static variables
+    
+    // value of gamma/2
+    static double half_gamma_;
+    
+    // value of (1+z_0)^(gamma/2)
+    static double one_plus_z0_to_the_half_gamma_;
 };
 
 

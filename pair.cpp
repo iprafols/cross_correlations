@@ -33,9 +33,10 @@ Pair::Pair(double bad_data){
     pixel_number_ = _BAD_DATA_INT_;
     pixel_dist_ = _BAD_DATA_;
     pixel_weight_ = _BAD_DATA_;
+    pixel_z_ = _BAD_DATA_;
 }
 
-Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight){
+Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight, const double& pixel_z){
     /**
      EXPLANATION:
      Cosntructs a Pair instance
@@ -46,6 +47,7 @@ Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pix
      pixel_number - pixel number
      pixel_dist - distance to pixel
      pixel_weight - pixel's weight
+     pixel_z - pixel's redshift
      
      OUTPUTS:
      NONE
@@ -61,5 +63,6 @@ Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pix
     pixel_number_ = pixel_number;
     pixel_dist_ = pixel_dist;
     pixel_weight_ = pixel_weight;
+    pixel_z_ = pixel_z;
     
 }

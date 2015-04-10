@@ -197,19 +197,20 @@ void PairDataset::Load(const std::vector<int>& plates){
     std::string filename, line;
     
     if (flag_verbose_pair_dataset_ >= 2){
-        std::cout << "Loading " << name_ << std::endl;
+        std::cout << "Loading bin " << bin_ << std::endl;
     }
     
     // setting size to zero
     size_ = 0;
     
     // setting the catalog columns to be read
-    std::vector<std::string> fields(5);
+    std::vector<std::string> fields(6);
     fields[0] = "spectrum RA";
     fields[1] = "spectrum DEC";
     fields[2] = "pixel number";
     fields[3] = "pixel dist";
     fields[4] = "pixel weight";
+    fields[5] = "pixel z";
     
     // construct fits object
     std::auto_ptr<CCfits::FITS> pInfile;
@@ -239,7 +240,7 @@ void PairDataset::Load(const std::vector<int>& plates){
         }
 
         // this will store the information
-        std::valarray<double> spectrum_ra, spectrum_dec, pixel_dist, pixel_weight;
+        std::valarray<double> spectrum_ra, spectrum_dec, pixel_dist, pixel_weight, pixel_z;
         std::valarray<int> pixel_number;
         
         // reading data
@@ -248,6 +249,7 @@ void PairDataset::Load(const std::vector<int>& plates){
         data.column(fields[3]).read(pixel_number,1,nobj); // pixel numbers
         data.column(fields[2]).read(pixel_dist,1,nobj); // pixel distances
         data.column(fields[4]).read(pixel_weight,1,nobj); // pixel weights
+        data.column(fields[5]).read(pixel_z,1,nobj); // pixel redshift
         
         // creating entries in list_ map
         if (list_.find(plates[i]) == list_.end()){
@@ -260,7 +262,7 @@ void PairDataset::Load(const std::vector<int>& plates){
         for (int j = 0; j < nobj; j++){
             
             // create Pair
-            Pair object(spectrum_ra[j], spectrum_dec[j], pixel_number[j], pixel_dist[j], pixel_weight[j]);
+            Pair object(spectrum_ra[j], spectrum_dec[j], pixel_number[j], pixel_dist[j], pixel_weight[j], pixel_z[j]);
             
             // adding object to list_
             (*list_.find(plates[i])).second.push_back(object);

@@ -413,12 +413,26 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      FUNCITONS USED:
      NONE
      */
-    
+    #pragma omp critical(addxi)
+    {
     xi_[k_index] += (pixel.forest()-1.0)*pixel.weight();
+    }
+    #pragma omp critical(addpi)
+    {
     mean_pi_[k_index] += pi*pixel.weight();
+    }
+    #pragma omp critical(addsigma)
+    {
     mean_sigma_[k_index] += sigma*pixel.weight();
+    }
+    #pragma omp critical(addweight)
+    {
     weight_[k_index] += pixel.weight();
+    }
+    #pragma omp critical(addnum)
+    {
     num_averaged_pairs_[k_index] ++;
+    }
     
 }
 
@@ -466,6 +480,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     }
 
     // loop over AstroObjects
+    #pragma omp parallel for schedule(dynamic)
     for (size_t i = 0; i < number_of_objects; i ++){
         
         AstroObject object = object_list.list(plate_number_, i);
@@ -558,6 +573,11 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                 // loop over LyaPixels
                 for (int p = 0; p < spectrum.size(); p ++){
                     
+                    // cehck that the weight is not zero
+                    if (spectrum[p].weight() == 0.0){
+                        continue;
+                    }
+                    
                     // compute pi and sigma
                     double sigma = sqrt(sigma_aux*spectrum[p].dist());
                     if (sigma > max_sigma){ // if sigma (r_perp) is too large, discard pixel
@@ -614,7 +634,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     // write down pair information in bin file
                     if (flag_write_partial_results_ >= 1 or flag_compute_covariance_){
                         KeepPair(k_index, lya_spectrum, p);
-                        /* 
+                        /*
                          OLD STUFF
                         SavePair(k_index, object, lya_spectrum, p, pi, sigma);
                          */
@@ -700,7 +720,7 @@ void CorrelationPlate::InitializeStatic(const Input& input){
      */
     
     std::vector<Pair> v;
-    v.resize(max_pairs_);
+    v.resize(CorrelationPlate::max_pairs_);
     
     for (size_t i = 0; i < input.num_bins(); i++){
         CorrelationPlate::pairs_information_.push_back(v);
@@ -736,13 +756,17 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
     LyaPixel pixel = lya_spectrum.spectrum(pixel_number);
     SpherePoint angle = lya_spectrum.angle();
     
-    Pair pair(angle.ra(), angle.dec(), pixel_number, pixel.dist(), pixel.weight());
+    Pair pair(angle.ra(), angle.dec(), pixel_number, pixel.dist(), pixel.weight(), pixel.z());
     
+    #pragma omp critical(keeppair)
+    {
     CorrelationPlate::pairs_information_[k_index][CorrelationPlate::position_[k_index]] = pair;
     CorrelationPlate::position_[k_index] ++;
     
-    if (CorrelationPlate::position_[k_index] == CorrelationPlate::max_pairs_){
-        SavePairs(k_index);
+        if (CorrelationPlate::position_[k_index] == CorrelationPlate::max_pairs_){
+        
+            SavePairs(k_index);
+        }
     }
 }
 
@@ -839,6 +863,7 @@ void CorrelationPlate::SavePairs(const int& k_index){
     std::valarray<double> pixel_dist(size);
     std::valarray<int> pixel_number(size);
     std::valarray<double> pixel_weight(size);
+    std::valarray<double> pixel_z(size);
     
     for (size_t i = 0; i < size; i++){
         spectrum_ra[i] = CorrelationPlate::pairs_information_[k_index][i].spectrum_ra();
@@ -846,6 +871,7 @@ void CorrelationPlate::SavePairs(const int& k_index){
         pixel_dist[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_dist();
         pixel_number[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_number();
         pixel_weight[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_weight();
+        pixel_z[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_z();
     }
     
     // write data in the table
@@ -854,6 +880,7 @@ void CorrelationPlate::SavePairs(const int& k_index){
     table.column("pixel dist").write(pixel_dist,NAXIS2+1);
     table.column("pixel number").write(pixel_number,NAXIS2+1);
     table.column("pixel weight").write(pixel_weight,NAXIS2+1);
+    table.column("pixel z").write(pixel_z,NAXIS2+1);
     
     
     CorrelationPlate::position_[k_index] = 0;
@@ -1032,7 +1059,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     
 }
 
-size_t CorrelationPlate::max_pairs_ = 10000;
+size_t CorrelationPlate::max_pairs_ = 100000;
 std::vector<size_t> CorrelationPlate::position_;
 std::vector<std::vector<Pair> > CorrelationPlate::pairs_information_;
 

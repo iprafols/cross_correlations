@@ -204,15 +204,16 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
      FUNCITONS USED:
      NONE
      */
-    
+    std::cout << std::setprecision(8);
     std::vector<int> plates = kPlateNeighbours.GetPlatesList();
+    std::vector<double> total_weight;
+    total_weight.reserve(num_bins_);
     
     if (flag_verbose_covariance_matrix_ >= 1){
         std::cout << "Computing the covariance matrix" << std::endl;
     }
     // load interpolation map
     LyaAutoInterpolationMap lya_auto_correlation_map(input);
-    double add;
     
     // loop over regions (1st index: i)
     for (size_t i = 0; i < num_bins_; i++){
@@ -221,7 +222,16 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
         PairDataset pair_dataset_i(input, i, plates);
         std::vector<int> plates_bin_i = pair_dataset_i.GetPlatesList();
         
-        // loop over regions (2n index: j)
+        // computing weight if necessary
+        if (total_weight.size() <= i){
+            std::cout << "computing weight\n";
+            total_weight.push_back(ComputeTotalWeight(pair_dataset_i, plates_bin_i));
+            std::cout << "done\n";
+        }
+
+        
+        
+        // loop over regions (2nd index: j)
         for (size_t j = i; j < num_bins_; j++){
             
             // checking that the desired covariance matrix element is existent
@@ -235,19 +245,40 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
             PairDataset pair_dataset_j(input, j, plates);
             std::vector<int> plates_bin_j = pair_dataset_j.GetPlatesList();
             
+            // computing weight if necessary
+            if (total_weight.size() <= j){
+                total_weight.push_back(ComputeTotalWeight(pair_dataset_j, plates_bin_j));
+            }
+            
             // computing covariance matrix
+            #pragma omp parallel for schedule(dynamic)
             // loop over plates in bin i
             for (size_t plates_i = 0; plates_i < plates_bin_i.size(); plates_i ++){
+                double add,weight;
+                
+                std::vector<Pair> list_i = pair_dataset_i.list(plates_bin_i[plates_i]);
+                if (list_i.size() == 0){
+                    continue;
+                }
+                
                 // loop over plates in bin j
                 for (size_t plates_j = 0; plates_j < plates_bin_j.size(); plates_j ++){
                     
                     // check that the plates are neighbours
                     if (kPlateNeighbours.AreNeighbours(plates_bin_i[plates_i], plates_bin_j[plates_j])){
                         
+                        std::vector<Pair> list_j = pair_dataset_j.list(plates_bin_j[plates_j]);
+                        if (list_j.size() == 0){
+                            continue;
+                        }
+                        
                         // loop over pairs in bin i
-                        for (size_t pairs_i = 0; pairs_i < pair_dataset_i.GetNumberPairs(plates_bin_i[plates_i]); pairs_i ++){
+                        for (size_t pairs_i = 0; pairs_i < list_i.size(); pairs_i ++){
                             
-                            Pair object_i = pair_dataset_i.list(plates_bin_i[plates_i], pairs_i);
+                            Pair object_i = list_i[pairs_i];
+                            if (object_i.pixel_weight() == 0.0){
+                                continue;
+                            }
                             
                             double sigma_aux = 2.0*object_i.pixel_dist(); // auxiliar variable to compute sigma values
                             
@@ -255,7 +286,10 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
                             // loop over pairs in bin j
                             for (size_t pairs_j = 0; pairs_j < pair_dataset_j.GetNumberPairs(plates_bin_j[plates_j]); pairs_j ++){
                                 
-                                Pair object_j = pair_dataset_j.list(plates_bin_j[plates_j], pairs_j);
+                                Pair object_j = list_j[pairs_j];
+                                if (object_j.pixel_weight() == 0.0){
+                                    continue;
+                                }
                                 
                                 double cos_theta = object_i.spectrum_angle().CosAngularDistance(object_j.spectrum_angle());
                                 
@@ -273,24 +307,42 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
                                 
                                 // add to covariance matrix
                                 if (sigma < 0.01){
-                                    if (pi >= 0.0){
+                                    if (object_i.pixel_number() == object_j.pixel_number() and object_i.pixel_weight() != 0.0){
+                                        weight = object_i.pixel_weight()*object_j.pixel_weight();
+                                        add = pow(1+object_i.pixel_z(),CovarianceMatrix::half_gamma_)/object_i.pixel_weight()/CovarianceMatrix::one_plus_z0_to_the_half_gamma_;
+                                        
+                                        #pragma omp critical(covariance)
+                                        {
+                                        (*it).second += add*weight;
+                                        }
+                                    }
+                                    /*if (pi >= 0.0){
                                         add = lya_auto_correlation_map.LinearInterpolation(pi);
                                     }
                                     else{
-                                       add =  lya_auto_correlation_map.LinearInterpolation(-pi);
+                                        add = lya_auto_correlation_map.LinearInterpolation(-pi);
                                     }
-                                    if (add == _BAD_DATA_){
-                                        (*it).second += add;
-                                        if (object_i.pixel_number() == object_j.pixel_number()){
-                                            (*it).second += 1/object_i.pixel_weight();
+                                    if (add != _BAD_DATA_){
+                                        weight = object_i.pixel_weight()*object_j.pixel_weight();
+                                        if (object_i.pixel_number() == object_j.pixel_number() and weight != 0.0){
+                                            add += 1/object_i.pixel_weight();
                                         }
-                                    }
+                                        (*it).second += add*weight;
+                                        total_weight += weight;
+                                        //std::cout << "prova: " << (*it).second << " " << add << " " << weight << std::endl;
+                                    }*/
                                 }
                             }
                         }
                     }
                 }
             }
+            
+            // normalizing element
+            if (total_weight[i] > 0.0 and total_weight[j] > 0.0){
+                (*it).second /= total_weight[i]*total_weight[j];
+            }
+            std::cout << i << " " << j << " " << (*it).second << std::endl;
         }
         
     }
@@ -299,6 +351,40 @@ void CovarianceMatrix::ComputeCovMat(const Input& input, const PlateNeighbours& 
     SaveCovMat();
 }
 
+double CovarianceMatrix::ComputeTotalWeight(const PairDataset& pair_dataset, const std::vector<int>& plates_list){
+    /**
+     EXPLANATION:
+     Computes the total weight of a given pairDataset bin
+     
+     INPUTS:
+     pair_dataset - pairDataset to compute the weight of
+     plates_list - list of plates contained in pair_dataset
+     
+     OUTPUTS:
+     total_weight - total weight in the dataset
+     
+     CLASSES USED:
+     Pair
+     PairDataset
+     CovarianceMatrix
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    double total_weight = 0.0;
+    
+    // loop over plates
+    for (size_t plate = 0; plate < plates_list.size(); plate ++){
+        
+        std::vector<Pair> list = pair_dataset.list(plates_list[plate]);
+        
+        // loop over pairs
+        for (size_t pair = 0; pair < list.size(); pair ++){
+            total_weight += list[pair].pixel_weight();
+        }
+    }
+}
 void CovarianceMatrix::SaveBootstrapCovMat(){
     /**
      EXPLANATION:
@@ -407,7 +493,7 @@ void CovarianceMatrix::SaveCovMat(){
     
 }
 
-
-
+double CovarianceMatrix::half_gamma_ = 3.8/2.0;
+double CovarianceMatrix::one_plus_z0_to_the_half_gamma_ = pow(1+2.25,CovarianceMatrix::half_gamma_);
 
     
