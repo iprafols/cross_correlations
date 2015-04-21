@@ -544,7 +544,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     continue;
                 }
                 
-                double pair_max_pi = object.dist()-spectrum[0].dist(); // minimum distance obtained for lowest redshift pixel
+                double pair_max_pi = spectrum[0].dist() - object.dist(); // minimum distance obtained for lowest redshift pixel
                 if (pair_max_pi < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
@@ -557,7 +557,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     continue;
                 }
                 
-                double pair_min_pi = object.dist()-spectrum.back().dist(); // maximum distance obtained for highest redshift pixel
+                double pair_min_pi = spectrum.back().dist() - object.dist(); // maximum distance obtained for highest redshift pixel
                 if (pair_min_pi > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
@@ -588,7 +588,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         continue;
                     }
 
-                    double pi = object.dist()-spectrum[p].dist();
+                    double pi = spectrum[p].dist()-object.dist();
                     if ((pi > max_pi) or (pi <- max_pi)){ // if pi (r_par) is too large or too small, discard pixel
                         if (flag_verbose_correlation_plate_ >= 3){
                             std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
