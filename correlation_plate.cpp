@@ -649,7 +649,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
         if (CorrelationPlate::position_[i] > 0){
             SavePairs(i);
         }
-        else{
+        else if (flag_verbose_correlation_plate_ >= 3){
             std::cout << "in bin " << i << " plate " << plate_number_ << " has either no pairs or else exactly " << max_pairs_ << std::endl;
         }
     }
