@@ -258,7 +258,7 @@ void PlateNeighbours::ReadPlateNeighbours(std::ifstream& plates_file){
     }
     
     std::string line;
-    int aux;
+    int aux = 0;
     while (getline(plates_file,line)){
         if (line[0] != '#'){
             std::vector<std::string> cols = Split(line," ");
