@@ -219,6 +219,9 @@ public:
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
     
+    // access function for skip_plates_
+    int skip_plates() const {return skip_plates_;}
+    
     // access function for step_lya_auto_correlation_
     double step_lya_auto_correlation() const {return step_lya_auto_correlation_;}
     
@@ -363,6 +366,9 @@ private:
     
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
+    
+    // number of plates that have to be skipped
+    int skip_plates_;
     
     // step value of parallel separation in the lyman-alpha auto-correlation (in Mpc/h)
     double step_lya_auto_correlation_;

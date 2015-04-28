@@ -148,6 +148,9 @@ private:
     // results directory
     std::string results_;
     
+    // number of plates that have to be skipped
+    int skip_plates_;
+    
     
     // -------------------------------------------------------------
     // methods

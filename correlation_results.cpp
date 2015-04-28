@@ -50,6 +50,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     for (size_t i = 0; i < plates_list_.size(); i ++){
         correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
     }
+    skip_plates_ = input.skip_plates();
     
     // initialization of the normalized cross-correlation variable
     normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
@@ -65,7 +66,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // creating bin files
-    if (flag_write_partial_results_ >= 1 or (flag_compute_covariance_ and input.flag_compute_cross_correlation())){
+    if ((flag_write_partial_results_ >= 1 or (flag_compute_covariance_ and input.flag_compute_cross_correlation())) and skip_plates_ == 0){
         if (flag_verbose_correlation_results_ >= 2){
             std::cout << "Creating detailed info files" << std::endl;
         }
@@ -181,7 +182,7 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
     }
     
     // loop over plates
-    for (size_t i = 0; i < plates_list_.size(); i++){
+    for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
         PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.find(plates_list_[i]);
         

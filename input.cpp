@@ -196,6 +196,7 @@ void Input::SetDefaultValues(){
     dataset1_type_ = "quasar";
     dataset1_type_options_ = "quasar, dla";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
+    skip_plates_ = 0;
     lya_auto_correlation_ = input_ + "BOSSDR9LyaF.data";
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
@@ -1000,6 +1001,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "skip_plates"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            skip_plates_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "step_lya_auto_correlation"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1468,6 +1480,7 @@ void Input::WriteLog(){
         log << "dataset1_name = " << dataset1_name_ << std::endl;
         log << "dataset1_type = " << dataset1_type_ << std::endl;
         log << "plate_neighbours = " << plate_neighbours_ << std::endl;
+        log << "skip_plates = " << skip_plates_ << std::endl;
         log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
         log << "lya_spectra_dir = " << lya_spectra_dir_ << std::endl;
         log << "dataset2 = " << dataset2_ << std::endl;
