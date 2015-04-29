@@ -670,6 +670,10 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
             }
         }
     }
+    
+    if (flag_verbose_correlation_plate_ >= 1){
+        std::cout << "Computed cross-correlation in plate " << plate_number_ << std::endl;
+    }
 }
 
 std::string CorrelationPlate::Info(size_t bin){
