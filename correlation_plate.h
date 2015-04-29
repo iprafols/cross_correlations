@@ -17,6 +17,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "omp.h"
 ////////
 
 // classes needed
@@ -172,14 +173,23 @@ private:
     // mean value of parallel separation in bin
     std::vector<double> mean_pi_;
     
+    // copies of mean_pi_ to use with parallelization
+    std::vector< std::vector<double> > parallel_mean_pi_;
+    
     // mean value of perpendicular separation in bin
     std::vector<double> mean_sigma_;
+    
+    // copies of mean_sigma_ to use with parallelization
+    std::vector< std::vector<double> > parallel_mean_sigma_;
     
     // number of bins
     size_t num_bins_;
     
     // number of pairs averaged
     std::vector<int> num_averaged_pairs_;
+    
+    // copies of num_averaged_pairs_ to use with parallelization
+    std::vector< std::vector<int> >  parallel_num_averaged_pairs_;
     
     // pairs file name
     std::string pairs_file_name_;
@@ -193,33 +203,46 @@ private:
     // weight
     std::vector<double> weight_;
     
+    // copies of weight_ to use with parallelization
+    std::vector< std::vector<double> > parallel_weight_;
+    
     // cross correlation in bin
     std::vector<double> xi_;
+    
+    // copies of xi_ to use with parallelization
+    std::vector< std::vector<double> > parallel_xi_;
+
     
     
     // -------------------------------------------------------------
     // static variables
     
     // pairs information
-    static std::vector<std::vector<Pair> > pairs_information_;
+    static std::vector<std::vector<std::vector<Pair> > > pairs_information_;
     
     // maximum number of pairs stored in each bin
     static size_t max_pairs_;
     
     // position inside pairs_information_ of the next pair information
-    static std::vector<size_t> position_;
+    static std::vector<std::vector<size_t> > position_;
+    
+    // number of threads used in the computation
+    static size_t number_of_threads_;
     
     // -------------------------------------------------------------
     // other methods
     
     // adding contribution to xi in the specified bin
-    void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
+    void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma, const size_t& which_thread);
     
     // keeps the pair information for latter storage
-    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);
+    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t& which_thread);
+    
+    // Merges the information collected by the different threads
+    void MergeThreads();
     
     // write down pair information in bin file
-    void SavePairs(const int& k_index);
+    void SavePairs(const int& k_index, const size_t& which_thread);
     //void SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma);
     
 };

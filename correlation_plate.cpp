@@ -81,6 +81,13 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     weight_.resize(num_bins_,0.0);
     num_averaged_pairs_.resize(num_bins_,0);
     
+    // paralelization copies
+    parallel_xi_.resize(CorrelationPlate::number_of_threads_, xi_);
+    parallel_mean_pi_.resize(CorrelationPlate::number_of_threads_, mean_pi_);
+    parallel_mean_sigma_.resize(CorrelationPlate::number_of_threads_, mean_sigma_);
+    parallel_weight_.resize(CorrelationPlate::number_of_threads_, weight_);
+    parallel_num_averaged_pairs_.resize(CorrelationPlate::number_of_threads_, num_averaged_pairs_);
+    
 }
 
 CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
@@ -392,7 +399,7 @@ void CorrelationPlate::set_xi(size_t index, double value){
     }
 }
 
-void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma){
+void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma, const size_t& which_thread){
     /**
      EXPLANATION:
      Adds pair contribution to xi in the specified bin
@@ -402,6 +409,7 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      pixel - an LyaPixel instance to add the contribution from
      pi - a double specifying the parallel separation of the pair
      sigma - a double specifying the perpendicular separation of the pair
+     which_thread - id of the thread being used
      
      OUTPUTS:
      NONE
@@ -413,7 +421,14 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      FUNCITONS USED:
      NONE
      */
-    #pragma omp critical(addxi)
+    
+    parallel_xi_[which_thread][k_index] += (pixel.forest()-1.0)*pixel.weight();
+    parallel_mean_pi_[which_thread][k_index] += pi*pixel.weight();
+    parallel_mean_sigma_[which_thread][k_index] += sigma*pixel.weight();
+    parallel_weight_[which_thread][k_index] += pixel.weight();
+    parallel_num_averaged_pairs_[which_thread][k_index] ++;
+    
+    /*#pragma omp critical(addxi)
     {
     xi_[k_index] += (pixel.forest()-1.0)*pixel.weight();
     }
@@ -432,7 +447,7 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     #pragma omp critical(addnum)
     {
     num_averaged_pairs_[k_index] ++;
-    }
+    }*/
     
 }
 
@@ -482,6 +497,8 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     // loop over AstroObjects
     #pragma omp parallel for schedule(dynamic)
     for (size_t i = 0; i < number_of_objects; i ++){
+        
+        size_t which_thread = omp_get_thread_num();
         
         AstroObject object = object_list.list(plate_number_, i);
         
@@ -629,11 +646,11 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         
                     }
                     // add contribution to xi in the specified bin
-                    AddPair(k_index, spectrum[p], pi, sigma);
+                    AddPair(k_index, spectrum[p], pi, sigma, which_thread);
                     
                     // write down pair information in bin file
                     if (flag_write_partial_results_ >= 1 or flag_compute_covariance_){
-                        KeepPair(k_index, lya_spectrum, p);
+                        KeepPair(k_index, lya_spectrum, p, which_thread);
                         /*
                          OLD STUFF
                         SavePair(k_index, object, lya_spectrum, p, pi, sigma);
@@ -644,13 +661,13 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
             }
         }
     }
+    MergeThreads();
     
     for (size_t i = 0; i < num_bins_; i++){
-        if (CorrelationPlate::position_[i] > 0){
-            SavePairs(i);
-        }
-        else if (flag_verbose_correlation_plate_ >= 3){
-            std::cout << "in bin " << i << " plate " << plate_number_ << " has either no pairs or else exactly " << max_pairs_ << std::endl;
+        for (size_t thread = 0; thread < CorrelationPlate::number_of_threads_; thread ++){
+            if (CorrelationPlate::position_[thread][i] > 0){
+                SavePairs(i, thread);
+            }
         }
     }
 }
@@ -722,14 +739,19 @@ void CorrelationPlate::InitializeStatic(const Input& input){
     std::vector<Pair> v;
     v.resize(CorrelationPlate::max_pairs_);
     
+    std::vector<size_t> position;
+    std::vector<std::vector<Pair> > pairs_information;
+
     for (size_t i = 0; i < input.num_bins(); i++){
-        CorrelationPlate::pairs_information_.push_back(v);
-        CorrelationPlate::position_.push_back(0);
+        pairs_information.push_back(v);
+        position.push_back(0);
     }
     
+    CorrelationPlate::position_.resize(number_of_threads_, position);
+    CorrelationPlate::pairs_information_.resize(number_of_threads_, pairs_information);
 }
 
-void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number){
+void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t& which_thread){
     /**
      EXPLANATION:
      Keeps the pair information to save at an appropiate time
@@ -738,6 +760,7 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
      k_index - an integer specifying the pair's bin
      lya_spectrum - a LyaSpectrum instance
      pixel_number - an unsigned integral with the position of the pixel contributing to the pair
+     which_thread - id of the thread being used
      
      OUTPUTS:
      NONE
@@ -758,14 +781,40 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
     
     Pair pair(angle.ra(), angle.dec(), pixel_number, pixel.dist(), pixel.weight(), pixel.z());
     
-    #pragma omp critical(keeppair)
-    {
-    CorrelationPlate::pairs_information_[k_index][CorrelationPlate::position_[k_index]] = pair;
-    CorrelationPlate::position_[k_index] ++;
+    CorrelationPlate::pairs_information_[which_thread][k_index][CorrelationPlate::position_[which_thread][k_index]] = pair;
+    CorrelationPlate::position_[which_thread][k_index] ++;
     
-        if (CorrelationPlate::position_[k_index] == CorrelationPlate::max_pairs_){
+    if (CorrelationPlate::position_[which_thread][k_index] == CorrelationPlate::max_pairs_){
         
-            SavePairs(k_index);
+        SavePairs(k_index,which_thread);
+    }
+}
+
+void CorrelationPlate::MergeThreads(){
+    /**
+     EXPLANATION:
+     Merges the information collected by the different threads
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    for (size_t thread = 0; thread < CorrelationPlate::number_of_threads_; thread++){
+        for (size_t i = 0; i < num_bins_; i++){
+            xi_[i] += parallel_xi_[thread][i];
+            mean_pi_[i] += parallel_mean_pi_[thread][i];
+            mean_sigma_[i] += parallel_mean_sigma_[thread][i];
+            weight_[i] += parallel_weight_[thread][i];
+            num_averaged_pairs_[i] += parallel_num_averaged_pairs_[thread][i];
         }
     }
 }
@@ -816,13 +865,14 @@ void CorrelationPlate::Normalize(){
     
 }
 
-void CorrelationPlate::SavePairs(const int& k_index){
+void CorrelationPlate::SavePairs(const int& k_index, const size_t& which_thread){
     /**
      EXPLANATION:
      Writes down pair information in bin file
      
      INPUTS:
      k_index - an integer specifying the pair's bin
+     which_thread - id of the thread being used
      
      OUTPUTS:
      NONE
@@ -841,22 +891,8 @@ void CorrelationPlate::SavePairs(const int& k_index){
     std::string filename;
     filename = results_ + ToStr(k_index) + ".fits";
     
-    // construct fits object
-    std::auto_ptr<CCfits::FITS> pFits(0);
-    
-    try{
-        pFits.reset(new CCfits::FITS(filename,CCfits::Write));
-    }
-    catch(CCfits::FITS::CantOpen){
-        throw "Error : In CorrelationPlate::SavePairs : Unable to open file: \n " + ToStr(filename);
-    }
-    // read table from file
-    CCfits::ExtHDU& table = (*pFits).extension(pairs_file_name_);
-    
-    long NAXIS2 = table.axis(1);
-    size_t size = CorrelationPlate::position_[k_index];
-    
     // prepare variables to write in the table
+    size_t size = CorrelationPlate::position_[which_thread][k_index];
     
     std::valarray<double> spectrum_ra(size);
     std::valarray<double> spectrum_dec(size);
@@ -866,24 +902,41 @@ void CorrelationPlate::SavePairs(const int& k_index){
     std::valarray<double> pixel_z(size);
     
     for (size_t i = 0; i < size; i++){
-        spectrum_ra[i] = CorrelationPlate::pairs_information_[k_index][i].spectrum_ra();
-        spectrum_dec[i] = CorrelationPlate::pairs_information_[k_index][i].spectrum_dec();
-        pixel_dist[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_dist();
-        pixel_number[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_number();
-        pixel_weight[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_weight();
-        pixel_z[i] = CorrelationPlate::pairs_information_[k_index][i].pixel_z();
+        spectrum_ra[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].spectrum_ra();
+        spectrum_dec[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].spectrum_dec();
+        pixel_dist[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].pixel_dist();
+        pixel_number[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].pixel_number();
+        pixel_weight[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].pixel_weight();
+        pixel_z[i] = CorrelationPlate::pairs_information_[which_thread][k_index][i].pixel_z();
     }
     
-    // write data in the table
-    table.column("spectrum RA").write(spectrum_ra,NAXIS2+1);
-    table.column("spectrum DEC").write(spectrum_dec,NAXIS2+1);
-    table.column("pixel dist").write(pixel_dist,NAXIS2+1);
-    table.column("pixel number").write(pixel_number,NAXIS2+1);
-    table.column("pixel weight").write(pixel_weight,NAXIS2+1);
-    table.column("pixel z").write(pixel_z,NAXIS2+1);
+    // construct fits object
+    #pragma omp critical(writepartialresults)
+    {
+        std::auto_ptr<CCfits::FITS> pFits(0);
+    
+        try{
+            pFits.reset(new CCfits::FITS(filename,CCfits::Write));
+        }
+        catch(CCfits::FITS::CantOpen){
+            throw "Error : In CorrelationPlate::SavePairs : Unable to open file: \n " + ToStr(filename);
+        }
+        // read table from file
+        CCfits::ExtHDU& table = (*pFits).extension(pairs_file_name_);
+    
+        long NAXIS2 = table.axis(1);
+    
+        // write data in the table
+        table.column("spectrum RA").write(spectrum_ra,NAXIS2+1);
+        table.column("spectrum DEC").write(spectrum_dec,NAXIS2+1);
+        table.column("pixel dist").write(pixel_dist,NAXIS2+1);
+        table.column("pixel number").write(pixel_number,NAXIS2+1);
+        table.column("pixel weight").write(pixel_weight,NAXIS2+1);
+        table.column("pixel z").write(pixel_z,NAXIS2+1);
+    }
     
     
-    CorrelationPlate::position_[k_index] = 0;
+    CorrelationPlate::position_[which_thread][k_index] = 0;
 }
 
 /*void CorrelationPlate::SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma){
@@ -1060,6 +1113,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
 }
 
 size_t CorrelationPlate::max_pairs_ = 100000;
-std::vector<size_t> CorrelationPlate::position_;
-std::vector<std::vector<Pair> > CorrelationPlate::pairs_information_;
+std::vector<std::vector<size_t> > CorrelationPlate::position_;
+std::vector<std::vector<std::vector<Pair> > > CorrelationPlate::pairs_information_;
+size_t CorrelationPlate::number_of_threads_ = atoi(std::getenv("OMP_NUM_THREADS"));
 
