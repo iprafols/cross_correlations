@@ -42,7 +42,7 @@ public:
     // constructors
     
     // constructs object and initializes its variables
-    CovarianceMatrix(const Input& input);
+    CovarianceMatrix(const Input& input, const PlateNeighbours& kPlateNeighbours);
     
     
     // -------------------------------------------------------------
@@ -74,7 +74,7 @@ public:
     void ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap);
     
     // compute covariance matrix
-    void ComputeCovMat(const Input& input, const PlateNeighbours& kPlateNeighbours);
+    void ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours);
 
     
     
@@ -86,8 +86,14 @@ private:
     // covariance matrix
     CovMat cov_mat_;
     
+    // map containing the covariance in the different plates
+    PlatesMapSimple<CorrelationPlate>::map covariance_plates_;
+    
     // covariance_matrix verbose flag
     size_t flag_verbose_covariance_matrix_;
+    
+    // normalized cross-correlation
+    CorrelationPlate normalized_cov_mat_;
     
     // number of bins
     size_t num_bins_;
@@ -95,11 +101,20 @@ private:
     // output base name
     std::string output_base_name_;
     
+    // list of plates
+    std::vector<int> plates_list_;
+    
+    // number of plates that have to be skipped
+    int skip_plates_;
+    
     // -------------------------------------------------------------
     // methods
     
     // computes the total weight in a given PairDataset
     double ComputeTotalWeight(const PairDataset& pair_dataset, const std::vector<int>& plates_list);
+    
+    // normalize the covariance matrix
+    void NormalizeCovMat();
     
     // save the bootstrap covariance matrix
     void SaveBootstrapCovMat();
@@ -107,14 +122,6 @@ private:
     // save the bootstrap covariance matrix
     void SaveCovMat();
     
-    // -------------------------------------------------------------
-    // static variables
-    
-    // value of gamma/2
-    static double half_gamma_;
-    
-    // value of (1+z_0)^(gamma/2)
-    static double one_plus_z0_to_the_half_gamma_;
 };
 
 

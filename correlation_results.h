@@ -17,6 +17,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "omp.h"
 ////////
 
 // classes needed

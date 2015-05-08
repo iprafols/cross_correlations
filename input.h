@@ -88,8 +88,11 @@ public:
     // access function for flag_compute_plate_neighbours_
     bool flag_compute_plate_neighbours() const {return flag_compute_plate_neighbours_;}
         
-    // access function for  flag_load_only_
+    // access function for flag_load_only_
     bool flag_load_only() const {return flag_load_only_;}
+    
+    // access function for flag_covariance_matrix_from_file_
+    bool flag_covariance_matrix_from_file() const {return flag_covariance_matrix_from_file_;}
     
     // access function for flag_plot_
     bool flag_plot() const {return flag_plot_;}
@@ -265,6 +268,9 @@ private:
     
     // flag to compute the plate neighbours list
     bool flag_compute_plate_neighbours_;
+    
+    // flag to compute the covariance matrix from files containing the pairs information
+    bool flag_covariance_matrix_from_file_;
     
     // flag to end program after loading the catalogs and plotting their information
     bool flag_load_only_;

@@ -46,23 +46,21 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
-    CorrelationPlate::InitializeStatic(input);
     for (size_t i = 0; i < plates_list_.size(); i ++){
-        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
+        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), false);
     }
     skip_plates_ = input.skip_plates();
     
     // initialization of the normalized cross-correlation variable
-    normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
+    normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_), false);
     
     // initialization of the bootstrap variable
     if (flag_compute_bootstrap_){
         bootstrap_results_ = input.bootstrap_results();
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
-            bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
+            bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_), false));
         }
-
     }
     
     // creating bin files
@@ -182,19 +180,29 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
     }
     
     // loop over plates
+    size_t plates_computed = 0;
+    #pragma omp parallel for ordered schedule(dynamic)
     for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
         PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.find(plates_list_[i]);
         
-        if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
-            std::cout << i << " out of " << plates_list_.size() << " plates computed" << std::endl;
-        }
-        else{
-            (*it).second.set_flag_verbose_correlation_plate(0);    
+        #pragma omp critical (plates_computed)
+        {
+            plates_computed ++;
+            if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and plates_computed == plates_computed/100*100)){
+                #pragma omp critical (cout)
+                {
+                    std::cout << plates_computed << " out of " << plates_list_.size() << " plates computed" << std::endl;
+                }
+            }
+            else{
+                (*it).second.set_flag_verbose_correlation_plate(0);
+            }
         }
         
         // compute cross-correlation in selected plate
         (*it).second.ComputeCrossCorrelation(object_list, spectra_list, input);
+        
     }
     
     // normalize cross-correlation
@@ -235,6 +243,7 @@ void CorrelationResults::ComputeBootstrapRealizations(){
         std::cout << "Computing bootstrap realizations" << std::endl;
     }
     
+    #pragma omp parallel for ordered schedule(dynamic)
     for (size_t i = 0; i < bootstrap_.size(); i ++){
 
         for (size_t j = 0; j < number_of_plates; j ++){
@@ -250,7 +259,10 @@ void CorrelationResults::ComputeBootstrapRealizations(){
         bootstrap_[i].Normalize();
         
         if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
+            #pragma omp critical (cout)
+            {
             std::cout << i << " out of " << bootstrap_.size() << " bootstrap realizatons computed" << std::endl;
+            }
         }
         
     }

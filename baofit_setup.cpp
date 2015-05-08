@@ -70,7 +70,7 @@ void BaofitSetup::Run(const Input& input, const bool bootstrap){
         system(command.c_str());
     }
     else{
-        command = "baofit -i " + input.output_base_name() + "_baofit.bootstrap.diag.ini > " + input.output_base_name() + "_baofit.bootstrap.diag..log";
+        command = "baofit -i " + input.output_base_name() + "_baofit.ini > " + input.output_base_name() + "_baofit.log";
         if (flag_verbose_baofit_setup_ >= 1){
             std::cout << command << std::endl;
         }
@@ -126,7 +126,7 @@ void BaofitSetup::RunBestFit(const Input& input, const bool bootstrap){
         system(command.c_str());
     }
     else{
-        command = "baofit -i " + input.output_base_name() + "_baofit.bootstrap.diag.ini > " + input.output_base_name() + "_baofit.bootstrap.diag..log";
+        command = "baofit -i " + input.output_base_name() + "_baofit.ini > " + input.output_base_name() + "_baofit.log";
         if (flag_verbose_baofit_setup_ >= 1){
             std::cout << command << std::endl;
         }

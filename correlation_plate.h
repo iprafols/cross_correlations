@@ -17,7 +17,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "omp.h"
 ////////
 
 // classes needed
@@ -36,6 +35,7 @@
 ////////
 
 #include "defines.h"
+#include "typedefs.h"
 
 class CorrelationPlate: public Plate{
     
@@ -50,16 +50,19 @@ public:
     CorrelationPlate(int bad_data);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
+    CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours, const bool flag_covariance);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results);
+    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results, const bool flag_covariance);
     
     // -------------------------------------------------------------
     // access methods
     
     // access function for flag_compute_covariance_
-    bool flag_compute_covariance() const {return flag_compute_covariance_;}
+    bool flag_covariance() const {return flag_covariance_;}
+    
+    // access function for cov_mat_
+    CovMat cov_mat() const {return cov_mat_;}
     
     // access function for flag_verbose_correlation_plate_
     size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
@@ -103,6 +106,9 @@ public:
     // -------------------------------------------------------------
     // set methods
 
+    // set cov_mat_
+    void set_cov_mat(size_t i, size_t j, double value);
+    
     // set flag_verbose_correlation_plate_
     void set_flag_verbose_correlation_plate(size_t value) {flag_verbose_correlation_plate_ = value;}
     
@@ -123,15 +129,11 @@ public:
     
     
     // -------------------------------------------------------------
-    // static methods
-    
-    // static variables initializer
-    static void InitializeStatic(const Input& input);
-
-    
-    // -------------------------------------------------------------
     // other methods
-
+    
+    // compute covariance matrix
+    void ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
+    
     // compute cross-correlation
     void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
     
@@ -158,11 +160,23 @@ public:
     CorrelationPlate operator* (const CorrelationPlate& other);
 
 
+    // -------------------------------------------------------------
+    // static access methods
+    
+    // value of gamma/2
+    static double half_gamma() {return CorrelationPlate::half_gamma_;}
+    
+    // value of (1+z_0)^(gamma/2)
+    static double one_plus_z0_to_the_half_gamma() {return CorrelationPlate::one_plus_z0_to_the_half_gamma_;}
+
     
     
 private:
+    // covariance matrix
+    CovMat cov_mat_;
+    
     // boolean to specify whether or not to compute the covariance matrix
-    bool flag_compute_covariance_;
+    bool flag_covariance_;
     
     // verbose flag
     size_t flag_verbose_correlation_plate_;
@@ -170,17 +184,14 @@ private:
     // flag to write partial results
     size_t flag_write_partial_results_;
 
+    // maximum number of pairs stored in each bin
+    size_t max_pairs_;
+    
     // mean value of parallel separation in bin
     std::vector<double> mean_pi_;
     
-    // copies of mean_pi_ to use with parallelization
-    std::vector< std::vector<double> > parallel_mean_pi_;
-    
     // mean value of perpendicular separation in bin
     std::vector<double> mean_sigma_;
-    
-    // copies of mean_sigma_ to use with parallelization
-    std::vector< std::vector<double> > parallel_mean_sigma_;
     
     // number of bins
     size_t num_bins_;
@@ -188,14 +199,17 @@ private:
     // number of pairs averaged
     std::vector<int> num_averaged_pairs_;
     
-    // copies of num_averaged_pairs_ to use with parallelization
-    std::vector< std::vector<int> >  parallel_num_averaged_pairs_;
-    
     // pairs file name
     std::string pairs_file_name_;
     
+    // pairs information
+    std::vector<std::vector<Pair> > pairs_information_;
+    
     // plate number for neighbouring plates
     std::vector<int> plate_neighbours_;
+    
+    // position inside pairs_information_ of the next pair information
+    std::vector<size_t> position_;
     
     // results directory (missing the bin number)
     std::string results_;
@@ -203,47 +217,35 @@ private:
     // weight
     std::vector<double> weight_;
     
-    // copies of weight_ to use with parallelization
-    std::vector< std::vector<double> > parallel_weight_;
-    
     // cross correlation in bin
     std::vector<double> xi_;
     
-    // copies of xi_ to use with parallelization
-    std::vector< std::vector<double> > parallel_xi_;
-
-    
-    
-    // -------------------------------------------------------------
-    // static variables
-    
-    // pairs information
-    static std::vector<std::vector<std::vector<Pair> > > pairs_information_;
-    
-    // maximum number of pairs stored in each bin
-    static size_t max_pairs_;
-    
-    // position inside pairs_information_ of the next pair information
-    static std::vector<std::vector<size_t> > position_;
-    
-    // number of threads used in the computation
-    static size_t number_of_threads_;
     
     // -------------------------------------------------------------
     // other methods
     
     // adding contribution to xi in the specified bin
-    void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma, const size_t& which_thread);
+    void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
+
+    // adding contribution to covariance matrix in the specified bin
+    void AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j);
     
     // keeps the pair information for latter storage
-    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t& which_thread);
-    
-    // Merges the information collected by the different threads
-    void MergeThreads();
+    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);
     
     // write down pair information in bin file
-    void SavePairs(const int& k_index, const size_t& which_thread);
-    //void SavePair(const int& k_index, const AstroObject& object, const LyaSpectrum& lya_spectrum, const size_t& p, const double& pi, const double& sigma);
+    void SavePairs(const int& k_index);
+    
+    
+    // -------------------------------------------------------------
+    // static variables
+    
+    // value of gamma/2
+    static double half_gamma_;
+    
+    // value of (1+z_0)^(gamma/2)
+    static double one_plus_z0_to_the_half_gamma_;
+
     
 };
 

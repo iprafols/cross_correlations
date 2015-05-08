@@ -166,6 +166,7 @@ void Input::SetDefaultValues(){
     flag_compute_covariance_ = true;
     flag_compute_cross_correlation_ = true;
     flag_compute_plate_neighbours_ = false;
+    flag_covariance_matrix_from_file_ = false;
     flag_load_only_ = false;
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
@@ -456,6 +457,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_covariance_matrix_from_file"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_covariance_matrix_from_file_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_covariance_matrix_from_file_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1413,6 +1434,12 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_compute_plate_neighbours = false" << std::endl;
+        }
+        if (flag_covariance_matrix_from_file_){
+            log << "flag_covariance_matrix_from_file = true" << std::endl;
+        }
+        else{
+            log << "flag_covariance_matrix_from_file = false" << std::endl;
         }
         if (flag_load_only_){
             log << "flag_load_only = true" << std::endl;
