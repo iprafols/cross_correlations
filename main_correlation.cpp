@@ -94,6 +94,9 @@ int main(int argc, char *argv[]){
         }
         kPlots.PlotRADECDispersion(*object_list, true);
         kPlots.PlotZHistogram(*object_list, true);
+        if (flag_verbose_main >= 2){
+            std::cout << "done" << std::endl;
+        }
     }
     
     // load spectra dataset
@@ -104,6 +107,9 @@ int main(int argc, char *argv[]){
         }
         kPlots.PlotRADECDispersion(spectra_list, true);
         kPlots.PlotZHistogram(spectra_list, true);
+        if (flag_verbose_main >= 2){
+            std::cout << "done" << std::endl;
+        }
     }
     
     // check load_only flag and end program if set
@@ -135,6 +141,9 @@ int main(int argc, char *argv[]){
         ZDistInterpolationMap redshift_distance_map(input);
         (*object_list).SetDistances(redshift_distance_map);
         spectra_list.SetDistances(redshift_distance_map);
+        if (flag_verbose_main >= 1){
+            std::cout << "done" << std::endl;
+        }
     }
     
     // compute the cross-correlation

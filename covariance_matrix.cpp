@@ -50,12 +50,21 @@ CovarianceMatrix::CovarianceMatrix(const Input& input, const PlateNeighbours& kP
     }
     // initialization of the plates map
     else{
+        if (flag_verbose_covariance_matrix_ >= 2){
+            std::cout << "Initializig covariance matrix" << std::endl;
+        }
+        
         // initialization of the normalized cross-correlation variable
         normalized_cov_mat_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_),true);
         
         plates_list_ = kPlateNeighbours.GetPlatesList();
-        for (size_t i = 0; i < plates_list_.size(); i ++){
+        /*for (size_t i = 0; i < plates_list_.size(); i ++){
             covariance_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
+        }*/
+        int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
+        covariance_threads_.reserve(num_threads);
+        for (size_t i = 0; i < num_threads; i ++){
+            covariance_threads_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_),true));
         }
         skip_plates_ = input.skip_plates();
     }
@@ -392,7 +401,8 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
         #pragma omp parallel for schedule(dynamic)
         for (size_t i = skip_plates_; i < plates_list_.size(); i++){
             
-            PlatesMapSimple<CorrelationPlate>::map::iterator it = covariance_plates_.find(plates_list_[i]);
+            //PlatesMapSimple<CorrelationPlate>::map::iterator it = covariance_plates_.find(plates_list_[i]);
+            CorrelationPlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
             
             #pragma omp critical (plates_computed)
             {
@@ -404,12 +414,18 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     }
                 }
                 else{
-                    (*it).second.set_flag_verbose_correlation_plate(0);
+                    //(*it).second.set_flag_verbose_correlation_plate(0);
+                    plate.set_flag_verbose_correlation_plate(0);
                 }
             }
 
             // compute covariance matrix in selected plate
-            (*it).second.ComputeCovMat(object_list, spectra_list, input);
+            //(*it).second.ComputeCovMat(object_list, spectra_list, input);
+            plate.ComputeCovMat(object_list, spectra_list, input);
+            
+            // add to total value
+            int thread_num = omp_get_thread_num();
+            covariance_threads_[thread_num] += plate;
 
         }
         
@@ -482,11 +498,26 @@ void CovarianceMatrix::NormalizeCovMat(){
         std::cout << "Normalizing covariance matrix" << std::endl;
     }
     
-    for (size_t i = 0; i < plates_list_.size(); i++){
+    /*for (size_t i = 0; i < plates_list_.size(); i++){
         
         normalized_cov_mat_ += (*covariance_plates_.find(plates_list_[i])).second;
         
+    }*/
+    for (size_t i = 0; i < covariance_threads_.size(); i++){
+        
+        normalized_cov_mat_ += covariance_threads_[i];
+        
     }
+    
+    // test tocheck the total weights of the bins
+    if (flag_verbose_covariance_matrix_ >= 3){
+        std::cout << "TEST TO CHECK THE TOTAL WEIGHTS OF THE BINS: compare the values with those of *.full.data" << std::endl;
+        for (size_t i = 0; i < num_bins_; i++){
+            std::cout << i << " " << normalized_cov_mat_.weight(i) << std::endl;
+        }
+        std::cout << "END OF TEST" << std::endl;
+    }
+    
     normalized_cov_mat_.Normalize();
 
     cov_mat_ = normalized_cov_mat_.cov_mat();

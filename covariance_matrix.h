@@ -86,8 +86,8 @@ private:
     // covariance matrix
     CovMat cov_mat_;
     
-    // map containing the covariance in the different plates
-    PlatesMapSimple<CorrelationPlate>::map covariance_plates_;
+    // vector containing the covariance computed with different threads
+    std::vector<CorrelationPlate> covariance_threads_;
     
     // covariance_matrix verbose flag
     size_t flag_verbose_covariance_matrix_;

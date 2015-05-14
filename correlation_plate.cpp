@@ -514,7 +514,7 @@ void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, c
     
     // add to covariance matrix
     if (pixel1.dist() == pixel2.dist()){
-        double weight = pixel1.weight()*pixel1.weight();
+        double weight = pixel1.weight()*pixel2.weight();
         double add = pow(1+pixel1.z(),CorrelationPlate::half_gamma_)/pixel1.weight()/CorrelationPlate::one_plus_z0_to_the_half_gamma_;
     
         (*it).second += add*weight;
@@ -549,14 +549,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
     if (plate_number_ == _NORM_){
         #pragma omp critical (cout)
         {
-        std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The covariance should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
+            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The covariance should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
         }
         return;
     }
     if (not flag_covariance_){
         #pragma omp critical (cout)
         {
-        std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the covariance matrix. Ignoring..." << std::endl;
+            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the covariance matrix. Ignoring..." << std::endl;
         }
         return;
     }
@@ -574,20 +574,23 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
     if (flag_verbose_correlation_plate_ >= 1){
         #pragma omp critical (cout)
         {
-        std::cout << "Computing covariance_matrix in plate " << plate_number_ << ". In this plate there are " << number_of_spectra << " LyaSpectra" << std::endl;
+            std::cout << "Computing covariance_matrix in plate " << plate_number_ << ". In this plate there are " << number_of_spectra << " LyaSpectra" << std::endl;
         }
+    }
+    if (number_of_spectra == 0){
+        return;
     }
     
     // loop over LyaSpectra
-    for (size_t lya_spectrum_num1 = 0; lya_spectrum_num1 < number_of_spectra; lya_spectrum_num1 ++){
+    for (size_t lya_spectrum_num = 0; lya_spectrum_num < number_of_spectra; lya_spectrum_num ++){
         
-        LyaSpectrum lya_spectrum = spectra_list.list(plate_neighbours_[plate_number_], lya_spectrum_num1);
+        LyaSpectrum lya_spectrum = spectra_list.list(plate_number_, lya_spectrum_num);
         // checking that the object was loaded successfully
         if (lya_spectrum.dist() == _BAD_DATA_){
             if (flag_verbose_correlation_plate_ >= 2){
                 #pragma omp critical (cout)
                 {
-                std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
+                    std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
                 }
             }
             continue;
@@ -598,18 +601,21 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
         for (size_t plate_neighbours_num1 = 0; plate_neighbours_num1 < plate_neighbours_.size(); plate_neighbours_num1 ++){
             
             size_t number_of_objects1 = object_list.num_objects_in_plate(plate_neighbours_[plate_neighbours_num1]);
+            if (number_of_objects1 == 0){
+                continue;
+            }
             
             // loop over AstroObjects 1
             for (size_t object_num1 = 0; object_num1 < number_of_objects1; object_num1 ++){
                 
-                AstroObject object1 = object_list.list(plate_neighbours_num1, object_num1);
+                AstroObject object1 = object_list.list(plate_neighbours_[plate_neighbours_num1], object_num1);
                 
                 // checking that the object was loaded successfully
                 if (object1.dist() == _BAD_DATA_){
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
+                            std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
                         }
                     }
                     continue;
@@ -634,25 +640,25 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
+                            std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "min_sigma = " << pair_min_sigma1 << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_sigma1 << std::endl;
+                                std::cout << "min_sigma = " << pair_min_sigma1 << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_sigma1 << std::endl;
                             }
                         }
                     }
                     continue;
                 }
                 // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                if (pair_min_sigma1 <= 0.1){
+                if (pair_min_sigma1 <= 0.001){
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
+                            std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
                         }
                     }
                     continue;
@@ -663,14 +669,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
+                            std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "max_pi = " << pair_max_pi1 << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_max_pi1 << std::endl;
+                                std::cout << "max_pi = " << pair_max_pi1 << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_max_pi1 << std::endl;
                             }
                         }
                     }
@@ -682,14 +688,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
+                            std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "min_pi = " << pair_min_pi1 << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_pi1 << std::endl;
+                                std::cout << "min_pi = " << pair_min_pi1 << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_pi1 << std::endl;
                             }
                         }
                     }
@@ -710,8 +716,8 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: sigma is too large" << std::endl;
-                            std::cout << "sigma = " << sigma1 << std::endl;
+                                std::cout << "Pixel rejected: sigma is too large" << std::endl;
+                                std::cout << "sigma = " << sigma1 << std::endl;
                             }
                         }
                         continue;
@@ -722,8 +728,8 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
-                            std::cout << "pi = " << pi1 << std::endl;
+                                std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
+                                std::cout << "pi = " << pi1 << std::endl;
                             }
                         }
                         continue;
@@ -738,7 +744,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index1 << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index1 << std::endl;
                             }
                         }
                         continue;
@@ -751,7 +757,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index1 << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index1 << std::endl;
                             }
                         }
                         continue;
@@ -763,7 +769,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index1 << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index1 << std::endl;
                             }
                         }
                         continue;
@@ -777,18 +783,21 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     for (size_t plate_neighbours_num2 = 0; plate_neighbours_num2 < plate_neighbours_.size(); plate_neighbours_num2 ++){
                         
                         size_t number_of_objects2 = object_list.num_objects_in_plate(plate_neighbours_[plate_neighbours_num2]);
+                        if (number_of_objects2 == 0){
+                            continue;
+                        }
                         
                         // loop over AstroObjects 2
                         for (size_t object_num2 = 0; object_num2 < number_of_objects2; object_num2 ++){
                             
-                            AstroObject object2 = object_list.list(plate_neighbours_num2, object_num2);
+                            AstroObject object2 = object_list.list(plate_neighbours_[plate_neighbours_num2], object_num2);
                             
                             // checking that the object was loaded successfully
                             if (object2.dist() == _BAD_DATA_){
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
-                                    std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
+                                        std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
                                     }
                                 }
                                 continue;
@@ -814,25 +823,25 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
-                                    std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
+                                        std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
                                     }
                                     if (flag_verbose_correlation_plate_ >= 3){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "min_sigma = " << pair_min_sigma2 << std::endl;
-                                        std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                        std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_sigma2 << std::endl;
+                                            std::cout << "min_sigma = " << pair_min_sigma2 << std::endl;
+                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_sigma2 << std::endl;
                                         }
                                     }
                                 }
                                 continue;
                             }
                             // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                            if (pair_min_sigma2 <= 0.1){
+                            if (pair_min_sigma2 <= 0.001){
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
-                                    std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
+                                        std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
                                     }
                                 }
                                 continue;
@@ -843,14 +852,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
-                                    std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
+                                        std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
                                     }
                                     if (flag_verbose_correlation_plate_ >= 3){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "max_pi = " << pair_max_pi2 << std::endl;
-                                        std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                        std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_max_pi2 << std::endl;
+                                            std::cout << "max_pi = " << pair_max_pi2 << std::endl;
+                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_max_pi2 << std::endl;
                                         }
                                     }
                                 }
@@ -862,14 +871,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
-                                    std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
+                                        std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
                                     }
                                     if (flag_verbose_correlation_plate_ >= 3){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "min_pi = " << pair_min_pi2 << std::endl;
-                                        std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                        std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_pi2 << std::endl;
+                                            std::cout << "min_pi = " << pair_min_pi2 << std::endl;
+                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_pi2 << std::endl;
                                         }
                                     }
                                 }
@@ -890,8 +899,8 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (flag_verbose_correlation_plate_ >= 3){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "Pixel rejected: sigma is too large" << std::endl;
-                                        std::cout << "sigma = " << sigma2 << std::endl;
+                                            std::cout << "Pixel rejected: sigma is too large" << std::endl;
+                                            std::cout << "sigma = " << sigma2 << std::endl;
                                         }
                                     }
                                     continue;
@@ -902,8 +911,8 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (flag_verbose_correlation_plate_ >= 3){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
-                                        std::cout << "pi = " << pi2 << std::endl;
+                                            std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
+                                            std::cout << "pi = " << pi2 << std::endl;
                                         }
                                     }
                                     continue;
@@ -918,7 +927,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (flag_verbose_correlation_plate_ >= 2){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index2 << std::endl;
+                                            std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index2 << std::endl;
                                         }
                                     }
                                     continue;
@@ -931,7 +940,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (flag_verbose_correlation_plate_ >= 2){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index2 << std::endl;
+                                            std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index2 << std::endl;
                                         }
                                     }
                                     continue;
@@ -943,7 +952,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (flag_verbose_correlation_plate_ >= 2){
                                         #pragma omp critical (cout)
                                         {
-                                        std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index2 << std::endl;
+                                            std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index2 << std::endl;
                                         }
                                     }
                                     continue;
@@ -999,7 +1008,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     if (flag_covariance_){
         #pragma omp critical (cout)
         {
-        std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the cross-correlation. Ignoring..." << std::endl;
+            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the cross-correlation. Ignoring..." << std::endl;
         }
         return;
     }
@@ -1017,7 +1026,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     if (flag_verbose_correlation_plate_ >= 1){
         #pragma omp critical (cout)
         {
-        std::cout << "Computing cross-correlation in plate " << plate_number_ << ". In this plate there are " << number_of_objects << " AstroObjects" << std::endl;
+            std::cout << "Computing cross-correlation in plate " << plate_number_ << ". In this plate there are " << number_of_objects << " AstroObjects" << std::endl;
         }
     }
 
@@ -1031,7 +1040,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
             if (flag_verbose_correlation_plate_ >= 2){
                 #pragma omp critical (cout)
                 {
-                std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
+                    std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
                 }
             }
             continue;
@@ -1053,7 +1062,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
+                            std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
                         }
                     }
                     continue;
@@ -1077,24 +1086,24 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
+                            std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "min_sigma = " << pair_min_sigma << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                                std::cout << "min_sigma = " << pair_min_sigma << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
                             }
                         }
                     }
                     continue;
                 } 
-                if (pair_min_sigma <= 0.1){ // if the spectrum is being paired with its quasar, the whole spectra is discarded
+                if (pair_min_sigma <= 0.001){ // if the spectrum is being paired with its quasar, the whole spectra is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
+                            std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
                         }
                     }
                     continue;
@@ -1105,14 +1114,14 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
+                            std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "max_pi = " << pair_max_pi << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_max_pi << std::endl;
+                                std::cout << "max_pi = " << pair_max_pi << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_max_pi << std::endl;
                             }
                         }
                     }
@@ -1124,14 +1133,14 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
-                        std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
+                            std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
                         }
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "min_pi = " << pair_min_pi << std::endl;
-                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                            std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_pi << std::endl;
+                                std::cout << "min_pi = " << pair_min_pi << std::endl;
+                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_pi << std::endl;
                             }
                         }
                     }
@@ -1152,8 +1161,8 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: sigma is too large" << std::endl;
-                            std::cout << "sigma = " << sigma << std::endl;
+                                std::cout << "Pixel rejected: sigma is too large" << std::endl;
+                                std::cout << "sigma = " << sigma << std::endl;
                             }
                         }
                         continue;
@@ -1164,8 +1173,8 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         if (flag_verbose_correlation_plate_ >= 3){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
-                            std::cout << "pi = " << pi << std::endl;
+                                std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
+                                std::cout << "pi = " << pi << std::endl;
                             }
                         }
                         continue;
@@ -1180,7 +1189,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index << std::endl;
                             }
                         }
                         continue;
@@ -1193,7 +1202,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index << std::endl;
                             }
                         }
                         continue;
@@ -1205,7 +1214,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         if (flag_verbose_correlation_plate_ >= 2){
                             #pragma omp critical (cout)
                             {
-                            std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index << std::endl;
+                                std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index << std::endl;
                             }
                         }
                         continue;
@@ -1235,7 +1244,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     if (flag_verbose_correlation_plate_ >= 1){
         #pragma omp critical (cout)
         {
-        std::cout << "Computed cross-correlation in plate " << plate_number_ << std::endl;
+            std::cout << "Computed cross-correlation in plate " << plate_number_ << std::endl;
         }
     }
 }
@@ -1348,12 +1357,12 @@ void CorrelationPlate::Normalize(){
             for (size_t i = 0; i < num_bins_; i ++){
                 for (size_t j = i; j < num_bins_; j ++){
                     it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                    if (it != cov_mat_.end()){
+                    if (it != cov_mat_.end() and weight_[i] != 0.0 and weight_[j] != 0.0){
                         (*it).second /= weight_[i];
                         (*it).second /= weight_[j];
                     }
                 }
-                weight_[i] = 1.0;
+                //weight_[i] = 1.0;
             }
         }
         else{
@@ -1370,7 +1379,7 @@ void CorrelationPlate::Normalize(){
                     xi_[i] /= weight_[i];
                     mean_pi_[i] /= weight_[i];
                     mean_sigma_[i] /= weight_[i];
-                    weight_[i] = 1.0;
+                    //weight_[i] = 1.0;
                 }
                 
             }
