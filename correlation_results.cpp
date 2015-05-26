@@ -64,7 +64,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // creating bin files
-    if ((flag_write_partial_results_ >= 1 or (flag_compute_covariance_ and input.flag_compute_cross_correlation())) and skip_plates_ == 0){
+    if (flag_write_partial_results_ >= 1 and skip_plates_ == 0){
         if (flag_verbose_correlation_results_ >= 2){
             std::cout << "Creating detailed info files" << std::endl;
         }
