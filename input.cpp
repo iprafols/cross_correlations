@@ -198,14 +198,10 @@ void Input::SetDefaultValues(){
     dataset1_type_options_ = "quasar, dla";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
     skip_plates_ = 0;
-    lya_auto_correlation_ = input_ + "BOSSDR9LyaF.data";
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     dataset2_name_ = "DR11LyaF";
-    num_bins_lya_auto_correlation_ = 50;
-    step_lya_auto_correlation_ = 4.0;
     num_plates_ = 2044; // DR11
-    
     
     
     // -------------------------------------------------------------
@@ -242,6 +238,13 @@ void Input::SetDefaultValues(){
     // bootstrap settings
     num_bootstrap_ = 10000;
     bootstrap_results_ = results_ + "bootstrap_realizations/";
+    
+    
+    // -------------------------------------------------------------
+    // lya autocorrelation settings
+    lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft.out";
+    lya_pixel_width_ = 210.0; // (in km/s)
+    pixels_separation_ = 5; // (in number of pixels)
     
     
     // -------------------------------------------------------------
@@ -843,6 +846,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "lya_pixel_width"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            lya_pixel_width_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "lya_spectra_dir"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -895,17 +909,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "num_bins_lya_auto_correlation"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            num_bins_lya_auto_correlation_ = atoi(value.c_str());
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1000,6 +1003,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "pixels_separation"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            pixels_separation_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "plate_neighbours"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1026,17 +1040,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             skip_plates_ = atoi(value.c_str());
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "step_lya_auto_correlation"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            step_lya_auto_correlation_ = double(atof(value.c_str()));
             input_flag[name] = true;
         }
         else{
@@ -1296,7 +1299,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it = input_flag.find("input");
     it2 = input_flag.find("lya_auto_correlation");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_auto_correlation_ = input_ + "BOSSDR9LyaF.data";
+        lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft.out";
     }
     else if (it2 != input_flag.end() and lya_auto_correlation_[0] != '/'){
         lya_auto_correlation_ = input_ + lya_auto_correlation_;
@@ -1508,12 +1511,9 @@ void Input::WriteLog(){
         log << "dataset1_type = " << dataset1_type_ << std::endl;
         log << "plate_neighbours = " << plate_neighbours_ << std::endl;
         log << "skip_plates = " << skip_plates_ << std::endl;
-        log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
         log << "lya_spectra_dir = " << lya_spectra_dir_ << std::endl;
         log << "dataset2 = " << dataset2_ << std::endl;
         log << "dataset2_name = " << dataset2_name_ << std::endl;
-        log << "num_bins_lya_auto_correlation = " << num_bins_lya_auto_correlation_ << std::endl;
-        log << "step_lya_auto_correlation = " << step_lya_auto_correlation_ << std::endl;
         log << "num_plates = " << num_plates_ << std::endl;
         log << std::endl;
         
@@ -1554,6 +1554,15 @@ void Input::WriteLog(){
         log << "// bootstrap settings" << std::endl;
         log << "num_bootstrap = " << num_bootstrap_ << std::endl;
         log << "bootstrap_results = " << bootstrap_results_ << std::endl;
+        log << std::endl;
+        
+        
+        log << std::endl;
+        log << "// -------------------------------------------------------------" << std::endl;
+        log << "// lya autocorrelation settings" << std::endl;
+        log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
+        log << "lya_pixel_width = " << lya_pixel_width_ << std::endl;
+        log << "pixels_separation = " << pixels_separation_ << std::endl;
         log << std::endl;
         
         

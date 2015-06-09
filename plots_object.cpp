@@ -270,6 +270,99 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
 
 }
 
+void PlotsObject::PlotLyaAuto(const std::vector<LyaAutoInterpolationMap>& lya_auto, const bool update_script) const{
+    /**
+     EXPLANATION:
+     Plots the lyman-alpha autocorrelation
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaAutoInterpolationMap
+     PlotsObject
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // set the name of the results and script file
+    std::string filename =  "lya_autocorrelation";
+    
+    // open results file
+    std::ofstream result;
+    result.open((plots_dir_ + filename + ".dat").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+    if (result.is_open()){
+        
+        result << "# data required to redo the '" << filename << ".eps' plot." << std::endl;
+        result << "# n z lya_auto" << std::endl;
+        
+        // load the LyaInterpolationMap
+        for (size_t i = 0; i < lya_auto.size(); i ++){
+            std::map<double,double> interpolation_map_ = lya_auto[i].interpolation_map();
+            
+            for (std::map<double,double>::const_iterator it = interpolation_map_.begin(); it != interpolation_map.end(); it ++){
+                result << i << " " << (*it).first << " " << (*it).second;
+            }
+        }
+        
+        result.close();
+    }
+    else{
+        std::cout << "Error : In PlotsObject::PlotLyaAuto : Unable to open file:" << std::endl << filename << ".dat" << std::endl;
+    }
+    
+    // checking if the script has to be rewriten
+    if (update_script){
+        // open script file
+        std::ofstream script;
+        script.open((plots_dir_ + filename + ".py").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+        if (script.is_open()){
+            script << "import numpy as np" << std::endl;
+            script << "import math" << std::endl;
+            script << "from math import acos" << std::endl;
+            script << "import matplotlib.pyplot as plt" << std::endl;
+            script << "import matplotlib.colors" << std::endl;
+            script << "from matplotlib.colors import colorConverter" << std::endl;
+            script << std::endl;
+            script << "import matplotlib.ticker as ax" << std::endl;
+            script << "from matplotlib.ticker import MultipleLocator, FormatStrFormatter, NullFormatter, ScalarFormatter" << std::endl;
+            script << "\"\"\"" << std::endl;
+            script << "EXPLANATION:" << std::endl;
+            script << "    Plots the lya autocorrelation" << std::endl;
+            script << "\"\"\"" << std::endl;
+            script << "# loading variables" << std::endl;
+            script << "filename = '" << filename << ".dat'" << std::endl;
+            script << "data = np.genfromtxt(filename, names = True, skip_header = 1)" << std::endl;
+            script << std::endl;
+            script << "max_n = np.amax(data['n'])" << std::endl;
+            
+            script << std::endl;
+            script << "# plotting lya autocorrelation" << std::endl;
+            script << "fig = plt.figure(figsize=(18,9))" << std::endl;
+            script << "ax = fig.add_subplot(1,1,1)" << std::endl;
+            script << "ax.tick_params(axis='both',which='major',labelsize=35,length=6,width=2)" << std::endl;
+            script << "ax.tick_params(axis='both',which='minor',labelsize=35,length=4,width=1)" << std::endl;
+            script << "ax.set_xlabel(r'$z$',fontsize=35)" << std::endl;
+            script << "ax.set_ylabel(r'$\xi$',fontsize=35)" << std::endl;
+            script << "for aux_n in range(0, max_n):"
+            script << "    data_z = [z for (z,n) in zip(data['z'],data['n']) if n == aux_n]"
+            script << "    data_xi = [xi for (xi,n) in zip(data['lya_auto'],data['n']) if n == aux_n]"
+            script << "    ax.plot(data_z ,data_xi, '-', label='n = '+srt(n))" << std::endl;
+            script << "fig.savefig('" << filename << ".eps')" << std::endl;
+            
+            script.close();
+        }
+        else{
+            std::cout << "Error : In PlotsObject::PlotLyaAuto : Unable to open file:" << std::endl << filename << ".py" << std::endl;
+        }
+    }
+    
+}
+
 void PlotsObject::PlotRADECDispersion(const Dataset& dataset, const bool update_script) const{
     /**
      EXPLANATION:

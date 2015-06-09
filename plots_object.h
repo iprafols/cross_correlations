@@ -48,6 +48,10 @@ public:
     // Plots the correlation function
     void PlotCrossCorrelation(const CorrelationResults& res, const Input& input, const bool update_script = false) const;
     
+    // Plots the lya autocorrealtion
+    void PlotsObject::PlotLyaAuto(const std::vector<LyaAutoInterpolationMap>& lya_auto, const bool update_script = false) const;
+ 
+        
     // Plots the RA-DEC dispersion for the given objects
     void PlotRADECDispersion(const Dataset& dataset, const bool update_script = false) const;
         

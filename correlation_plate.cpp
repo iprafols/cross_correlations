@@ -568,6 +568,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
     double step_sigma = input.step_sigma();
     double num_pi_bins = input.num_pi_bins();
     double num_sigma_bins = input.num_sigma_bins();
+    size_t pixels_separation = input.pixels_separation();
     
     size_t number_of_spectra = spectra_list.num_objects_in_plate(plate_number_);
     
@@ -886,7 +887,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                             }
                             
                             // loop over LyaPixels2
-                            for (int pixel2 = pixel1; pixel2 < spectrum.size() and pixel2 < pixel1 + 5; pixel2 ++){
+                            for (int pixel2 = pixel1; pixel2 < spectrum.size() and pixel2 < pixel1 + pixels_separation; pixel2 ++){
                                 
                                 // cehck that the weight is not zero
                                 if (spectrum[pixel2].weight() == 0.0){

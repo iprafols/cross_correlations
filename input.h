@@ -162,6 +162,10 @@ public:
     
     // access function for lya_auto_correlation_
     std::string lya_auto_correlation() const {return lya_auto_correlation_;}
+    
+    // access function for lya_pixel_width_
+    double lya_pixel_width() const {return lya_pixel_width_;}
+    
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
@@ -185,10 +189,7 @@ public:
     
     // access function for num_pi_bins_
     int num_pi_bins() const {return num_pi_bins_;}
-    
-    // access function for num_bins_lya_auto_correlation_
-    int num_bins_lya_auto_correlation() const {return num_bins_lya_auto_correlation_;}
-    
+        
     // access function for num_plates_
     int num_plates() const {return num_plates_;}
     
@@ -207,6 +208,9 @@ public:
     // access function for pairs_file_name_
     std::string pairs_file_name() const {return pairs_file_name_;}
     
+    // access function for pixels_separation_
+    size_t pixels_separation() const {return pixels_separation_;}
+    
     // acces function for plate_neighbours_
     std::string plate_neighbours() const {return plate_neighbours_;}
     
@@ -224,9 +228,6 @@ public:
     
     // access function for skip_plates_
     int skip_plates() const {return skip_plates_;}
-    
-    // access function for step_lya_auto_correlation_
-    double step_lya_auto_correlation() const {return step_lya_auto_correlation_;}
     
     // access function for step_pi_
     double step_pi() const {return step_pi_;}
@@ -358,28 +359,18 @@ private:
     // input directory
     std::string input_;
     
-    // name of the file containing the lyman-alpha auto-correlation
-    std::string lya_auto_correlation_;
-    
     // spectra directory
     std::string lya_spectra_dir_;
     
     // number of plates
     int num_plates_;
     
-    // number of bins in the lyman-alpha auto-correlation
-    int num_bins_lya_auto_correlation_;
-    
     // name of the file containing the plate neighbours
     std::string plate_neighbours_;
     
     // number of plates that have to be skipped
     int skip_plates_;
-    
-    // step value of parallel separation in the lyman-alpha auto-correlation (in Mpc/h)
-    double step_lya_auto_correlation_;
 
-    
     
     
     // -------------------------------------------------------------
@@ -463,6 +454,19 @@ private:
     
     
     // -------------------------------------------------------------
+    // lya autocorrelation settings
+    
+    // name of the file containing the lyman-alpha auto-correlation
+    std::string lya_auto_correlation_;
+
+    // lya pixel's width (in km/s)
+    double lya_pixel_width_;
+    
+    // maximum separation between pixels (in number of pixels)
+    size_t pixels_separation_;
+
+    
+    // -------------------------------------------------------------
     // Fidutial model
     
     // Hubble constatnt at present time (in km/s/Mpc)
@@ -495,6 +499,7 @@ private:
     
     // number of points the interpolation grid will have
     int num_points_interpolation_; 
+    
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants
