@@ -22,6 +22,7 @@
 // classes needed
 #include "astro_object.h"
 #include "astro_object_dataset.h"
+#include "lya_auto_interpolation_map.h"
 #include "lya_pixel.h"
 #include "lya_spectra_dataset.h"
 #include "lya_spectrum.h"
@@ -132,7 +133,7 @@ public:
     // other methods
     
     // compute covariance matrix
-    void ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
+    void ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto);
     
     // compute cross-correlation
     void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
@@ -228,7 +229,7 @@ private:
     void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
 
     // adding contribution to covariance matrix in the specified bin
-    void AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j);
+    void AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j, const LyaAutoInterpolationMap& lya_auto);
     
     // keeps the pair information for latter storage
     void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);

@@ -36,11 +36,15 @@ public:
     // constructors
     
     // constructs object and initializes its variables
-    LyaAutoInterpolationMap(const Input& input);
+    LyaAutoInterpolationMap(const Input& input, const int& n);
     
 private:
+    // -------------------------------------------------------------
+    // methods
     
-    
+    // integrate the power spectrum
+    double IntegratePk(const std::vector<std::pair<double, double> >& vec, const int& n, const double& lya_pixel_width, const double& sigma_psf);
+
 };
 
 

@@ -243,7 +243,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
             std::cout << std::setprecision(8);
         }
         // load interpolation map
-        LyaAutoInterpolationMap lya_auto_correlation_map(input);
+        //LyaAutoInterpolationMap lya_auto_correlation_map(input);
         
         // loop over regions (1st index: i)
         for (size_t i = 0; i < num_bins_; i++){
@@ -390,6 +390,12 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
     }
     else{
         
+        // compute the 1D lyman-alpha auto-correlation
+        std::vector<LyaAutoInterpolationMap> lya_auto;
+        for (size_t i = 0; i <= input.pixels_separation(); i++){
+            lya_auto.push_back(LyaAutoInterpolationMap(input, i));
+        }
+        
         if (flag_verbose_covariance_matrix_ >= 1){
             #pragma omp critical (cout)
             {
@@ -401,7 +407,6 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
         #pragma omp parallel for schedule(dynamic)
         for (size_t i = skip_plates_; i < plates_list_.size(); i++){
             
-            //PlatesMapSimple<CorrelationPlate>::map::iterator it = covariance_plates_.find(plates_list_[i]);
             CorrelationPlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
             
             #pragma omp critical (plates_computed)
@@ -414,14 +419,12 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     }
                 }
                 else{
-                    //(*it).second.set_flag_verbose_correlation_plate(0);
                     plate.set_flag_verbose_correlation_plate(0);
                 }
             }
 
             // compute covariance matrix in selected plate
-            //(*it).second.ComputeCovMat(object_list, spectra_list, input);
-            plate.ComputeCovMat(object_list, spectra_list, input);
+            plate.ComputeCovMat(object_list, spectra_list, input, lya_auto);
             
             // add to total value
             int thread_num = omp_get_thread_num();

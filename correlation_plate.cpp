@@ -480,20 +480,22 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
 
 }
 
-void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j){
+void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j, const LyaAutoInterpolationMap& lya_auto){
     /**
      EXPLANATION:
-     Adds pair contribution to xi in the specified bin
+     Adds pair contribution to the covariance matrix in the specified bin
      
      INPUTS:
      pixel1,pixel2 - LyaPixel instances to add the contribution from
      i,j - covariance matrix element to add the contributions to
+     lya_auto - LyaAutoInterpolationMap for the pixel's separation
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
      CorrelationPlate
+     LyaAutoInterpolationMap
      LyaPixel
      
      FUNCITONS USED:
@@ -513,16 +515,19 @@ void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, c
     }
     
     // add to covariance matrix
+    double weight = pixel1.weight()*pixel2.weight();
+    double add;
     if (pixel1.dist() == pixel2.dist()){
-        double weight = pixel1.weight()*pixel2.weight();
-        double add = pow(1+pixel1.z(),CorrelationPlate::half_gamma_)/pixel1.weight()/CorrelationPlate::one_plus_z0_to_the_half_gamma_;
-    
-        (*it).second += add*weight;
+        add = pow(1.0+pixel1.z(),CorrelationPlate::half_gamma_)/pixel1.weight()/CorrelationPlate::one_plus_z0_to_the_half_gamma_;
     }
+    else{
+        add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
+    }
+    (*it).second += add*weight;
     
 }
 
-void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input){
+void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto){
     /**
      EXPLANATION:
      Computes the covariance matrix
@@ -531,6 +536,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
      object_list - an AstroObjectDataset instance
      spectra_list - a LyaSpectraDataset instance
      input - a Input instance to load bin settings
+     lya_auto - an IntepolationMap containing the 1D Lya forest auto-correlation
      
      OUTPUTS:
      NONE
@@ -887,7 +893,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                             }
                             
                             // loop over LyaPixels2
-                            for (int pixel2 = pixel1; pixel2 < spectrum.size() and pixel2 < pixel1 + pixels_separation; pixel2 ++){
+                            for (int pixel2 = pixel1; pixel2 < spectrum.size() and pixel2 <= pixel1 + pixels_separation; pixel2 ++){
                                 
                                 // cehck that the weight is not zero
                                 if (spectrum[pixel2].weight() == 0.0){
@@ -961,7 +967,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                 }
                                 
                                 // compute covariance matrix contribution
-                                AddPair(spectrum[pixel1],spectrum[pixel2],k_index1,k_index2);
+                                AddPair(spectrum[pixel1],spectrum[pixel2],k_index1,k_index2, lya_auto[pixel2 - pixel1]);
                             }
                         }
                     }

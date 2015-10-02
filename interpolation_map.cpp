@@ -62,7 +62,7 @@ double InterpolationMap::interpolation_map(std::map<double,double>::iterator it)
 double InterpolationMap::LinearInterpolation(const double& first) const{
     /**
      EXPLANATION:
-     Compute the distances corresponding to the given redshift by using linear interpolation
+     Compute the value corresponding to the given redshift by using linear interpolation
      
      INPUTS:
      first - a double with the "x" value

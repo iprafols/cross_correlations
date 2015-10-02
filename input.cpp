@@ -242,8 +242,9 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // lya autocorrelation settings
-    lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft.out";
+    lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft_interpolated.out";
     lya_pixel_width_ = 210.0; // (in km/s)
+    sigma_psf_ = 70.0; // (in km/s)
     pixels_separation_ = 5; // (in number of pixels)
     
     
@@ -1036,6 +1037,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "sigma_psf"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            sigma_psf_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "skip_plates"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1562,6 +1574,7 @@ void Input::WriteLog(){
         log << "// lya autocorrelation settings" << std::endl;
         log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
         log << "lya_pixel_width = " << lya_pixel_width_ << std::endl;
+        log << "sigma_psf = " << sigma_psf_ << std::endl;
         log << "pixels_separation = " << pixels_separation_ << std::endl;
         log << std::endl;
         

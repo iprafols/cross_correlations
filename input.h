@@ -226,6 +226,9 @@ public:
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
     
+    // access function for sigma_psf_
+    double sigma_psf() const {return sigma_psf_;}
+    
     // access function for skip_plates_
     int skip_plates() const {return skip_plates_;}
     
@@ -464,6 +467,9 @@ private:
     
     // maximum separation between pixels (in number of pixels)
     size_t pixels_separation_;
+    
+    // PSF of the Lyman alpha auto-correlation measurement (in km/s)
+    double sigma_psf_;
 
     
     // -------------------------------------------------------------

@@ -57,9 +57,9 @@ int main(int argc, char *argv[]){
     size_t flag_verbose_main = input.flag_verbose_main();
     const PlotsObject kPlots(input);
     
-    // compute the lyman-alpha auto-correlation
+    // compute the 1D lyman-alpha auto-correlation
     std::vector<LyaAutoInterpolationMap> lya_auto;
-    for (size_t i = 0; i < input.pixels_separation()){
+    for (size_t i = 0; i <= input.pixels_separation(); i++){
         lya_auto.push_back(LyaAutoInterpolationMap(input, i));
     }
     
