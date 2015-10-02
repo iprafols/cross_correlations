@@ -22,6 +22,7 @@
 #include "correlation_results.h"
 #include "input.h"
 #include "dataset.h"
+#include "lya_auto_interpolation_map.h"
 ////////
 
 // functions needed
@@ -49,7 +50,7 @@ public:
     void PlotCrossCorrelation(const CorrelationResults& res, const Input& input, const bool update_script = false) const;
     
     // Plots the lya autocorrealtion
-    void PlotsObject::PlotLyaAuto(const std::vector<LyaAutoInterpolationMap>& lya_auto, const bool update_script = false) const;
+    void PlotLyaAuto(const std::vector<LyaAutoInterpolationMap>& lya_auto, const bool update_script = false) const;
  
         
     // Plots the RA-DEC dispersion for the given objects
