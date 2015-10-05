@@ -36,7 +36,7 @@ LyaPixel::LyaPixel(double bad_data){
     
 }
 
-LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight){
+LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight, const bool loglambda){
     /**
      EXPLANATION:
      Cosntructs a LyaPixel instance
@@ -46,6 +46,7 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& for
      lya_wl - a double with the wavelength of the lyman-alpha line (in Angstroms)
      forest - a double with the normalized flux in the ly-alpha forest
      weight - a double with the weight
+     loglambda - a boolean specifying if loglam is given as the logarithm of the of the wavelength (true) or the wavelength itself (false)
      
      OUTPUTS:
      NONE
@@ -59,10 +60,15 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& for
     
     forest_ = forest;
     weight_ = weight;
-    z_ = pow(10, loglam) / lya_wl - 1.0;
-
+    if (loglambda){
+        z_ = pow(10, loglam) / lya_wl - 1.0;
+    }
+    else{
+        z_ = loglam / lya_wl - 1.0;
+    }
     
 }
+LyaPixel object(lobs[i], lya_wl, delta[i], weight[i], false);
 
 void LyaPixel::SetDistance(const InterpolationMap& redshift_distance_map){
     /**

@@ -33,71 +33,6 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     
 }
 
-std::vector<LyaSpectrum> LyaSpectraDataset::list(int plate_number) const{
-    /**
-     EXPLANATION:
-     Access function for list_
-     
-     INPUTS:
-     plate_number - index of the selected list_ element
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     LyaSpectrum
-     LyaSpectraDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.find(plate_number);
-    if (it == list_.end()){
-        std::vector<LyaSpectrum> v;
-        return v;
-    }
-    else{
-        return (*it).second;
-    }    
-}
-
-LyaSpectrum LyaSpectraDataset::list(int plate_number, size_t pos) const {
-    /**
-     EXPLANATION:
-     Access function for list_
-     
-     INPUTS:
-     plate_number - index of the selected list_ element
-     pos - position in the selected list_ element
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     LyaSpectrum
-     LyaSpectraDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.find(plate_number);
-    if (it == list_.end()){
-        LyaSpectrum v(_BAD_DATA_);
-        return v;
-    }
-    else{
-        if (pos < (*it).second.size()){
-            return (*it).second[pos];
-        }
-        else{
-            LyaSpectrum v(_BAD_DATA_);
-            return v;
-        }
-    }  
-}
-
 int LyaSpectraDataset::FindCatalogLength(const std::string& lya_spectra_catalog){
     /**
      EXPLANATION:
@@ -125,63 +60,6 @@ int LyaSpectraDataset::FindCatalogLength(const std::string& lya_spectra_catalog)
     int length = atoi(strtok(path," "));
 
     return length;
-}
-
-void LyaSpectraDataset::GiveRADEC(std::ostream& out) const{
-    /**
-     EXPLANATION:
-     Adds the objects' RA-DEC values to out
-     
-     INPUTS:
-     out - an ostream to add the objects' RA-DEC values to
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     LyaSpectrum
-     LyaSpectraDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    for (PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            out << (*it).second[i].angle() << std::endl;
-        }
-    }
-    
-}
-
-void LyaSpectraDataset::GiveZ(std::ostream& out) const{
-    /**
-     EXPLANATION:
-     Adds the objects' redshift values to out
-     
-     INPUTS:
-     out - an ostream to add the objects' redshift values to
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     LyaPixel
-     LyaSpectrum
-     LyaSpectraDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    for (PlatesMapVector<LyaSpectrum>::map::const_iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            for (size_t j = 0; j < (*it).second[i].SpectrumSize(); j++){
-                out << (*it).second[i].spectrum(j).z() << std::endl;
-            }
-        }
-    }
-    
 }
 
 void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl){
@@ -248,32 +126,4 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     else{
         std::cout << "Error: in LyaSpectraDataset::Load : Could not read spectra catalog" << std::endl;
     }
-}
-
-void LyaSpectraDataset::SetDistances(const ZDistInterpolationMap& redshift_distance_map){
-    /**
-     EXPLANATION:
-     Sets the distance to every object in the dataset
-     
-     INPUTS:
-     redshif_distance_map - a InterpolationMap instance with the redshift-distance relation
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     LyaSpectrum
-     LyaSpectraDataset
-     InterpolationMap
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != list_.end(); it ++){
-        for (size_t i = 0; i < (*it).second.size(); i ++){
-            (*it).second[i].SetDistance(redshift_distance_map);
-        }
-    }
-    
 }

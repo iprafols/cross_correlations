@@ -35,7 +35,7 @@ public:
     LyaPixel(double bad_data);
     
     // constructs object and initializes its variables
-    LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight);
+    LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight, const bool loglambda = true);
     
     // -------------------------------------------------------------
     // access methods

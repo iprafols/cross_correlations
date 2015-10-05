@@ -70,6 +70,12 @@ public:
     // access function for dataset2_name_
     std::string dataset2_name() const {return dataset2_name_;}
     
+    // access function for dataset2_type_
+    std::string dataset2_type() const {return dataset2_type_;}
+    
+    // access function for dataset2_type_options_
+    std::string dataset2_type_options() const {return dataset2_type_options_;}
+
     // access function for fit_
     std::string fit() const {return fit_;}
     
@@ -120,6 +126,9 @@ public:
     
     // access function for flag_verbose_baofit_setup_
     size_t flag_verbose_baofit_setup() const {return flag_verbose_baofit_setup_;}
+    
+    // access function for flag_verbose_civ_spectra_dataset_
+    size_t flag_verbose_civ_spectra_dataset() const {return flag_verbose_civ_spectra_dataset_;}
     
     // access function for flag_verbose_compute_plate_neighbours_
     size_t flag_verbose_compute_plate_neighbours() const {return flag_verbose_compute_plate_neighbours_;}
@@ -306,6 +315,9 @@ private:
     // compute_plate_neighbours verbose flag
     size_t flag_verbose_compute_plate_neighbours_;
     
+    // flag_verbose_civ_spectra_dataset verbose flag
+    size_t flag_verbose_civ_spectra_dataset_;
+    
     // correlation_plate verbose flag (only works if flag_verbose_correlation_results_ >= 1)
     size_t flag_verbose_correlation_plate_;
     
@@ -358,6 +370,12 @@ private:
     
     // spectra catalog name
     std::string dataset2_name_;
+    
+    // spectra type
+    std::string dataset2_type_;
+    
+    // enabled spectra type
+    std::string dataset2_type_options_;
     
     // input directory
     std::string input_;

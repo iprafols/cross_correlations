@@ -41,6 +41,8 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
      
      INPUTS:
      filename - a string containing the spectrum's fits file name
+     lya_wl - restframe lyman alpha wavelength
+     radians - a boolean specifying if angles are given in radians (true) or deg (false)
      
      OUTPUTS:
      NONE
@@ -129,6 +131,60 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     mjd_ = atoi(strtok((char*)pmf.c_str(),"-"));
     fiber_ = atoi(strtok((char*)pmf.c_str(),"-"));
 
+}
+
+LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::vector<double>& lobs, std::vector<double>& delta, std::vector<double>& weight, const double& lya_wl, const bool radians){
+    /**
+     EXPLANATION:
+     Cosntructs a LyaSpectrum instance
+     
+     INPUTS:
+     ra - right ascention
+     dec - declination
+     plate - plate number
+     fiber - fiber number
+     mjd - modified julian day of observation
+     z - quasar redshift
+     lobs - observed wavelengths
+     delta - measured overdensities (deltas)
+     weight - weights
+     lya_wl - restframe lyman alpha wavelength
+     radians - a boolean specifying if angles are given in radians (true) or deg (false)
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaPixel
+     SpherePoint
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // set angular position
+    ra_local = ra;
+    dec_local = dec;
+    if (not radians){
+        ra_local *= acos(-1)/180.0;
+        dec_local*= acos(-1)/180.0;
+    }
+    SpherePoint angle(ra_local, dec_local);
+    angle_ = angle;
+    plate_ = plate;
+    fiber_ = fiber;
+    mjdi_ = mjd;
+    z_ = z;
+    
+    for (int i=0; i < lobs.size(); i++){
+        // create LyaPixel
+        LyaPixel object(lobs[i], lya_wl, delta[i], weight[i], false);
+        
+        // adding object to spectrum_
+        spectrum_.push_back(object);
+    }
+    
 }
 
 LyaPixel LyaSpectrum::spectrum(size_t i) const {

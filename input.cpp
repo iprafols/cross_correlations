@@ -176,6 +176,7 @@ void Input::SetDefaultValues(){
     flag_set_baofit_best_fit_ = true;
     flag_verbose_ = 1;
     flag_verbose_baofit_setup_ = flag_verbose_;
+    flag_verbose_civ_spectra_dataset_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;
     flag_verbose_correlation_plate_ = flag_verbose_;
     flag_verbose_correlation_results_ = flag_verbose_;
@@ -192,7 +193,7 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // input settings
     input_ = "/triforce/catalogues/"; // Note: default value must always start with "/"
-    dataset1_ = input_ + "DR11Q_alpha_v0.fits";
+    dataset1_ = input_ + "DR12Q.fits";
     dataset1_name_ = "DR11Q";
     dataset1_type_ = "quasar";
     dataset1_type_options_ = "quasar, dla";
@@ -201,6 +202,8 @@ void Input::SetDefaultValues(){
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
     dataset2_ = input_ + "DR11Q_spectra_forest_list.ls";
     dataset2_name_ = "DR11LyaF";
+    dataset2_type_ = "lya";
+    dataset2_type_options_ = "lya, civ";
     num_plates_ = 2044; // DR11
     
     
@@ -377,6 +380,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             dataset2_name_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "dataset2_type"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            dataset2_type_ = value;
             input_flag[name] = true;
         }
         else{
@@ -654,6 +668,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_civ_spectra_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_civ_spectra_dataset_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1244,6 +1269,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_verbose_compute_plate_neighbours_ = flag_verbose_;
     }
     
+    // updating flag_verbose_civ_spectra_dataset_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_civ_spectra_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_civ_spectra_dataset_ = flag_verbose_;
+    }
+
     // updating flag_verbose_correlation_plate_ if necessary
     it = input_flag.find("flag_verbose");
     it2 = input_flag.find("flag_verbose_correlation_plate");
@@ -1500,6 +1532,7 @@ void Input::WriteLog(){
         }
         log << "flag_verbose = " << flag_verbose_ << std::endl;
         log << "flag_verbose_baofit_setup = " << flag_verbose_baofit_setup_ << std::endl;
+        log << "flag_verbose_civ_spectra_dataset = " << flag_verbose_civ_spectra_dataset_ << std::endl;
         log << "flag_verbose_compute_plate_neighbours = " << flag_verbose_compute_plate_neighbours_ << std::endl;
         log << "flag_verbose_correlation_plate = " << flag_verbose_correlation_plate_ << std::endl;
         log << "flag_verbose_correlation_results = " << flag_verbose_correlation_results_ << std::endl;
@@ -1526,6 +1559,7 @@ void Input::WriteLog(){
         log << "lya_spectra_dir = " << lya_spectra_dir_ << std::endl;
         log << "dataset2 = " << dataset2_ << std::endl;
         log << "dataset2_name = " << dataset2_name_ << std::endl;
+        log << "dataset2_type = " << dataset2_type_ << std::endl;
         log << "num_plates = " << num_plates_ << std::endl;
         log << std::endl;
         

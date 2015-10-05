@@ -15,6 +15,7 @@
 #include "astro_object.h"
 #include "astro_object_dataset.h"
 #include "baofit_setup.h"
+#include "civ_spectra_dataset.h"
 #include "correlation_plate.h"
 #include "correlation_results.h"
 #include "covariance_matrix.h"
@@ -100,13 +101,23 @@ int main(int argc, char *argv[]){
     }
     
     // load spectra dataset
-    LyaSpectraDataset spectra_list(input);
+    std::auto_ptr<SpectraDataset> spectra_list;
+    if (input.dataset2_type() == "lya"){
+        spectra_list.reset(new LyaSpectraDataset(input));
+    }
+    else if (input.dataset2_type() == "civ"){
+        spectra_list.reset(new CIVSpectraDataset(input));
+    }
+    else{
+        std::cout << "Error : The selected type for dataset2 is not enabled. Current options are: " << input.dataset2_type_options() << std::endl;
+        return 1;
+    }
     if (input.flag_plot_catalog_info()){
         if (flag_verbose_main >= 2){
             std::cout << "Plotting spectra dataset information" << std::endl;
         }
-        kPlots.PlotRADECDispersion(spectra_list, true);
-        kPlots.PlotZHistogram(spectra_list, true);
+        kPlots.PlotRADECDispersion(*spectra_list, true);
+        kPlots.PlotZHistogram(*spectra_list, true);
         if (flag_verbose_main >= 2){
             std::cout << "done" << std::endl;
         }
@@ -140,7 +151,7 @@ int main(int argc, char *argv[]){
         }
         ZDistInterpolationMap redshift_distance_map(input);
         (*object_list).SetDistances(redshift_distance_map);
-        spectra_list.SetDistances(redshift_distance_map);
+        (*spectra_list).SetDistances(redshift_distance_map);
         if (flag_verbose_main >= 1){
             std::cout << "done" << std::endl;
         }
@@ -151,7 +162,7 @@ int main(int argc, char *argv[]){
     if (input.flag_compute_cross_correlation()){
         CorrelationResults results(input, kPlateNeighbours);
         
-        results.ComputeCrossCorrelation(*object_list, spectra_list, input);
+        results.ComputeCrossCorrelation(*object_list, *spectra_list, input);
         if (flag_verbose_main >= 2){
             std::cout << "Plotting cross-correlation" << std::endl;
         }
@@ -167,7 +178,7 @@ int main(int argc, char *argv[]){
             cov_mat.ComputeBootstrapCovMat(results_bootstrap);
         }
         
-        cov_mat.ComputeCovMat(*object_list, spectra_list, input, kPlateNeighbours);
+        cov_mat.ComputeCovMat(*object_list, *spectra_list, input, kPlateNeighbours);
     }
     
     // setup BAOFIT configuration and run fitting program
