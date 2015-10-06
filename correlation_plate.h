@@ -24,10 +24,10 @@
 #include "astro_object_dataset.h"
 #include "lya_auto_interpolation_map.h"
 #include "lya_pixel.h"
-#include "lya_spectra_dataset.h"
 #include "lya_spectrum.h"
 #include "pair.h"
 #include "plate.h"
+#include "spectra_dataset.h"
 #include "sphere_point.h"
 ////////
 
@@ -133,10 +133,10 @@ public:
     // other methods
     
     // compute covariance matrix
-    void ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto);
+    void ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto);
     
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input);
     
     //returns a string with the information for the selected bin
     std::string Info(size_t bin);

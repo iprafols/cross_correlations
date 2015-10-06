@@ -24,8 +24,8 @@
 #include "astro_object_dataset.h"
 #include "correlation_plate.h"
 #include "input.h"
-#include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
+#include "spectra_dataset.h"
 ////////
 
 // functions needed
@@ -97,7 +97,7 @@ public:
     // other methods
         
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input);
     
     // create bin files
     void CreateBinFiles();

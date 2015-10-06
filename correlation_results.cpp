@@ -152,14 +152,14 @@ int CorrelationResults::plates_list(int index) const {
     }
 }
 
-void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input){
+void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
     /**
      EXPLANATION:
      Computes the cross-correlation for all plates
      
      INPUTS:
      object_list - an AstroObjectDataset instance
-     spectra_list - a LyaSpectraDataset instance
+     spectra_list - a SpectraDataset instance
      input - a Input instance to load the bin settings
      
      OUTPUTS:
@@ -169,7 +169,7 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
      AstroObjectDataset
      CorrelationResults
      Input
-     LyaSpectraDataset
+     SpectraDataset
      
      FUNCITONS USED:
      NONE

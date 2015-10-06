@@ -134,7 +134,7 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script << "    num_sigma_bins = " << input.num_sigma_bins() << std::endl;
             script << std::endl;
             script << "    max_pi = " << input.max_pi() << std::endl;
-            script << "    pi_step = " << input.pi_step() << std::endl;
+            script << "    pi_step = " << input.step_pi() << std::endl;
             script << "    num_pi_bins = " << input.num_pi_bins() << std::endl;
             script << std::endl;
             script << "    correlation_filename = '../" << input.output_base_name() << ".data'" << std::endl;
@@ -166,10 +166,10 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script << std::endl;
             script << "        fig = plt.figure(figsize=(14, 7))" << std::endl;
             script << "        ax = fig.add_subplot(1, 1, 1)" << std::endl;
-            script << "        ax.set_xlabel(r'$\pi\,\left(\rm h^{-1}Mpc\right)$', fontsize=20)" << std::endl;
-            script << "        ax.set_ylabel(r'$\xi\left(\pi, \sigma\right)$', fontsize=20)" << std::endl;
+            script << "        ax.set_xlabel(r'$\\pi\\,\\left(\\rm h^{-1}Mpc\\right)$', fontsize=20)" << std::endl;
+            script << "        ax.set_ylabel(r'$\\xi\\left(\\pi, \\sigma\\right)$', fontsize=20)" << std::endl;
             script << "        ax.errorbar(pi_mid_bin, correlation_in_bin, yerr=covariance_in_bin, fmt='b.', label='data')" << std::endl;
-            script << "        ax.text(0.05, 0.05, '$' + str(sigma[k_sigma]) + r' < \sigma <' + str(sigma[k_sigma]+sigma_step) + '$', fontsize=20, transform=ax.transAxes)" << std::endl;
+            script << "        ax.text(0.05, 0.05, '$' + str(sigma[k_sigma]) + r' < \\sigma <' + str(sigma[k_sigma]+sigma_step) + '$', fontsize=20, transform=ax.transAxes)" << std::endl;
             script << std::endl;
             script << "        ax.legend(numpoints = 1, loc = 4, prop = {'size':20}, frameon = False)" << std::endl;
             script << "        fig.savefig('correlation_measurements_sigma_bin_' + str(k_sigma) + '.eps')" << std::endl;

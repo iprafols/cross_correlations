@@ -68,7 +68,6 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& for
     }
     
 }
-LyaPixel object(lobs[i], lya_wl, delta[i], weight[i], false);
 
 void LyaPixel::SetDistance(const InterpolationMap& redshift_distance_map){
     /**

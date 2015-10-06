@@ -24,6 +24,7 @@
 #include "input.h"
 #include "z_dist_interpolation_map.h"
 #include "lya_spectrum.h"
+#include "spectra_dataset.h"
 ////////
 
 // functions needed

@@ -46,7 +46,7 @@ public:
 
     // constructs object and initializes its variables
     LyaSpectrum(const std::string& filename, const double& lya_wl, const bool radians = true);
-    LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::vector<double>& lobs, std::vector<double>& delta, std::vector<double>& weight, const double& lya_wl, const bool radians = true);
+    LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::vector<double>& lobs, std::vector<double>& delta, std::vector<double>& weight, const double& lya_wl, const bool radians = true);
     
     // -------------------------------------------------------------
     // access methods

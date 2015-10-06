@@ -21,11 +21,12 @@
 #include "covariance_matrix.h"
 #include "dla_dataset.h"
 #include "input.h"
-#include "z_dist_interpolation_map.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
 #include "plots_object.h"
 #include "quasar_dataset.h"
+#include "spectra_dataset.h"
+#include "z_dist_interpolation_map.h"
 ////////
 
 // functions used
@@ -141,7 +142,7 @@ int main(int argc, char *argv[]){
                 std::cout << "Program lasted " << time_spent/3600.0 << " hours" << std::endl;
             }
         }
-        return 1;
+        return 0;
     }
     
     // compute distances to the objects (in Mpc/h)

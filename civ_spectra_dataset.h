@@ -7,8 +7,8 @@
  
  */
 
-#ifndef _LyaSpectraDataset_h
-#define _LyaSpectraDataset_h
+#ifndef _CIVSpectraDataset_h
+#define _CIVSpectraDataset_h
 
 // libraries needed
 #include <iostream>
@@ -17,13 +17,16 @@
 #include <string>
 #include <stdio.h>
 #include <vector>
+
+#include <CCfits>
 ////////
 
 // classes needed
 #include "dataset.h"
 #include "input.h"
-#include "z_dist_interpolation_map.h"
 #include "lya_spectrum.h"
+#include "spectra_dataset.h"
+#include "z_dist_interpolation_map.h"
 ////////
 
 // functions needed

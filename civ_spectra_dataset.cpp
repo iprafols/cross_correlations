@@ -33,7 +33,7 @@ CIVSpectraDataset::CIVSpectraDataset(const Input& input){
     
 }
 
-void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl){
+void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
@@ -57,9 +57,6 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     if (flag_verbose_civ_spectra_dataset_ >= 1){
         std::cout << "Loading civ spectra dataset" << std::endl;
     }
-    
-    // resizing astro_object_pointer
-    //size_ = FindCatalogLength(lya_spectra_catalog);
 
     // setting the catalog columns to be read
     std::vector<std::string> fields_hdu1(3);
@@ -78,14 +75,15 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     std::auto_ptr<CCfits::FITS> pInfile;
     
     try{
-        
-        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(dataset1,CCfits::Read,1,true,fields));
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(lya_spectra_catalog,CCfits::Read,true));
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + dataset1;
+        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + lya_spectra_catalog;
     }
+    std::cout << "loading hdu 1\n";
     CCfits::ExtHDU& data_hdu1 = pInfile->extension(1);
+    std::cout << "loading hdu 1\n";
     CCfits::ExtHDU& data_hdu2 = pInfile->extension(2);
     
     // number of lines in the file
@@ -100,9 +98,11 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     std::valarray<double> ra, dec, z, lobs, delta, weight;
     
     // reading data
+    std::cout << "reading data from hdu 1\n";
     data_hdu1.column(fields_hdu1[0]).read(lobs,1,nobj_hdu1); // observed wavelength
     data_hdu1.column(fields_hdu1[1]).read(delta,1,nobj_hdu1); // measured overdensity (delta)
     data_hdu1.column(fields_hdu1[2]).read(weight,1,nobj_hdu1); // weight
+    std::cout << "reading data from hdu 1\n";
     data_hdu2.column(fields_hdu2[0]).read(ra,1,nobj_hdu2); // ra (in degrees)
     data_hdu2.column(fields_hdu2[1]).read(dec,1,nobj_hdu2); // dec (in degrees)
     data_hdu2.column(fields_hdu2[2]).read(z,1,nobj_hdu2); // z
@@ -126,7 +126,7 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     size_t forest_size = nobj_hdu2/nobj_hdu1;
     std::vector<double> lobs_q(forest_size, 0.0), delta_q(forest_size, 0.0), weight_q(forest_size, 0.0);
     for (int i=0;i<nobj_hdu2;i++){
-        if ((z_min <= z[i] and z[i] <= z_max) and not (ra[i] == 0.0 and dec[i] == 0.0)){
+        if ( not (ra[i] == 0.0 and dec[i] == 0.0)){
             
             // create LyaSpectrum
             for (int j=0; j < forest_size; j++){
@@ -156,6 +156,5 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     if (flag_verbose_civ_spectra_dataset_ >= 1){
         std::cout << "Loaded " << size_ << " civ spectra" << std::endl;
     }
-    catalog.close();
 
 }

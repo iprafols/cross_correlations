@@ -164,8 +164,8 @@ LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, 
      */
     
     // set angular position
-    ra_local = ra;
-    dec_local = dec;
+    double ra_local = ra;
+    double dec_local = dec;
     if (not radians){
         ra_local *= acos(-1)/180.0;
         dec_local*= acos(-1)/180.0;
@@ -174,7 +174,7 @@ LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, 
     angle_ = angle;
     plate_ = plate;
     fiber_ = fiber;
-    mjdi_ = mjd;
+    mjd_ = mjd;
     z_ = z;
     
     for (int i=0; i < lobs.size(); i++){

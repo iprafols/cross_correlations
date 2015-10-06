@@ -209,14 +209,14 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate
     SaveBootstrapCovMat();
 }
 
-void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours){
+void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours){
     /**
      EXPLANATION:
      Computes the covariance matrix
      
      INPUTS:
      object_list - an AstroObjectDataset instance
-     spectra_list - a LyaSpectraDataset instance
+     spectra_list - a SpectraDataset instance
      input - object of type Input
      kPlateNeighbours - a PlateNeighbours instance containing the list of plates
      
@@ -226,6 +226,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
      CLASSES USED:
      CovarianceMatrix
      PlateNeighbours
+     SpectraDataset
      
      FUNCITONS USED:
      NONE

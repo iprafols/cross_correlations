@@ -59,7 +59,7 @@ public:
     // set the distance to every object in the dataset
     void SetDistances(const ZDistInterpolationMap& redshift_distance_map);
     
-private:
+protected:
     // map with the plates information
     PlatesMapVector<LyaSpectrum>::map list_;
     

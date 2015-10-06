@@ -527,14 +527,14 @@ void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, c
     
 }
 
-void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto){
+void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto){
     /**
      EXPLANATION:
      Computes the covariance matrix
      
      INPUTS:
      object_list - an AstroObjectDataset instance
-     spectra_list - a LyaSpectraDataset instance
+     spectra_list - a SpectraDataset instance
      input - a Input instance to load bin settings
      lya_auto - an IntepolationMap containing the 1D Lya forest auto-correlation
      
@@ -546,8 +546,8 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
      CorrelationPlate
      Input
      LyaPixel
-     LyaSpectraDataset
      LyaSpectrum
+     SpectraDataset
      
      FUNCITONS USED:
      NONE
@@ -981,14 +981,14 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
     
 }
 
-void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const LyaSpectraDataset& spectra_list, const Input& input){
+void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
     /**
      EXPLANATION:
      Computes the cross-correlation
      
      INPUTS:
      object_list - an AstroObjectDataset instance
-     spectra_list - a LyaSpectraDataset instance
+     spectra_list - a SpectraDataset instance
      input - a Input instance to load bin settings
      
      OUTPUTS:
@@ -999,8 +999,8 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      CorrelationPlate
      Input
      LyaPixel
-     LyaSpectraDataset
      LyaSpectrum
+     SpectraDataset
      
      FUNCITONS USED:
      NONE
