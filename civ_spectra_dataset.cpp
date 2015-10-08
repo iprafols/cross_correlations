@@ -59,60 +59,53 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     }
 
     // setting the catalog columns to be read
-    std::vector<std::string> fields_hdu1(3);
-    fields_hdu1[0] = "LOBS";
-    fields_hdu1[1] = "DELTA";
-    fields_hdu1[2] = "WEIGHT";
-    std::vector<std::string> fields_hdu2(6);
-    fields_hdu2[0] = "RA";
-    fields_hdu2[1] = "DEC";
-    fields_hdu2[2] = "Z";
-    fields_hdu2[3] = "PLATE";
-    fields_hdu2[4] = "MJD";
-    fields_hdu2[5] = "FIBER_D";
+    std::vector<std::string> fields(9);
+    fields[0] = "LOBS";
+    fields[1] = "DELTA";
+    fields[2] = "WEIGHT";
+    fields[3] = "RA";
+    fields[4] = "DEC";
+    fields[5] = "Z";
+    fields[6] = "PLATE";
+    fields[7] = "MJD";
+    fields[8] = "FIBER_ID";
     
     // construct fits object
     std::auto_ptr<CCfits::FITS> pInfile;
     
     try{
-        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(lya_spectra_catalog,CCfits::Read,true));
+        
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(civ_filename,CCfits::Read,1,true,fields));
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + lya_spectra_catalog;
+        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + civ_filename;
     }
-    std::cout << "loading hdu 1\n";
-    CCfits::ExtHDU& data_hdu1 = pInfile->extension(1);
-    std::cout << "loading hdu 1\n";
-    CCfits::ExtHDU& data_hdu2 = pInfile->extension(2);
+    CCfits::ExtHDU& data = pInfile->extension(1);
     
     // number of lines in the file
-    long NAXIS2_HDU1 = data_hdu1.axis(1);
-    size_t nobj_hdu1 = NAXIS2_HDU1;
-    long NAXIS2_HDU2 = data_hdu2.axis(1);
-    size_t nobj_hdu2 = NAXIS2_HDU2;
-
+    long NAXIS2 = data.axis(1);
+    size_t nobj = NAXIS2;
     
     // this will store the information
     std::valarray<int> plate, mjd, fiber;
-    std::valarray<double> ra, dec, z, lobs, delta, weight;
+    std::valarray<double> ra, dec, z;
+    std::vector<std::valarray<double> > lobs, delta, weight;
     
     // reading data
-    std::cout << "reading data from hdu 1\n";
-    data_hdu1.column(fields_hdu1[0]).read(lobs,1,nobj_hdu1); // observed wavelength
-    data_hdu1.column(fields_hdu1[1]).read(delta,1,nobj_hdu1); // measured overdensity (delta)
-    data_hdu1.column(fields_hdu1[2]).read(weight,1,nobj_hdu1); // weight
-    std::cout << "reading data from hdu 1\n";
-    data_hdu2.column(fields_hdu2[0]).read(ra,1,nobj_hdu2); // ra (in degrees)
-    data_hdu2.column(fields_hdu2[1]).read(dec,1,nobj_hdu2); // dec (in degrees)
-    data_hdu2.column(fields_hdu2[2]).read(z,1,nobj_hdu2); // z
-    data_hdu2.column(fields_hdu2[3]).read(plate,1,nobj_hdu2); // plate
-    data_hdu2.column(fields_hdu2[4]).read(mjd,1,nobj_hdu2); // mjd
-    data_hdu2.column(fields_hdu2[5]).read(fiber,1,nobj_hdu2); // fiber
+    data.column(fields[0]).readArrays(lobs, 1, nobj); // observed wavelength
+    data.column(fields[1]).readArrays(delta, 1, nobj); // measured overdensities
+    data.column(fields[2]).readArrays(weight, 1, nobj); // weights
+    data.column(fields[3]).read(ra, 1, nobj); // ra
+    data.column(fields[4]).read(dec, 1, nobj); // dec
+    data.column(fields[5]).read(z, 1, nobj); // z
+    data.column(fields[6]).read(plate, 1, nobj); // plate number
+    data.column(fields[7]).read(mjd, 1, nobj); // mjd
+    data.column(fields[8]).read(fiber, 1, nobj); // fiber number
     
     // setting size to zero and creating entries in list_ map
     size_ = 0;
-    for (int i = 0; i < nobj_hdu2; i++){
+    for (int i = 0; i < nobj; i++){
         
         if (list_.find(plate[i]) == list_.end()){
             std::vector<LyaSpectrum> v;
@@ -123,18 +116,11 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     }
     
     // adding objects to list_ and to list_by_plate
-    size_t forest_size = nobj_hdu2/nobj_hdu1;
-    std::vector<double> lobs_q(forest_size, 0.0), delta_q(forest_size, 0.0), weight_q(forest_size, 0.0);
-    for (int i=0;i<nobj_hdu2;i++){
+    for (int i = 0; i < nobj; i++){
         if ( not (ra[i] == 0.0 and dec[i] == 0.0)){
             
             // create LyaSpectrum
-            for (int j=0; j < forest_size; j++){
-                lobs_q[j] = lobs[i + j];
-                delta_q[j] = delta[i + j];
-                weight_q[j] = weight[i + j];
-            }
-            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs_q, delta_q, weight_q, false);
+            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs[i], delta[i], weight[i], false);
             
             // adding object to list_
             (*list_.find(plate[i])).second.push_back(object);
