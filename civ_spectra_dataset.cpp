@@ -75,11 +75,11 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     
     try{
         
-        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(civ_filename,CCfits::Read,1,true,fields));
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(lya_spectra_catalog,CCfits::Read,1,true,fields));
         
     } catch(CCfits::FITS::CantOpen x) {
         
-        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + civ_filename;
+        throw "Error: in QuasarDataset::Load : Couldn't open catalog file: " + lya_spectra_catalog;
     }
     CCfits::ExtHDU& data = pInfile->extension(1);
     
@@ -120,7 +120,7 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
         if ( not (ra[i] == 0.0 and dec[i] == 0.0)){
             
             // create LyaSpectrum
-            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs[i], delta[i], weight[i], false);
+            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs[i], delta[i], weight[i], lya_wl, false);
             
             // adding object to list_
             (*list_.find(plate[i])).second.push_back(object);
