@@ -138,9 +138,6 @@ private:
     // covariance matrix
     CovMat cov_mat_;
     
-    // boolean to specify whether or not to compute the covariance matrix
-    bool flag_covariance_;
-    
     // verbose flag
     size_t flag_verbose_covariance_plate_;
 
