@@ -51,16 +51,13 @@ public:
     CorrelationPlate(int bad_data);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours, const bool flag_covariance);
+    CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results, const bool flag_covariance);
+    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results);
     
     // -------------------------------------------------------------
     // access methods
-    
-    // access function for flag_compute_covariance_
-    bool flag_covariance() const {return flag_covariance_;}
     
     // access function for cov_mat_
     CovMat cov_mat() const {return cov_mat_;}
@@ -116,9 +113,6 @@ public:
     
     // -------------------------------------------------------------
     // set methods
-
-    // set cov_mat_
-    void set_cov_mat(size_t i, size_t j, double value);
     
     // set flag_verbose_correlation_plate_
     void set_flag_verbose_correlation_plate(size_t value) {flag_verbose_correlation_plate_ = value;}
@@ -151,9 +145,6 @@ public:
     // -------------------------------------------------------------
     // other methods
     
-    // compute covariance matrix
-    void ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto);
-    
     // compute cross-correlation
     void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input);
     
@@ -180,24 +171,7 @@ public:
     CorrelationPlate operator* (const CorrelationPlate& other);
 
 
-    // -------------------------------------------------------------
-    // static access methods
-    
-    // value of gamma/2
-    static double half_gamma() {return CorrelationPlate::half_gamma_;}
-    
-    // value of (1+z_0)^(gamma/2)
-    static double one_plus_z0_to_the_half_gamma() {return CorrelationPlate::one_plus_z0_to_the_half_gamma_;}
-
-    
-    
 private:
-    // covariance matrix
-    CovMat cov_mat_;
-    
-    // boolean to specify whether or not to compute the covariance matrix
-    bool flag_covariance_;
-    
     // verbose flag
     size_t flag_verbose_correlation_plate_;
 
@@ -256,25 +230,12 @@ private:
     // adding contribution to xi in the specified bin
     void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
 
-    // adding contribution to covariance matrix in the specified bin
-    void AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j, const LyaAutoInterpolationMap& lya_auto);
-    
     // keeps the pair information for latter storage
     void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);
     
     // write down pair information in bin file
     void SavePairs(const int& k_index);
     
-    
-    // -------------------------------------------------------------
-    // static variables
-    
-    // value of gamma/2
-    static double half_gamma_;
-    
-    // value of (1+z_0)^(gamma/2)
-    static double one_plus_z0_to_the_half_gamma_;
-
     
 };
 

@@ -34,7 +34,7 @@ CorrelationPlate::CorrelationPlate(int bad_data){
     
 }
 
-CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours, const bool flag_covariance){
+CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
@@ -43,7 +43,6 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
      input - a Input instance
      plate_number - an integer with the plate number
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
-     covariance - a boolean that specifies whether the instance will be used to compute the cross-correlation (false) or else the covariance matrix (true)
      
      OUTPUTS:
      NONE
@@ -54,8 +53,6 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
      FUNCITONS USED:
      ToStr
      */
-    
-    flag_covariance_ = flag_covariance;
     
     // set flags from input
     flag_verbose_correlation_plate_ = input.flag_verbose_correlation_plate();
@@ -73,26 +70,15 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
         pairs_file_name_ = ToStr(plate_number_);
     }
     
-    if (flag_covariance_){
-        // initialize covariance matrix computation
-        for (size_t i = 0; i < num_bins_; i++){
-            for (size_t j = i; j < num_bins_; j++){
-                cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
-            }
-        }
-        weight_.resize(num_bins_,0.0);
-    }
-    else{
-        // initialize cross-correlation computations
-        xi_.resize(num_bins_,0.0);
-        mean_pi_.resize(num_bins_,0.0);
-        mean_sigma_.resize(num_bins_,0.0);
-        mean_z_in_bin_.resize(num_bins_, 0.0);
-        weight_.resize(num_bins_,0.0);
-        num_averaged_pairs_.resize(num_bins_,0);
-        mean_z_ = 0.0;
-        weight_z_ = 0.0;
-    }
+    // initialize cross-correlation computations
+    xi_.resize(num_bins_,0.0);
+    mean_pi_.resize(num_bins_,0.0);
+    mean_sigma_.resize(num_bins_,0.0);
+    mean_z_in_bin_.resize(num_bins_, 0.0);
+    weight_.resize(num_bins_,0.0);
+    num_averaged_pairs_.resize(num_bins_,0);
+    mean_z_ = 0.0;
+    weight_z_ = 0.0;
     
     // pair storage settings
     if (flag_write_partial_results_ > 0){
@@ -104,7 +90,7 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     }
 }
 
-CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results, const bool flag_covariance){
+CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
@@ -116,7 +102,6 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      flag_verbose_correlation_plate - correlation_plate verbose flag
      flag_write_partial_results - flag to write partial results
-     flag_covariance - flag to specify whether the instance is used to compute the cross-correlation or the covariance.
      
      OUTPUTS:
      NONE
@@ -144,26 +129,16 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
         pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
     }
     
-    if (flag_covariance_){
-        // initialize covariance matrix computation
-        for (size_t i = 0; i < num_bins_; i++){
-            for (size_t j = i; j < num_bins_; j++){
-                cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
-            }
-        }
-        weight_.resize(num_bins_,0.0);
-    }
-    else{
-        // initialize cross-correlation computations
-        xi_.resize(num_bins_,0.0);
-        mean_pi_.resize(num_bins_,0.0);
-        mean_sigma_.resize(num_bins_,0.0);
-        mean_z_in_bin_.resize(num_bins_, 0.0);
-        weight_.resize(num_bins_,0.0);
-        num_averaged_pairs_.resize(num_bins_,0);
-        mean_z_ = 0.0;
-        weight_z_ = 0.0;
-    }
+    // initialize cross-correlation computations
+    xi_.resize(num_bins_,0.0);
+    mean_pi_.resize(num_bins_,0.0);
+    mean_sigma_.resize(num_bins_,0.0);
+    mean_z_in_bin_.resize(num_bins_, 0.0);
+    weight_.resize(num_bins_,0.0);
+    num_averaged_pairs_.resize(num_bins_,0);
+    mean_z_ = 0.0;
+    weight_z_ = 0.0;
+    
 }
 
 double CorrelationPlate::mean_pi(size_t index) const {
@@ -322,33 +297,6 @@ double CorrelationPlate::xi(size_t index) const {
     }
 }
 
-void CorrelationPlate::set_cov_mat(size_t i, size_t j, double value){
-    /**
-     EXPLANATION:
-     Set function for cov_mat_
-     
-     INPUTS:
-     i,j - indexs of the selected cov_mat_ element
-     value - element's new value
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     CorrelationPlate
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    CovMat::iterator it = cov_mat_.find(std::pair<size_t, size_t>(i,j));
-    if (it != cov_mat_.end()){
-        (*it).second = value;
-    }
-    else{
-        std::cout << "Warining: in CorrelationPlate::set_cov_mat(i, j, value): The given index is out of bouds, ignoring..." << std::endl;
-    }
-}
 void CorrelationPlate::set_mean_pi(size_t index, double value){
     /**
      EXPLANATION:
@@ -540,507 +488,6 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
 
-}
-
-void CorrelationPlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j, const LyaAutoInterpolationMap& lya_auto){
-    /**
-     EXPLANATION:
-     Adds pair contribution to the covariance matrix in the specified bin
-     
-     INPUTS:
-     pixel1,pixel2 - LyaPixel instances to add the contribution from
-     i,j - covariance matrix element to add the contributions to
-     lya_auto - LyaAutoInterpolationMap for the pixel's separation
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     CorrelationPlate
-     LyaAutoInterpolationMap
-     LyaPixel
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    CovMat::iterator it;
-    if (i <= j){
-        it = cov_mat_.find(std::pair<int, int>(i, j));
-    }
-    else{
-        it = cov_mat_.find(std::pair<int, int>(j, i));
-    }
-    if (it == cov_mat_.end()){
-        std::cout << "Warning : In CovarianceMatrix::ComputeCovMat : Element " << i << ", " << j << " of the covariance matrix not found. Ignoring..."  << std::endl;
-        return;
-    }
-    
-    // add to covariance matrix
-    double weight = pixel1.weight()*pixel2.weight();
-    double add;
-    if (pixel1.dist() == pixel2.dist()){
-        add = pow(1.0+pixel1.z(),CorrelationPlate::half_gamma_)/pixel1.weight()/CorrelationPlate::one_plus_z0_to_the_half_gamma_;
-    }
-    else{
-        add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
-    }
-    (*it).second += add*weight;
-    
-}
-
-void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto){
-    /**
-     EXPLANATION:
-     Computes the covariance matrix
-     
-     INPUTS:
-     object_list - an AstroObjectDataset instance
-     spectra_list - a SpectraDataset instance
-     input - a Input instance to load bin settings
-     lya_auto - an IntepolationMap containing the 1D Lya forest auto-correlation
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     AstroObjectDataset
-     CorrelationPlate
-     Input
-     LyaPixel
-     LyaSpectrum
-     SpectraDataset
-     
-     FUNCITONS USED:
-     NONE
-     */
-    if (plate_number_ == _NORM_){
-        #pragma omp critical (cout)
-        {
-            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The covariance should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
-        }
-        return;
-    }
-    if (not flag_covariance_){
-        #pragma omp critical (cout)
-        {
-            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the covariance matrix. Ignoring..." << std::endl;
-        }
-        return;
-    }
-    
-    // load bin settings
-    double max_pi = input.max_pi();
-    double max_sigma = input.max_sigma();
-    double step_pi = input.step_pi();
-    double step_sigma = input.step_sigma();
-    double num_pi_bins = input.num_pi_bins();
-    double num_sigma_bins = input.num_sigma_bins();
-    size_t pixels_separation = input.pixels_separation();
-    
-    size_t number_of_spectra = spectra_list.num_objects_in_plate(plate_number_);
-    
-    if (flag_verbose_correlation_plate_ >= 1){
-        #pragma omp critical (cout)
-        {
-            std::cout << "Computing covariance_matrix in plate " << plate_number_ << ". In this plate there are " << number_of_spectra << " LyaSpectra" << std::endl;
-        }
-    }
-    if (number_of_spectra == 0){
-        return;
-    }
-    
-    // loop over LyaSpectra
-    for (size_t lya_spectrum_num = 0; lya_spectrum_num < number_of_spectra; lya_spectrum_num ++){
-        
-        LyaSpectrum lya_spectrum = spectra_list.list(plate_number_, lya_spectrum_num);
-        // checking that the object was loaded successfully
-        if (lya_spectrum.dist() == _BAD_DATA_){
-            if (flag_verbose_correlation_plate_ >= 2){
-                #pragma omp critical (cout)
-                {
-                    std::cout << "_BAD_DATA_ LyaSpectrum found. Ignoring..." << std::endl;
-                }
-            }
-            continue;
-        }
-        std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
-        
-        // loop over neighbouring plates 1
-        for (size_t plate_neighbours_num1 = 0; plate_neighbours_num1 < plate_neighbours_.size(); plate_neighbours_num1 ++){
-            
-            size_t number_of_objects1 = object_list.num_objects_in_plate(plate_neighbours_[plate_neighbours_num1]);
-            if (number_of_objects1 == 0){
-                continue;
-            }
-            
-            // loop over AstroObjects 1
-            for (size_t object_num1 = 0; object_num1 < number_of_objects1; object_num1 ++){
-                
-                AstroObject object1 = object_list.list(plate_neighbours_[plate_neighbours_num1], object_num1);
-                
-                // checking that the object was loaded successfully
-                if (object1.dist() == _BAD_DATA_){
-                    if (flag_verbose_correlation_plate_ >= 2){
-                        #pragma omp critical (cout)
-                        {
-                            std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
-                        }
-                    }
-                    continue;
-                }
-                
-                double sigma_aux_o_1 = 2.0*object1.dist(); // auxiliar variable to compute sigma values
-                
-                // compute angular separation
-                double cos_theta1 = object1.angle().CosAngularDistance(lya_spectrum.angle());
-                
-                double sigma_aux1;
-                if (cos_theta1 == 1.0){
-                    sigma_aux1 = 0.0;
-                }
-                else{
-                    sigma_aux1 = sigma_aux_o_1*(1.0-cos_theta1); // auxiliar variable to compute sigma values
-                }
-                
-                // check if all pixels in the spectrum are too far apart
-                double pair_min_sigma1 = sqrt(sigma_aux1*spectrum[0].dist()); // minimum distance obtained for lowest redshift pixel
-                if (pair_min_sigma1 > max_sigma){ // if the minimum value for sigma (r_perp) is too large, the whole spectra is discarded
-                    if (flag_verbose_correlation_plate_ >= 2){
-                        #pragma omp critical (cout)
-                        {
-                            std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
-                        }
-                        if (flag_verbose_correlation_plate_ >= 3){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "min_sigma = " << pair_min_sigma1 << std::endl;
-                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_sigma1 << std::endl;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                if (pair_min_sigma1 <= 0.1){
-                    if (flag_verbose_correlation_plate_ >= 2){
-                        #pragma omp critical (cout)
-                        {
-                            std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
-                        }
-                    }
-                    continue;
-                }
-                
-                double pair_max_pi1 = spectrum.back().dist() - object1.dist(); // minimum distance obtained for lowest redshift pixel
-                if (pair_max_pi1 < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
-                    if (flag_verbose_correlation_plate_ >= 2){
-                        #pragma omp critical (cout)
-                        {
-                            std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
-                        }
-                        if (flag_verbose_correlation_plate_ >= 3){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "max_pi = " << pair_max_pi1 << std::endl;
-                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_max_pi1 << std::endl;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                
-                double pair_min_pi1 = spectrum[0].dist() - object1.dist(); // maximum distance obtained for highest redshift pixel
-                if (pair_min_pi1 > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
-                    if (flag_verbose_correlation_plate_ >= 2){
-                        #pragma omp critical (cout)
-                        {
-                            std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
-                        }
-                        if (flag_verbose_correlation_plate_ >= 3){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "min_pi = " << pair_min_pi1 << std::endl;
-                                std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object1.angle() << " " << lya_spectrum.angle() << " " << cos_theta1 << " " << acos(cos_theta1) << " " << pair_min_pi1 << std::endl;
-                            }
-                        }
-                    }
-                    continue;
-                }
-                
-                // loop over LyaPixels1
-                for (int pixel1 = 0; pixel1 < spectrum.size(); pixel1 ++){
-                    
-                    // cehck that the weight is not zero
-                    if (spectrum[pixel1].weight() == 0.0){
-                        continue;
-                    }
-                    
-                    // compute pi and sigma
-                    double sigma1 = sqrt(sigma_aux1*spectrum[pixel1].dist());
-                    if (sigma1 > max_sigma){ // if sigma (r_perp) is too large, discard pixel
-                        if (flag_verbose_correlation_plate_ >= 3){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "Pixel rejected: sigma is too large" << std::endl;
-                                std::cout << "sigma = " << sigma1 << std::endl;
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    double pi1 = spectrum[pixel1].dist()-object1.dist();
-                    if ((pi1 > max_pi) or (pi1 <- max_pi)){ // if pi (r_par) is too large or too small, discard pixel
-                        if (flag_verbose_correlation_plate_ >= 3){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
-                                std::cout << "pi = " << pi1 << std::endl;
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    // locate pi pixel (i_index)
-                    int i_index1 = int(pi1/step_pi)+num_pi_bins/2;
-                    if (pi1<0.0){
-                        i_index1 -= 1;
-                    }
-                    if (i_index1 < 0){
-                        if (flag_verbose_correlation_plate_ >= 2){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index1 << std::endl;
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    
-                    // locate sigma pixel (j_index)
-                    int j_index1 = int(sigma1/step_sigma);
-                    if (j_index1 < 0){
-                        if (flag_verbose_correlation_plate_ >= 2){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index1 << std::endl;
-                            }
-                        }
-                        continue;
-                    }
-                    
-                    // locate xi pixel (k)
-                    int k_index1 = i_index1*num_sigma_bins+j_index1;
-                    if (k_index1 < 0){
-                        if (flag_verbose_correlation_plate_ >= 2){
-                            #pragma omp critical (cout)
-                            {
-                                std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index1 << std::endl;
-                            }
-                        }
-                        continue;
-                        
-                    }
-                    
-                    // add pixel's weight to the total weight of the bin
-                    weight_[k_index1] += spectrum[pixel1].weight();
-                    
-                    // loop over neighbouring plates 2
-                    for (size_t plate_neighbours_num2 = 0; plate_neighbours_num2 < plate_neighbours_.size(); plate_neighbours_num2 ++){
-                        
-                        size_t number_of_objects2 = object_list.num_objects_in_plate(plate_neighbours_[plate_neighbours_num2]);
-                        if (number_of_objects2 == 0){
-                            continue;
-                        }
-                        
-                        // loop over AstroObjects 2
-                        for (size_t object_num2 = 0; object_num2 < number_of_objects2; object_num2 ++){
-                            
-                            AstroObject object2 = object_list.list(plate_neighbours_[plate_neighbours_num2], object_num2);
-                            
-                            // checking that the object was loaded successfully
-                            if (object2.dist() == _BAD_DATA_){
-                                if (flag_verbose_correlation_plate_ >= 2){
-                                    #pragma omp critical (cout)
-                                    {
-                                        std::cout << "_BAD_DATA_ AstroObject found. Ignoring..." << std::endl;
-                                    }
-                                }
-                                continue;
-                            }
-                            
-                            double sigma_aux_o_2 = 2.0*object2.dist(); // auxiliar variable to compute sigma values
-                            
-                            
-                            // compute angular separation
-                            double cos_theta2 = object2.angle().CosAngularDistance(lya_spectrum.angle());
-                            
-                            double sigma_aux2;
-                            if (cos_theta2 == 1.0){
-                                sigma_aux2 = 0.0;
-                            }
-                            else{
-                                sigma_aux2 = sigma_aux_o_2*(1.0-cos_theta2); // auxiliar variable to compute sigma values
-                            }
-                            
-                            // check if all pixels in the spectrum are too far apart
-                            double pair_min_sigma2 = sqrt(sigma_aux2*spectrum[0].dist()); // minimum distance obtained for lowest redshift pixel
-                            if (pair_min_sigma2 > max_sigma){ // if the minimum value for sigma (r_perp) is too large, the whole spectra is discarded
-                                if (flag_verbose_correlation_plate_ >= 2){
-                                    #pragma omp critical (cout)
-                                    {
-                                        std::cout << "Spectrum rejected: min_sigma is too large" << std::endl;
-                                    }
-                                    if (flag_verbose_correlation_plate_ >= 3){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "min_sigma = " << pair_min_sigma2 << std::endl;
-                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_sigma2 << std::endl;
-                                        }
-                                    }
-                                }
-                                continue;
-                            }
-                            // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                            if (pair_min_sigma2 <= 0.1){
-                                if (flag_verbose_correlation_plate_ >= 2){
-                                    #pragma omp critical (cout)
-                                    {
-                                        std::cout << "Spectrum rejected: It is being paired with its origin quasar" << std::endl;
-                                    }
-                                }
-                                continue;
-                            }
-                            
-                            double pair_max_pi2 = spectrum.back().dist() - object2.dist(); // minimum distance obtained for lowest redshift pixel
-                            if (pair_max_pi2 < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
-                                if (flag_verbose_correlation_plate_ >= 2){
-                                    #pragma omp critical (cout)
-                                    {
-                                        std::cout << "Spectrum rejected: max_pi is too small" << std::endl;
-                                    }
-                                    if (flag_verbose_correlation_plate_ >= 3){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "max_pi = " << pair_max_pi2 << std::endl;
-                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_max_pi2 << std::endl;
-                                        }
-                                    }
-                                }
-                                continue;
-                            }
-                            
-                            double pair_min_pi2 = spectrum[0].dist() - object2.dist(); // maximum distance obtained for highest redshift pixel
-                            if (pair_min_pi2 > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
-                                if (flag_verbose_correlation_plate_ >= 2){
-                                    #pragma omp critical (cout)
-                                    {
-                                        std::cout << "Spectrum rejected: min_pi is too large" << std::endl;
-                                    }
-                                    if (flag_verbose_correlation_plate_ >= 3){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "min_pi = " << pair_min_pi2 << std::endl;
-                                            std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                            std::cout << object2.angle() << " " << lya_spectrum.angle() << " " << cos_theta2 << " " << acos(cos_theta2) << " " << pair_min_pi2 << std::endl;
-                                        }
-                                    }
-                                }
-                                continue;
-                            }
-                            
-                            // loop over LyaPixels2
-                            for (int pixel2 = pixel1; pixel2 < spectrum.size() and pixel2 <= pixel1 + pixels_separation; pixel2 ++){
-                                
-                                // cehck that the weight is not zero
-                                if (spectrum[pixel2].weight() == 0.0){
-                                    continue;
-                                }
-                                
-                                // compute pi and sigma
-                                double sigma2 = sqrt(sigma_aux2*spectrum[pixel2].dist());
-                                if (sigma2 > max_sigma){ // if sigma (r_perp) is too large, discard pixel
-                                    if (flag_verbose_correlation_plate_ >= 3){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "Pixel rejected: sigma is too large" << std::endl;
-                                            std::cout << "sigma = " << sigma2 << std::endl;
-                                        }
-                                    }
-                                    continue;
-                                }
-                                
-                                double pi2 = spectrum[pixel2].dist()-object2.dist();
-                                if ((pi2 > max_pi) or (pi2 <- max_pi)){ // if pi (r_par) is too large or too small, discard pixel
-                                    if (flag_verbose_correlation_plate_ >= 3){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "Pixel rejected: abs(pi) is too large" << std::endl;
-                                            std::cout << "pi = " << pi2 << std::endl;
-                                        }
-                                    }
-                                    continue;
-                                }
-                                
-                                // locate pi pixel (i_index)
-                                int i_index2 = int(pi2/step_pi)+num_pi_bins/2;
-                                if (pi2<0.0){
-                                    i_index2 -= 1;
-                                }
-                                if (i_index2 < 0){
-                                    if (flag_verbose_correlation_plate_ >= 2){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "Pixel rejected: Bad indexing: i_index = " << i_index2 << std::endl;
-                                        }
-                                    }
-                                    continue;
-                                }
-                                
-                                
-                                // locate sigma pixel (j_index)
-                                int j_index2 = int(sigma2/step_sigma);
-                                if (j_index2 < 0){
-                                    if (flag_verbose_correlation_plate_ >= 2){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "Pixel rejected: Bad indexing: j_index = " << j_index2 << std::endl;
-                                        }
-                                    }
-                                    continue;
-                                }
-                                
-                                // locate xi pixel (k)
-                                int k_index2 = i_index2*num_sigma_bins+j_index2;
-                                if (k_index2 < 0){
-                                    if (flag_verbose_correlation_plate_ >= 2){
-                                        #pragma omp critical (cout)
-                                        {
-                                            std::cout << "Pixel rejected: Bad indexing: k_index = " << k_index2 << std::endl;
-                                        }
-                                    }
-                                    continue;
-                                    
-                                }
-                                
-                                // compute covariance matrix contribution
-                                AddPair(spectrum[pixel1],spectrum[pixel2],k_index1,k_index2, lya_auto[pixel2 - pixel1]);
-                            }
-                        }
-                    }
-                    
-
-                }
-            }
-        }
-    }
-    
-    
 }
 
 void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
@@ -1425,41 +872,25 @@ void CorrelationPlate::Normalize(){
     
     if (plate_number_ == _NORM_){
         
-        if (flag_covariance_){
-            CovMat::iterator it;
-            for (size_t i = 0; i < num_bins_; i ++){
-                for (size_t j = i; j < num_bins_; j ++){
-                    it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                    if (it != cov_mat_.end() and weight_[i] != 0.0 and weight_[j] != 0.0){
-                        (*it).second /= weight_[i];
-                        (*it).second /= weight_[j];
-                    }
-                }
+        for (size_t i = 0; i < num_bins_; i ++){
+                
+            if (weight_[i] == 0.0){
+                // if the weight is zero, complain and exit the function
+                std::cout << "Zero Division Error in CorrelationPlate::Normalize. Aborting..." << std::endl;
+                return;
+            }
+            // if the weight is 1.0, normalization is not needed
+            else if (weight_[i] != 1.0){
+                
+                xi_[i] /= weight_[i];
+                mean_pi_[i] /= weight_[i];
+                mean_sigma_[i] /= weight_[i];
+                mean_z_in_bin_[i] /= weight_[i];
                 //weight_[i] = 1.0;
             }
+            
         }
-        else{
-            for (size_t i = 0; i < num_bins_; i ++){
-                
-                if (weight_[i] == 0.0){
-                    // if the weight is zero, complain and exit the function
-                    std::cout << "Zero Division Error in CorrelationPlate::Normalize. Aborting..." << std::endl;
-                    return;
-                }
-                // if the weight is 1.0, normalization is not needed
-                else if (weight_[i] != 1.0){
-                    
-                    xi_[i] /= weight_[i];
-                    mean_pi_[i] /= weight_[i];
-                    mean_sigma_[i] /= weight_[i];
-                    mean_z_in_bin_[i] /= weight_[i];
-                    //weight_[i] = 1.0;
-                }
-                
-            }
-            mean_z_ /= weight_z_;
-        }
-        
+        mean_z_ /= weight_z_;
         
     }
     else{
@@ -1560,46 +991,22 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
      NONE
      */
     
-    // check that both instances have the same flag_covariance_
-    if (flag_covariance_ != other.flag_covariance()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different configuration (flag_covariance). Ignoring..." << std::endl;
-        return;
-    }
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
         std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
         return;
     }
     
-    if (flag_covariance_){
-        CovMat::iterator it;
-        CovMat::const_iterator other_it;
-        
-        for (size_t i = 0; i < num_bins_; i++){
-            for (size_t j = i; j < num_bins_; j++){
-                it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
-                    (*it).second += (*other_it).second;
-                }
-            }
-            weight_[i] += other.weight(i);
-        }
+    for (size_t i = 0; i < xi_.size(); i ++){
+        xi_[i] += other.xi(i);
+        mean_pi_[i] += other.mean_pi(i);
+        mean_sigma_[i] += other.mean_sigma(i);
+        mean_z_in_bin_[i] += other.mean_z_in_bin(i);
+        weight_[i] += other.weight(i);
+        num_averaged_pairs_[i] += other.num_averaged_pairs(i);
     }
-    else{
-        for (size_t i = 0; i < xi_.size(); i ++){
-            xi_[i] += other.xi(i);
-            mean_pi_[i] += other.mean_pi(i);
-            mean_sigma_[i] += other.mean_sigma(i);
-            mean_z_in_bin_[i] += other.mean_z_in_bin(i);
-            weight_[i] += other.weight(i);
-            num_averaged_pairs_[i] += other.num_averaged_pairs(i);
-        }
-        mean_z_ += other.mean_z();
-        weight_z_ += other.weight_z();
-    }
-    
-    
+    mean_z_ += other.mean_z();
+    weight_z_ += other.weight_z();
     
 }
 
@@ -1622,46 +1029,24 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
      */
 
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_covariance_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
     
-    // check that both instances have the same flag_covariance_
-    if (flag_covariance_ != other.flag_covariance()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different configuration (flag_covariance). Returning zero filled CorrelationPlates..." << std::endl;
-        return temp;
-    }
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
         std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
         return temp;
     }
     
-    if (flag_covariance_){
-        CovMat::iterator it;
-        CovMat::const_iterator other_it;
-        
-        for (size_t i = 0; i < num_bins_; i++){
-            for (size_t j = i; j < num_bins_; j++){
-                it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
-                    temp.set_cov_mat(i, j, (*it).second - (*other_it).second);
-                }
-            }
-            temp.set_weight(i, weight_[i] - other.weight(i));
-        }
+    for (size_t i = 0; i < xi_.size(); i ++){
+        temp.set_xi(i, xi_[i] - other.xi(i));
+        temp.set_mean_pi(i, mean_pi_[i] - other.mean_pi(i));
+        temp.set_mean_sigma(i, mean_sigma_[i] - other.mean_sigma(i));
+        temp.set_mean_z_in_bin(i, mean_z_in_bin_[i] - other.mean_z_in_bin(i));
+        temp.set_weight(i, weight_[i] - other.weight(i));
+        temp.set_num_averaged_pairs(i, num_averaged_pairs_[i] - other.num_averaged_pairs(i));
     }
-    else{
-        for (size_t i = 0; i < xi_.size(); i ++){
-            temp.set_xi(i, xi_[i] - other.xi(i));
-            temp.set_mean_pi(i, mean_pi_[i] - other.mean_pi(i));
-            temp.set_mean_sigma(i, mean_sigma_[i] - other.mean_sigma(i));
-            temp.set_mean_z_in_bin(i, mean_z_in_bin_[i] - other.mean_z_in_bin(i));
-            temp.set_weight(i, weight_[i] - other.weight(i));
-            temp.set_num_averaged_pairs(i, num_averaged_pairs_[i] - other.num_averaged_pairs(i));
-        }
-        temp.set_mean_z(mean_z_ - other.mean_z());
-        temp.set_weight_z(weight_z_ - other.weight_z());
-    }
+    temp.set_mean_z(mean_z_ - other.mean_z());
+    temp.set_weight_z(weight_z_ - other.weight_z());
     
     return temp;
     
@@ -1685,52 +1070,27 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_covariance_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
     
-    // check that both instances have the same flag_covariance_
-    if (flag_covariance_ != other.flag_covariance()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different configuration (flag_covariance). Returning zero filled CorrelationPlates..." << std::endl;
-        return temp;
-    }
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
         std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
         return temp;
     }
     
-    if (flag_covariance_){
-        CovMat::iterator it;
-        CovMat::const_iterator other_it;
-        
-        for (size_t i = 0; i < num_bins_; i++){
-            for (size_t j = i; j < num_bins_; j++){
-                it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
-                    temp.set_cov_mat(i, j, (*it).second*(*other_it).second);
-                }
-            }
-            temp.set_weight(i, weight_[i]*other.weight(i));
-        }
+    for (size_t i = 0; i < xi_.size(); i ++){
+        temp.set_xi(i, xi_[i]*other.xi(i));
+        temp.set_mean_pi(i, mean_pi_[i]*other.mean_pi(i));
+        temp.set_mean_sigma(i, mean_sigma_[i]*other.mean_sigma(i));
+        temp.set_mean_z_in_bin(i, mean_z_in_bin_[i]*other.mean_z_in_bin(i));
+        temp.set_weight(i, weight_[i]*other.weight(i));
+        temp.set_num_averaged_pairs(i, num_averaged_pairs_[i]*other.num_averaged_pairs(i));
     }
-    else{
-        for (size_t i = 0; i < xi_.size(); i ++){
-            temp.set_xi(i, xi_[i]*other.xi(i));
-            temp.set_mean_pi(i, mean_pi_[i]*other.mean_pi(i));
-            temp.set_mean_sigma(i, mean_sigma_[i]*other.mean_sigma(i));
-            temp.set_mean_z_in_bin(i, mean_z_in_bin_[i]*other.mean_z_in_bin(i));
-            temp.set_weight(i, weight_[i]*other.weight(i));
-            temp.set_num_averaged_pairs(i, num_averaged_pairs_[i]*other.num_averaged_pairs(i));
-        }
-        temp.set_mean_z(mean_z_*other.mean_z());
-        temp.set_weight_z(weight_z_*other.weight_z());
-    }
+    temp.set_mean_z(mean_z_*other.mean_z());
+    temp.set_weight_z(weight_z_*other.weight_z());
 
             
     return temp;
     
 }
-
-double CorrelationPlate::half_gamma_ = 3.8/2.0;
-double CorrelationPlate::one_plus_z0_to_the_half_gamma_ = pow(1+2.25,CorrelationPlate::half_gamma_);
 

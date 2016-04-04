@@ -22,7 +22,7 @@
 ////////
 
 // classes needed
-#include "correlation_plate.h"
+#include "covariance_plate.h"
 #include "input.h"
 #include "lya_auto_interpolation_map.h"
 #include "plate_neighbours.h"
@@ -72,7 +72,7 @@ public:
     // other methods
     
     // compute covariance matrix from bootstrap realizations
-    void ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap);
+    void ComputeBootstrapCovMat(const std::vector<CovariancePlate>& bootstrap);
     
     // compute covariance matrix
     void ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours);
@@ -88,13 +88,13 @@ private:
     CovMat cov_mat_;
     
     // vector containing the covariance computed with different threads
-    std::vector<CorrelationPlate> covariance_threads_;
+    std::vector<CovariancePlate> covariance_threads_;
     
     // covariance_matrix verbose flag
     size_t flag_verbose_covariance_matrix_;
     
-    // normalized cross-correlation
-    CorrelationPlate normalized_cov_mat_;
+    // normalized covariance matrix
+    CovariancePlate normalized_cov_mat_;
     
     // number of bins
     size_t num_bins_;

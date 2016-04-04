@@ -29,6 +29,9 @@
          location = "container:correlation_results.cpp">
       </FileRef>
       <FileRef
+         location = "group:../../software/development/cross_correlations/covariance_plate.cpp">
+      </FileRef>
+      <FileRef
          location = "container:covariance_matrix.cpp">
       </FileRef>
       <FileRef
@@ -119,6 +122,9 @@
       </FileRef>
       <FileRef
          location = "container:correlation_results.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/covariance_plate.h">
       </FileRef>
       <FileRef
          location = "container:covariance_matrix.h">

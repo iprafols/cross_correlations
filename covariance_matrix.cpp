@@ -55,16 +55,13 @@ CovarianceMatrix::CovarianceMatrix(const Input& input, const PlateNeighbours& kP
         }
         
         // initialization of the normalized cross-correlation variable
-        normalized_cov_mat_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_),true);
+        normalized_cov_mat_ = CovariancePlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
         
         plates_list_ = kPlateNeighbours.GetPlatesList();
-        /*for (size_t i = 0; i < plates_list_.size(); i ++){
-            covariance_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
-        }*/
         int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
         covariance_threads_.reserve(num_threads);
         for (size_t i = 0; i < num_threads; i ++){
-            covariance_threads_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_),true));
+            covariance_threads_.push_back(CovariancePlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
         }
         skip_plates_ = input.skip_plates();
     }
@@ -157,19 +154,19 @@ double CovarianceMatrix::cov_mat(size_t i,size_t j) const{
     }
 }
 
-void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap){
+void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CovariancePlate>& bootstrap){
     /**
      EXPLANATION:
      Computes the covariance matrix using the bootstrap realizations
      
      INPUTS:
-     bootstrap - a vector of CorrelationPlate instances containing the cross-correlation for the different bootstrap realizations
+     bootstrap - a vector of CovariancePlate instances containing the cross-correlation for the different bootstrap realizations
      
      OUTPUTS:
      NONE
      
      CLASSES USED:
-     CorrelationPlate
+     CovariancePlate
      CovarianceMatrix
      
      FUNCITONS USED:
@@ -348,7 +345,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                     if (sigma < 0.01){
                                         if (object_i.pixel_number() == object_j.pixel_number() and object_i.pixel_weight() != 0.0){
                                             weight = object_i.pixel_weight()*object_j.pixel_weight();
-                                            add = pow(1+object_i.pixel_z(),CorrelationPlate::half_gamma())/object_i.pixel_weight()/CorrelationPlate::one_plus_z0_to_the_half_gamma();
+                                            add = pow(1+object_i.pixel_z(),CovariancePlate::half_gamma())/object_i.pixel_weight()/CovariancePlate::one_plus_z0_to_the_half_gamma();
                                             
                                             #pragma omp critical(covariance)
                                             {
@@ -408,7 +405,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
         #pragma omp parallel for schedule(dynamic)
         for (size_t i = skip_plates_; i < plates_list_.size(); i++){
             
-            CorrelationPlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
+            CovariancePlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
             
             #pragma omp critical (plates_computed)
             {
@@ -491,7 +488,7 @@ void CovarianceMatrix::NormalizeCovMat(){
      NONE
      
      CLASSES USED:
-     CorrelationPlate
+     CovariancePlate
      CovarianceMatrix
      
      FUNCITONS USED:
@@ -539,7 +536,7 @@ void CovarianceMatrix::SaveBootstrapCovMat(){
      NONE
      
      CLASSES USED:
-     CorrelationPlate
+     CovariancePlate
      CovarianceMatrix
      
      FUNCITONS USED:
@@ -603,7 +600,7 @@ void CovarianceMatrix::SaveCovMat(){
      NONE
      
      CLASSES USED:
-     CorrelationPlate
+     CovariancePlate
      CovarianceMatrix
      
      FUNCITONS USED:
