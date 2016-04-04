@@ -238,14 +238,7 @@ void CovariancePlate::ComputeCovMat(const AstroObjectDataset& object_list, const
     if (plate_number_ == _NORM_){
         #pragma omp critical (cout)
         {
-            std::cout << "Warning : In CovariancePlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The covariance should not be computed in this CovariancePlate instance. Ignoring..." << std::endl;
-        }
-        return;
-    }
-    if (not flag_covariance_){
-        #pragma omp critical (cout)
-        {
-            std::cout << "Warning : In CovariancePlate::ComputeCrossCorrelation : This instance is not set to compute the covariance matrix. Ignoring..." << std::endl;
+            std::cout << "Warning : In CovariancePlate::ComputeCovMat : Plate number is set to _NORM_. The covariance should not be computed in this CovariancePlate instance. Ignoring..." << std::endl;
         }
         return;
     }
