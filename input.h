@@ -51,6 +51,9 @@ public:
     
     // access function for c_
     double c() const {return c_;}
+    
+    // access function for cnr_min_
+    double cnr_min() const {return cnr_min_;}
             
     // access function for object_catalog_
     std::string dataset1() const {return dataset1_;}
@@ -189,7 +192,13 @@ public:
     
     // access function for neighbours_max_distance_
     double neighbours_max_distance() const {return neighbours_max_distance_;}
-        
+    
+    // access function for nhi_max_
+    double nhi_max() const {return nhi_max_;}
+    
+    // access function for nhi_min_
+    double nhi_min() const {return nhi_min_;}
+    
     // access function for num_bootstrap_
     size_t num_bootstrap() const {return num_bootstrap_;}
     
@@ -522,7 +531,16 @@ private:
     double z_max_interpolation_; 
     
     // number of points the interpolation grid will have
-    int num_points_interpolation_; 
+    int num_points_interpolation_;
+    
+    // log10 of the maximum HI column density to accept a DLA
+    double nhi_max_;
+    
+    // log10 of the minimum HI column density to accept a DLA
+    double nhi_min_;
+    
+    // minimum continuum to noise ratio to accept a DLA
+    double cnr_min_;
     
     
     // -------------------------------------------------------------

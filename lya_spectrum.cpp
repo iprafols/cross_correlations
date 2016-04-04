@@ -34,7 +34,7 @@ LyaSpectrum::LyaSpectrum(double bad_data){
     dist_ = _BAD_DATA_;
 }
 
-LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, const bool radians){
+LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, const size_t extension, const bool radians){
     /**
      EXPLANATION:
      Cosntructs a LyaSpectrum instance
@@ -42,6 +42,7 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
      INPUTS:
      filename - a string containing the spectrum's fits file name
      lya_wl - restframe lyman alpha wavelength
+     extension - an unsigned integer specifying which extension to read
      radians - a boolean specifying if angles are given in radians (true) or deg (false)
      
      OUTPUTS:
@@ -59,7 +60,7 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     // setting the catalog columns to be read
     std::vector<std::string> fields(3);
     fields[0] = "LOGLAM";
-    fields[1] = "FOREST";
+    fields[1] = "DELTA";
     fields[2] = "WEIGHT";
     
 
@@ -68,13 +69,13 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     
     try{
         
-        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(filename,CCfits::Read,1,true,fields));
+        pInfile = std::auto_ptr<CCfits::FITS>(new CCfits::FITS(filename,CCfits::Read,extension,true,fields));
         
     } catch(CCfits::FITS::CantOpen x) {
         
         throw "Error: in LyaSpectrum::LyaSpectrum : Couldn't open catalog file: " + filename;
     }
-    CCfits::ExtHDU& data = pInfile->extension(1);
+    CCfits::ExtHDU& data = pInfile->extension(extension);
     
     // number of lines in the file
     long NAXIS2 = data.axis(1);
@@ -82,16 +83,16 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     spectrum_.reserve(nobj);
     
     // this will store the information
-    std::valarray<double> loglam, forest, weight;
+    std::valarray<double> loglam, delta, weight;
     
     // reading data
     data.column(fields[0]).read(loglam, 1, nobj); // logarithm of the wavelength value
-    data.column(fields[1]).read(forest, 1, nobj); // normalized flux in the ly-alpha forest
+    data.column(fields[1]).read(delta, 1, nobj); // lyman-alpha delta field
     data.column(fields[2]).read(weight, 1, nobj); // weight
     
     for (int i=0;i<nobj;i++){
         // create LyaPixel
-        LyaPixel object(loglam[i], lya_wl, forest[i], weight[i]);
+        LyaPixel object(loglam[i], lya_wl, delta[i], weight[i]);
             
         // adding object to spectrum_
         spectrum_.push_back(object);

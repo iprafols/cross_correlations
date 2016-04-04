@@ -88,33 +88,41 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     }
     
     // resizing astro_object_pointer
-    size_ = FindCatalogLength(lya_spectra_catalog);
+    size_ = 0;
 
     // open catalog
     std::ifstream catalog(lya_spectra_catalog.c_str());
-    int aux;
     if (catalog.is_open()){
         std::string file("");        
         while (getline(catalog,file)){
             
-            // create LyaSpectrum
-            LyaSpectrum object(lya_spectra_dir + file, lya_wl);
-            
-            // adding object to list_
-            if (list_.find(object.plate()) == list_.end()){
-                // if necessary, create new entry
-                std::vector<LyaSpectrum> v;
-                list_[object.plate()] = v;
-                num_objects_in_plate_[object.plate()] = 0;
-            }
-            (*list_.find(object.plate())).second.push_back(object);
-            
-            // updating number_of_objects_in_plate
-            (*num_objects_in_plate_.find(object.plate())).second ++;
-            
-            aux ++;
-            if (flag_verbose_lya_spectra_dataset_ >= 3 or (flag_verbose_lya_spectra_dataset_ >= 2 and aux == aux/1000*1000)){
-                std::cout << "Loaded " << size_ << " lya spectra" << std::endl;
+            size_t extension = 1;
+            while (extension != 0){
+                try{
+                    // create LyaSpectrum
+                    LyaSpectrum object(lya_spectra_dir + file, lya_wl, extension);
+                    
+                    // adding object to list_
+                    if (list_.find(object.plate()) == list_.end()){
+                        // if necessary, create new entry
+                        std::vector<LyaSpectrum> v;
+                        list_[object.plate()] = v;
+                        num_objects_in_plate_[object.plate()] = 0;
+                    }
+                    (*list_.find(object.plate())).second.push_back(object);
+                    
+                    // updating number_of_objects_in_plate
+                    (*num_objects_in_plate_.find(object.plate())).second ++;
+                    
+                    size_ ++;
+                    if (flag_verbose_lya_spectra_dataset_ >= 3 or (flag_verbose_lya_spectra_dataset_ >= 2 and size_ == size_/1000*1000)){
+                        std::cout << "Loaded " << size_ << " lya spectra" << std::endl;
+                    }
+                    extension ++;
+                }
+                catch (CCfits::FITS::NoSuchHDU x){
+                    extension = 0;
+                }
             }
         }
         

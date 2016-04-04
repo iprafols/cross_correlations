@@ -79,6 +79,13 @@ public:
     std::vector<double> mean_sigma() const {return mean_sigma_;}
     double mean_sigma(size_t index) const;
     
+    // access function for mean_redshift_
+    double mean_z() const {return mean_z_;}
+    
+    // access function for mean_z_in_bin_
+    std::vector<double> mean_z_in_bin() const {return mean_z_in_bin_;}
+    double mean_z_in_bin(size_t index) const;
+    
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
     
@@ -99,10 +106,13 @@ public:
     std::vector<double> weight() const {return weight_;}
     double weight(size_t index) const;
     
+    // access function for weight_z_
+    double weight_z() const {return weight_z_;}
+    
     // access functions for xi_
     std::vector<double> xi() const {return xi_;}
     double xi(size_t index) const;
-    
+
     
     // -------------------------------------------------------------
     // set methods
@@ -119,11 +129,20 @@ public:
     // set mean_sigma_
     void set_mean_sigma(size_t index, double value);
     
+    // set mean_z_
+    void set_mean_z(double mean_z) {mean_z_ = mean_z;}
+    
+    // set mean_z_in_bin_
+    void set_mean_z_in_bin(size_t index, double value);
+    
     // set num_averaged_pairs_
     void set_num_averaged_pairs(size_t index, int value);
     
     // set weight_
     void set_weight(size_t index, double value);
+    
+    // set weight_z_
+    void set_weight_z(double weight_z) {weight_z_ = weight_z;}
     
     // set xi_
     void set_xi(size_t index, double value);
@@ -194,6 +213,12 @@ private:
     // mean value of perpendicular separation in bin
     std::vector<double> mean_sigma_;
     
+    // mean redshift
+    double mean_z_;
+    
+    // mean redshift in bin
+    std::vector<double> mean_z_in_bin_;
+    
     // number of bins
     size_t num_bins_;
     
@@ -217,10 +242,13 @@ private:
     
     // weight
     std::vector<double> weight_;
+
+    // mean redshift weight
+    double weight_z_;
     
     // cross correlation in bin
     std::vector<double> xi_;
-    
+
     
     // -------------------------------------------------------------
     // other methods

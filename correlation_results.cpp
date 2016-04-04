@@ -460,6 +460,7 @@ void CorrelationResults::SaveCrossCorrelation(){
                 std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
             }
         }
+        
     }
     
     // save normalized cross-correlation
@@ -498,7 +499,40 @@ void CorrelationResults::SaveCrossCorrelation(){
             std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
+    filename = output_base_name_ + ".grid";
+    {
+        std::ofstream file(filename.c_str(),std::ofstream::trunc);
+        if (file.is_open()){
+            
+            for (size_t i = 0; i < num_bins_; i++){
+                
+                file << i << " " << normalized_correlation_.mean_pi(i) << " " << normalized_correlation_.mean_sigma(i) << " " << normalized_correlation_.mean_z_in_bin(i) << std::endl;
+            }
+            
+            file.close();
+        }
+        else{
+            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+        }
+    }
     
+    // save mean redshift
+    if (flag_verbose_correlation_results_ >= 1){
+        std::cout << "Saving mean z" << std::endl;
+    }
+    filename = output_base_name_ + ".z";
+    {
+        std::ofstream file(filename.c_str(),std::ofstream::trunc);
+        if (file.is_open()){
+            
+            file << normalized_correlation_.mean_z();
+            
+            file.close();
+        }
+        else{
+            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+        }
+    }
     // save bootstrap realizations
     if (flag_compute_bootstrap_ and flag_write_partial_results_ >= 1){
         if (flag_verbose_correlation_results_ >= 1){

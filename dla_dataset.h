@@ -59,6 +59,13 @@ private:
     
     // dla_dataset verbose flag
     size_t flag_verbose_dla_dataset_;
+    
+    // limits on the log10 of HI column density (in cm^-2)
+    double nhi_min_;
+    double nhi_max_;
+    
+    // limits on the continuum to noise ratio
+    double cnr_min_;
 
 };
 

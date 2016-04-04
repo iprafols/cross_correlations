@@ -37,7 +37,7 @@ ZDistInterpolationMap::ZDistInterpolationMap(const Input& input){
     double aux = input.c()/100.0; // =c/H0*h (auxiliar variable to speed up the computation)
     double wm = input.wm(); // Omega_matter (auxiliar variable to speed up the computation)
     double wv = 1.0-wm; // Omega_vacuum (auxiliar variable to speed up the computation)
-    double z_plus1 = 1.0-interpolation_step*0.5; // =1+z at mid_interval (auxiliar variable to speed up the computation)
+    double z_plus1 = 1.0+interpolation_step*0.5; // =1+z at mid_interval (auxiliar variable to speed up the computation)
     
     // integrating from z = 0 to z_max_interpolation; midpoint rule
     while (z <= z_max_interpolation) {

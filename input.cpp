@@ -253,9 +253,9 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // Fidutial model
-    h0_ = 70;
+    h0_ = 67.74;
     h_ = h0_/100.0;
-    wm_ = 0.27;
+    wm_ = 0.3089;
       
     
     // -------------------------------------------------------------
@@ -266,7 +266,9 @@ void Input::SetDefaultValues(){
     z_min_interpolation_ = 1.5; 
     z_max_interpolation_ = 4.0; 
     num_points_interpolation_ = 30000; 
-    
+    nhi_min_ = 15.0;
+    nhi_max_ = 30.0;
+    cnr_min_ = 3.0;
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants
@@ -329,6 +331,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "cnr_min"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            cnr_min_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -935,6 +948,28 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "nhi_max"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            nhi_max_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "nhi_min"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            nhi_min_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1630,6 +1665,9 @@ void Input::WriteLog(){
         log << "z_min_interpolation = " << z_min_interpolation_ << std::endl;
         log << "z_max_interpolation = " << z_max_interpolation_ << std::endl;
         log << "num_points_interpolation = " << num_points_interpolation_ << std::endl;
+        log << "nhi_min = " << nhi_min_ << std::endl;
+        log << "nhi_max = " << nhi_max_ << std::endl;
+        log << "cnr_min = " << cnr_min_ << std::endl;
         log << std::endl;
         
         

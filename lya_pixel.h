@@ -35,7 +35,7 @@ public:
     LyaPixel(double bad_data);
     
     // constructs object and initializes its variables
-    LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight, const bool loglambda = true);
+    LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const bool loglambda = true);
     
     // -------------------------------------------------------------
     // access methods
@@ -43,8 +43,8 @@ public:
     // access method for dist_
     double dist() const {return dist_;}
     
-    // access method for forest_
-    double forest() const {return forest_;}
+    // access method for delta_
+    double delta() const {return delta_;}
     
     // access method for weight_
     double weight() const {return weight_;}
@@ -64,8 +64,8 @@ private:
     // distance to pixel
     double dist_;
     
-    // normalized flux in the ly-alpha forest
-    double forest_;
+    // ly-alpha delta field
+    double delta_;
     
     // weight
     double weight_;

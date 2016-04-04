@@ -158,7 +158,7 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script << std::endl;
             script << std::endl;
             script << std::endl;
-            script << "def plot_sigma_bins(pi, sigma, sigma_step, index_dict, correlation, covariance):" << std::endl;
+            script << "def plot_sigma_bins(pi_mid_bin, sigma, sigma_step, index_dict, correlation, covariance):" << std::endl;
             script << "    for k_sigma in xrange(0, len(sigma)):" << std::endl;
             script << "        correlation_in_bin = np.array([value for (index, value) in correlation if index_dict[index][1] == sigma[k_sigma]])" << std::endl;
             script << "        covariance_in_bin = np.array([math.sqrt(value) for (index1, index2, value) in covariance if index_dict[index1][1] == sigma[k_sigma] and index1 == index2])" << std::endl;

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>4608E80E-A9F7-4BE7-83F4-6826D6233FFA</string>
+	<key>IDESourceControlProjectName</key>
+	<string>cross_correlations</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>418EF910A043F8557F842781D6F66C077B33BAFD</key>
+		<string>https://github.com/iprafols/cross_correlations.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>cross_correlations.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>418EF910A043F8557F842781D6F66C077B33BAFD</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/iprafols/cross_correlations.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>418EF910A043F8557F842781D6F66C077B33BAFD</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>418EF910A043F8557F842781D6F66C077B33BAFD</string>
+			<key>IDESourceControlWCCName</key>
+			<string>cross_correlations</string>
+		</dict>
+	</array>
+</dict>
+</plist>

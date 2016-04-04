@@ -30,13 +30,13 @@ LyaPixel::LyaPixel(double bad_data){
         std::exit(EXIT_FAILURE);
     }
     
-    forest_ = _BAD_DATA_;
+    delta_ = _BAD_DATA_;
     weight_ = _BAD_DATA_;
     z_ = _BAD_DATA_;
     
 }
 
-LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& forest, const double& weight, const bool loglambda){
+LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const bool loglambda){
     /**
      EXPLANATION:
      Cosntructs a LyaPixel instance
@@ -44,7 +44,7 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& for
      INPUTS:
      loglam - a double with the logarithm of the wavelength value (in Angstroms)
      lya_wl - a double with the wavelength of the lyman-alpha line (in Angstroms)
-     forest - a double with the normalized flux in the ly-alpha forest
+     delta - a double with the ly-alpha delta field
      weight - a double with the weight
      loglambda - a boolean specifying if loglam is given as the logarithm of the of the wavelength (true) or the wavelength itself (false)
      
@@ -58,7 +58,7 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& for
      NONE
      */
     
-    forest_ = forest;
+    delta_ = delta;
     weight_ = weight;
     if (loglambda){
         z_ = pow(10, loglam) / lya_wl - 1.0;

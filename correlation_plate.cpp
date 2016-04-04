@@ -87,8 +87,11 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
         xi_.resize(num_bins_,0.0);
         mean_pi_.resize(num_bins_,0.0);
         mean_sigma_.resize(num_bins_,0.0);
+        mean_z_in_bin_.resize(num_bins_, 0.0);
         weight_.resize(num_bins_,0.0);
         num_averaged_pairs_.resize(num_bins_,0);
+        mean_z_ = 0.0;
+        weight_z_ = 0.0;
     }
     
     // pair storage settings
@@ -155,8 +158,11 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
         xi_.resize(num_bins_,0.0);
         mean_pi_.resize(num_bins_,0.0);
         mean_sigma_.resize(num_bins_,0.0);
+        mean_z_in_bin_.resize(num_bins_, 0.0);
         weight_.resize(num_bins_,0.0);
         num_averaged_pairs_.resize(num_bins_,0);
+        mean_z_ = 0.0;
+        weight_z_ = 0.0;
     }
 }
 
@@ -211,6 +217,33 @@ double CorrelationPlate::mean_sigma(size_t index) const {
         return _BAD_DATA_;
     }
 }
+
+double CorrelationPlate::mean_z_in_bin(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for mean_z_in_bin_
+     
+     INPUTS:
+     index - index of the selected mean_sigma_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < mean_z_in_bin_.size()){
+        return mean_z_in_bin_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
 int CorrelationPlate::num_averaged_pairs(size_t index) const {
     /**
      EXPLANATION:
@@ -369,6 +402,34 @@ void CorrelationPlate::set_mean_sigma(size_t index, double value){
         std::cout << "Warining: in CorrelationPlate::set_mean_sigma(index, value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
+
+void CorrelationPlate::set_mean_z_in_bin(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for mean_z_in_bin_
+     
+     INPUTS:
+     index - index of the selected mean_sigma_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < mean_sigma_.size()){
+        mean_z_in_bin_[index] = value;
+    }
+    else{
+        std::cout << "Warining: in CorrelationPlate::set_mean_z_in_bin(index, value): The given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
 void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
     /**
      EXPLANATION:
@@ -472,9 +533,10 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      NONE
      */
     
-    xi_[k_index] += (pixel.forest()-1.0)*pixel.weight();
+    xi_[k_index] += pixel.delta()*pixel.weight();
     mean_pi_[k_index] += pi*pixel.weight();
     mean_sigma_[k_index] += sigma*pixel.weight();
+    mean_z_in_bin_[k_index] += pixel.z()*pixel.weight();
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
 
@@ -661,7 +723,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                     continue;
                 }
                 // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                if (pair_min_sigma1 <= 0.001){
+                if (pair_min_sigma1 <= 0.1){
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
@@ -844,7 +906,7 @@ void CorrelationPlate::ComputeCovMat(const AstroObjectDataset& object_list, cons
                                 continue;
                             }
                             // if the spectrum is being paired with its quasar, the whole spectra is discarded
-                            if (pair_min_sigma2 <= 0.001){
+                            if (pair_min_sigma2 <= 0.1){
                                 if (flag_verbose_correlation_plate_ >= 2){
                                     #pragma omp critical (cout)
                                     {
@@ -1106,7 +1168,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     }
                     continue;
                 } 
-                if (pair_min_sigma <= 0.001){ // if the spectrum is being paired with its quasar, the whole spectra is discarded
+                if (pair_min_sigma <= 0.1){ // if the spectrum is being paired with its quasar, the whole spectra is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
                         {
@@ -1230,6 +1292,10 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     // add contribution to xi in the specified bin
                     AddPair(k_index, spectrum[p], pi, sigma);
                     
+                    // add contribution to mean redshift
+                    mean_z_ += spectrum[p].z()*spectrum[p].weight();
+                    weight_z_ += spectrum[p].weight();
+                    
                     // write down pair information in bin file
                     if (flag_write_partial_results_ >= 1){
                         KeepPair(k_index, lya_spectrum, p);
@@ -1275,7 +1341,7 @@ std::string CorrelationPlate::Info(size_t bin){
      */
     string out = "";
     
-    out += ToStr(xi_[bin]) + " " + ToStr(mean_pi_[bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(num_averaged_pairs_[bin]) + " " + ToStr(plate_number_);
+    out += ToStr(xi_[bin]) + " " + ToStr(mean_pi_[bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(mean_z_in_bin_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(num_averaged_pairs_[bin]) + " " + ToStr(plate_number_);
     
     return out;
 }
@@ -1298,7 +1364,7 @@ std::string CorrelationPlate::InfoHeader(){
      NONE
      */
     
-    return "xi mean_pi mean_sigma weight num_averaged_pairs plate";
+    return "xi mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
 }
 
 void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number){
@@ -1386,10 +1452,12 @@ void CorrelationPlate::Normalize(){
                     xi_[i] /= weight_[i];
                     mean_pi_[i] /= weight_[i];
                     mean_sigma_[i] /= weight_[i];
+                    mean_z_in_bin_[i] /= weight_[i];
                     //weight_[i] = 1.0;
                 }
                 
             }
+            mean_z_ /= weight_z_;
         }
         
         
@@ -1523,9 +1591,12 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
             xi_[i] += other.xi(i);
             mean_pi_[i] += other.mean_pi(i);
             mean_sigma_[i] += other.mean_sigma(i);
+            mean_z_in_bin_[i] += other.mean_z_in_bin(i);
             weight_[i] += other.weight(i);
             num_averaged_pairs_[i] += other.num_averaged_pairs(i);
         }
+        mean_z_ += other.mean_z();
+        weight_z_ += other.weight_z();
     }
     
     
@@ -1584,9 +1655,12 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
             temp.set_xi(i, xi_[i] - other.xi(i));
             temp.set_mean_pi(i, mean_pi_[i] - other.mean_pi(i));
             temp.set_mean_sigma(i, mean_sigma_[i] - other.mean_sigma(i));
+            temp.set_mean_z_in_bin(i, mean_z_in_bin_[i] - other.mean_z_in_bin(i));
             temp.set_weight(i, weight_[i] - other.weight(i));
             temp.set_num_averaged_pairs(i, num_averaged_pairs_[i] - other.num_averaged_pairs(i));
         }
+        temp.set_mean_z(mean_z_ - other.mean_z());
+        temp.set_weight_z(weight_z_ - other.weight_z());
     }
     
     return temp;
@@ -1644,10 +1718,12 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
             temp.set_xi(i, xi_[i]*other.xi(i));
             temp.set_mean_pi(i, mean_pi_[i]*other.mean_pi(i));
             temp.set_mean_sigma(i, mean_sigma_[i]*other.mean_sigma(i));
+            temp.set_mean_z_in_bin(i, mean_z_in_bin_[i]*other.mean_z_in_bin(i));
             temp.set_weight(i, weight_[i]*other.weight(i));
             temp.set_num_averaged_pairs(i, num_averaged_pairs_[i]*other.num_averaged_pairs(i));
         }
-        
+        temp.set_mean_z(mean_z_*other.mean_z());
+        temp.set_weight_z(weight_z_*other.weight_z());
     }
 
             
