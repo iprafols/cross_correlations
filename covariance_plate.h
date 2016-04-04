@@ -92,7 +92,7 @@ public:
     void set_cov_mat(size_t i, size_t j, double value);
     
     // set flag_verbose_covariance_plate_
-    void set_flag_verbose_correlation_plate(size_t value) {flag_verbose_covariance_plate_ = value;}
+    void set_flag_verbose_covariance_plate(size_t value) {flag_verbose_covariance_plate_ = value;}
     
     // set num_averaged_pairs_
     void set_num_averaged_pairs(size_t index, int value);
