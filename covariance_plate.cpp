@@ -55,7 +55,7 @@ CovariancePlate::CovariancePlate(const Input& input, const int plate_number, con
      */
     
     // set flags from input
-    flag_verbose_covariance_plate_ = input.flag_verbose_correlation_plate();
+    flag_verbose_covariance_plate_ = input.flag_verbose_covariance_plate();
     flag_write_partial_results_ = input.flag_write_partial_results();
     
     plate_number_ = plate_number;
@@ -88,7 +88,7 @@ CovariancePlate::CovariancePlate(const Input& input, const int plate_number, con
     }
 }
 
-CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
+CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_covariance_plate, size_t flag_write_partial_results){
     /**
      EXPLANATION:
      Cosntructs a CovariancePlate instance and initializes all its variables
@@ -98,7 +98,7 @@ CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, con
      results - name of the folder where detailed information will be stored
      plate_number - an integer with the plate number
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
-     flag_verbose_correlation_plate - correlation_plate verbose flag
+     flag_verbose_covariance_plate_ - correlation_plate verbose flag
      flag_write_partial_results - flag to write partial results
      
      OUTPUTS:
@@ -111,7 +111,7 @@ CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, con
      ToStr
      */
     
-    flag_verbose_covariance_plate_ = flag_verbose_correlation_plate;
+    flag_verbose_covariance_plate_ = flag_verbose_covariance_plate;
     flag_write_partial_results_ = flag_write_partial_results;
     
     plate_number_ = plate_number;
