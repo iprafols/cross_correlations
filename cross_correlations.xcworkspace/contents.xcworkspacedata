@@ -17,9 +17,6 @@
          location = "container:astro_object_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:baofit_setup.cpp">
-      </FileRef>
-      <FileRef
          location = "group:../../software/development/cross_correlations/civ_spectra_dataset.cpp">
       </FileRef>
       <FileRef
@@ -29,13 +26,19 @@
          location = "container:correlation_results.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/covariance_plate.cpp">
-      </FileRef>
-      <FileRef
          location = "container:covariance_matrix.cpp">
       </FileRef>
       <FileRef
+         location = "group:../../software/development/cross_correlations/covariance_plate.cpp">
+      </FileRef>
+      <FileRef
          location = "container:dataset.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/distortion_matrix.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/distortion_plate.cpp">
       </FileRef>
       <FileRef
          location = "container:dla_dataset.cpp">
@@ -112,9 +115,6 @@
          location = "container:astro_object_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:baofit_setup.h">
-      </FileRef>
-      <FileRef
          location = "group:../../software/development/cross_correlations/civ_spectra_dataset.h">
       </FileRef>
       <FileRef
@@ -124,13 +124,19 @@
          location = "container:correlation_results.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/covariance_plate.h">
-      </FileRef>
-      <FileRef
          location = "container:covariance_matrix.h">
       </FileRef>
       <FileRef
+         location = "group:../../software/development/cross_correlations/covariance_plate.h">
+      </FileRef>
+      <FileRef
          location = "container:dataset.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/distortion_matrix.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/distortion_plate.h">
       </FileRef>
       <FileRef
          location = "container:dla_dataset.h">

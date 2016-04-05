@@ -60,6 +60,7 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& del
     
     delta_ = delta;
     weight_ = weight;
+    loglam_ = loglam
     if (loglambda){
         z_ = pow(10, loglam) / lya_wl - 1.0;
     }

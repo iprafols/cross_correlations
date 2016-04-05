@@ -113,7 +113,6 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
      ToStr
      */
     
-    flag_covariance_ = flag_covariance;
     flag_verbose_correlation_plate_ = flag_verbose_correlation_plate;
     flag_write_partial_results_ = flag_write_partial_results;
     
@@ -518,13 +517,6 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
         #pragma omp critical (cout)
         {
             std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : Plate number is set to _NORM_. The cross-correlation should not be computed in this CorrelationPlate instance. Ignoring..." << std::endl;
-        }
-        return;
-    }
-    if (flag_covariance_){
-        #pragma omp critical (cout)
-        {
-            std::cout << "Warning : In CorrelationPlate::ComputeCrossCorrelation : This instance is not set to compute the cross-correlation. Ignoring..." << std::endl;
         }
         return;
     }

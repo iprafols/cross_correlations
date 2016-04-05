@@ -40,12 +40,6 @@ public:
     // -------------------------------------------------------------
     // access methods
     
-    // access function for best_fit_
-    std::string best_fit() const {return best_fit_;}
-    
-    // access function for baofit_model_root_
-    std::string baofit_model_root() const {return baofit_model_root_;}
-    
     // access function for bootstrap_results_
     std::string bootstrap_results() const {return bootstrap_results_;}
     
@@ -79,9 +73,6 @@ public:
     // access function for dataset2_type_options_
     std::string dataset2_type_options() const {return dataset2_type_options_;}
 
-    // access function for fit_
-    std::string fit() const {return fit_;}
-    
     // access function for detailed_results_
     std::string detailed_results() const {return detailed_results_;}
     
@@ -94,14 +85,14 @@ public:
     // access function for flag_compute_cross_correlation_
     bool flag_compute_cross_correlation() const {return flag_compute_cross_correlation_;}
 
+    // access function for flag_compute_distortion_
+    bool flag_compute_distortion() const {return flag_compute_distortion_;}
+    
     // access function for flag_compute_plate_neighbours_
     bool flag_compute_plate_neighbours() const {return flag_compute_plate_neighbours_;}
         
     // access function for flag_load_only_
     bool flag_load_only() const {return flag_load_only_;}
-    
-    // access function for flag_covariance_matrix_from_file_
-    bool flag_covariance_matrix_from_file() const {return flag_covariance_matrix_from_file_;}
     
     // access function for flag_plot_
     bool flag_plot() const {return flag_plot_;}
@@ -109,26 +100,11 @@ public:
     // access function for flag_plot_catalog_info_
     bool flag_plot_catalog_info() const {return flag_plot_catalog_info_;}
     
-    // access function for flag_run_baofit_
-    bool flag_run_baofit() const {return flag_run_baofit_;}
-    
-    // access function for flag_run_baofit_best_fit_
-    bool flag_run_baofit_best_fit() const {return flag_run_baofit_best_fit_;}
-    
-    // access function for flag_set_baofit_
-    bool flag_set_baofit() const {return flag_set_baofit_;}
-    
-    // access function for flag_set_baofit_best_fit_
-    bool flag_set_baofit_best_fit() const {return flag_set_baofit_best_fit_;}
-    
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
 
     // access function for flag_verbose_
     size_t flag_verbose() const {return flag_verbose_;}
-    
-    // access function for flag_verbose_baofit_setup_
-    size_t flag_verbose_baofit_setup() const {return flag_verbose_baofit_setup_;}
     
     // access function for flag_verbose_civ_spectra_dataset_
     size_t flag_verbose_civ_spectra_dataset() const {return flag_verbose_civ_spectra_dataset_;}
@@ -145,8 +121,17 @@ public:
     // access function for flag_verbose_covariance_matrix_
     size_t flag_verbose_covariance_matrix() const {return flag_verbose_covariance_matrix_;}
     
+    // access function for flag_verbose_covariance_plate_
+    size_t flag_verbose_covariance_plate() const {return flag_verbose_covariance_plate_;}
+    
     // access function for flag_verbose_dla_dataset_
     size_t  flag_verbose_dla_dataset() const {return flag_verbose_dla_dataset_;}
+    
+    // access function for flag_verbose_distortion_matrix_
+    size_t flag_verbose_distortion_matrix() const {return flag_verbose_distortion_matrix_;}
+    
+    // access function for flag_verbose_distortion_plate_
+    size_t flag_verbose_distortion_plate() const {return flag_verbose_distortion_plate_;}
     
     // access function for flag_verbose_lya_spectra_dataset_
     size_t flag_verbose_lya_spectra_dataset() const {return flag_verbose_lya_spectra_dataset_;}
@@ -168,9 +153,6 @@ public:
     
     // access function for H0_
     double h0() const {return h0_;}
-            
-    // access function for include_distorsions_
-    bool include_distorsions() const {return include_distorsions_;}
     
     // access function for lya_auto_correlation_
     std::string lya_auto_correlation() const {return lya_auto_correlation_;}
@@ -288,11 +270,11 @@ private:
     // flag to compute the cross correlation
     bool flag_compute_cross_correlation_;
     
+    // flag to compute the distortion matrix
+    bool flag_compute_distortion_;
+    
     // flag to compute the plate neighbours list
     bool flag_compute_plate_neighbours_;
-    
-    // flag to compute the covariance matrix from files containing the pairs information
-    bool flag_covariance_matrix_from_file_;
     
     // flag to end program after loading the catalogs and plotting their information
     bool flag_load_only_;
@@ -303,24 +285,9 @@ private:
     // flag to plot catalogues info
     bool flag_plot_catalog_info_;
     
-    // flag to run baofit
-    bool flag_run_baofit_;
-    
-    // flag to run baofit with with all the parameters fixed to the best-fit model
-    bool flag_run_baofit_best_fit_;    
-    
-    // flag to set baofit ini file
-    bool flag_set_baofit_;
-    
-    // flag to set baofit with with all the parameters fixed to the best-fit model
-    bool flag_set_baofit_best_fit_;    
-    
     // verbose flag
     size_t flag_verbose_;
         
-    // baofit_setup verbose flag
-    size_t flag_verbose_baofit_setup_;
-
     // compute_plate_neighbours verbose flag
     size_t flag_verbose_compute_plate_neighbours_;
     
@@ -336,9 +303,18 @@ private:
     // covariance_matrix verbose flag
     size_t flag_verbose_covariance_matrix_;
 
+    // covariance_plate verbose flag (only works if flag_verbose_covariance_matrix_ >= 1)
+    size_t flag_verbose_covariance_plate_;
+
     // dla_dataset verbose flag
     size_t flag_verbose_dla_dataset_;
     
+    // distortion_matrix verbose flag
+    size_t flag_verbose_distortion_matrix_;
+
+    // distortion plate verbose flag
+    size_t flag_verbose_distortion_plate_;
+
     // lya_spectra_dataset flag
     size_t flag_verbose_lya_spectra_dataset_;
     
@@ -423,23 +399,6 @@ private:
     
     // basename of the files where the pairs' detailed information will be stored
     std::string pairs_file_name_;
-    
-    
-    
-    // -------------------------------------------------------------
-    // fit settings
-    
-    // flag to include distorsions into the fitting model
-    bool include_distorsions_;
-    
-    // baofit modelroot
-    std::string baofit_model_root_;
-    
-    // directory where the fit results will be saved
-    std::string fit_;
-    
-    // directory where the best-fit predictions will be saved
-    std::string best_fit_;
 
     
     

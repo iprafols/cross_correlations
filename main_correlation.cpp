@@ -14,7 +14,6 @@
 // classes used
 #include "astro_object.h"
 #include "astro_object_dataset.h"
-#include "baofit_setup.h"
 #include "civ_spectra_dataset.h"
 #include "correlation_plate.h"
 #include "correlation_results.h"
@@ -182,31 +181,12 @@ int main(int argc, char *argv[]){
         cov_mat.ComputeCovMat(*object_list, *spectra_list, input, kPlateNeighbours);
     }
     
-    // setup BAOFIT configuration and run fitting program
-    BaofitSetup baofit(input);
-    if (input.flag_set_baofit()){
-        if (input.flag_compute_bootstrap()){
-            baofit.Set(input,true);
-        }
-        // baofit.Set(input); // full covariance matrix needs to be computed first
-    }
-    if (input.flag_run_baofit()){
-        if (input.flag_compute_bootstrap()){
-            baofit.Run(input, true);
-        }
-        // baofit.Run(input); // full covariance matrix needs to be computed first
-    }
-    if (input.flag_set_baofit_best_fit()){
-        if (input.flag_compute_bootstrap()){
-            baofit.SetBestFit(input,true);
-        }
-        // baofit.SetBestFit(input); // full covariance matrix needs to be computed first
-    }
-    if (input.flag_run_baofit_best_fit()){
-        if (input.flag_compute_bootstrap()){
-            baofit.RunBestFit(input, true);
-        }
-        // baofit.RunBestFit(input); // full covariance matrix needs to be computed first        
+    // compute distortion matrix
+    if (input.flag_compute_distortion()){
+        
+        DistortionMatrix dist_mat(input, kPlateNeighbours);
+
+        dist_mat.ComputeDistMat(*object_list, *spectra_list, input, kPlateNeighbours);
     }
     
     // make the plots

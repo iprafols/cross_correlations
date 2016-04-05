@@ -46,6 +46,9 @@ public:
     // access method for delta_
     double delta() const {return delta_;}
     
+    // access method for loglam_
+    double loglam() const {return loglam_;}
+    
     // access method for weight_
     double weight() const {return weight_;}
     
@@ -66,6 +69,9 @@ private:
     
     // ly-alpha delta field
     double delta_;
+    
+    // logarithm of the wavelength
+    double loglam_;
     
     // weight
     double weight_;

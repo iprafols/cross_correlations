@@ -65,14 +65,6 @@ Input::Input(const std::string& filename){
     }
     command = "mkdir -p -v " + output_ + plots_;
     system(command.c_str());
-    if (flag_set_baofit_){
-        command = "mkdir -p -v " + output_ + fit_;
-        system(command.c_str());
-    }
-    if (flag_set_baofit_best_fit_){
-        command = "mkdir -p -v " + output_ + best_fit_;
-        system(command.c_str());
-    }
     
     // write the used and unused parameters from the .ini file
     if (filename != ""){
@@ -165,23 +157,21 @@ void Input::SetDefaultValues(){
     flag_compute_bootstrap_ = true;
     flag_compute_covariance_ = true;
     flag_compute_cross_correlation_ = true;
+    flag_compute_distortion_ = true;
     flag_compute_plate_neighbours_ = false;
-    flag_covariance_matrix_from_file_ = false;
     flag_load_only_ = false;
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
-    flag_run_baofit_ = true;
-    flag_run_baofit_best_fit_ = true;
-    flag_set_baofit_ = true;
-    flag_set_baofit_best_fit_ = true;
     flag_verbose_ = 1;
-    flag_verbose_baofit_setup_ = flag_verbose_;
     flag_verbose_civ_spectra_dataset_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;
     flag_verbose_correlation_plate_ = flag_verbose_;
     flag_verbose_correlation_results_ = flag_verbose_;
     flag_verbose_covariance_matrix_ = flag_verbose_;
+    flag_verbose_covariance_plate_ = flag_verbose_;
     flag_verbose_dla_dataset_ = flag_verbose_;
+    flag_verbose_distortion_matrix_ = flag_verbose_;
+    flag_verbose_distortion_plate_ = flag_verbose_;
     flag_verbose_lya_spectra_dataset_ = flag_verbose_;
     flag_verbose_main_ = flag_verbose_;
     flag_verbose_pair_dataset_ = flag_verbose_;
@@ -215,14 +205,6 @@ void Input::SetDefaultValues(){
     detailed_results_ = results_ + "detailed_info_bin_";
     //pairs_file_name_ = "detailed_info_plate_";
     plots_ = "plots/";
-    
-    
-    // -------------------------------------------------------------
-    // fit settings
-    include_distorsions_ = false;
-    baofit_model_root_ = "/Users/iprafols/Downloads/programes/baofit/models/";
-    fit_ = "fit/";
-    best_fit_ = "best_fit/";
     
     
     // -------------------------------------------------------------
@@ -301,18 +283,7 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
      NONE
      */
     
-    if (name == "baofit_model_root"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            baofit_model_root_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "bootstrap_results"){
+    if (name == "bootstrap_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             bootstrap_results_ = value;
@@ -471,6 +442,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "flag_compute_distortion"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_compute_distortion_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_compute_distortion_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "flag_compute_plate_neighbours"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -488,26 +479,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "flag_covariance_matrix_from_file"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_covariance_matrix_from_file_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_covariance_matrix_from_file_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -571,86 +542,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "flag_run_baofit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_run_baofit_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_run_baofit_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "flag_run_baofit_best_fit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_run_baofit_best_fit_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_run_baofit_best_fit_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "flag_set_baofit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_set_baofit_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_set_baofit_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "flag_set_baofit_best_fit"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                flag_set_baofit_best_fit_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                flag_set_baofit_best_fit_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
     else if (name == "flag_write_partial_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -666,17 +557,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             flag_verbose_ = atoi(value.c_str());
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "flag_verbose_baofit_setup"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            flag_verbose_baofit_setup_ = atoi(value.c_str());
             input_flag[name] = true;
         }
         else{
@@ -739,6 +619,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "flag_verbose_covariance_plate"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_covariance_plate_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "flag_verbose_dla_dataset"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -747,6 +638,28 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_distortion_matrix"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_distortion_matrix_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_distortion_plate"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_distortion_plate_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -837,26 +750,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
                 std::cout << "Input file contains an entry for both H0 and h, pick one" << std::endl << "quiting..." << std::endl;
                 std::exit(EXIT_FAILURE);
             }
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "include_distorsions"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            if (value == "true" or value == "TRUE" or value == "True"){
-                include_distorsions_ = true;
-            }
-            else if (value == "false" or value == "FALSE" or value == "False"){
-                include_distorsions_ = false;
-            }
-            else{
-                unused_params_ += name + " = " + value + "\n";
-                return;
-            }
-            input_flag[name] = true;
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
@@ -1290,14 +1183,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_plot_catalog_info_ = flag_load_only_;
     }
     
-    // updating flag_verbose_baofit_setup_ if necessary
-    it = input_flag.find("flag_verbose");
-    it2 = input_flag.find("flag_verbose_baofit_setup");
-    if (it != input_flag.end() and it2 == input_flag.end()){
-        flag_verbose_baofit_setup_ = flag_verbose_;
-    }
-    
-    // updating flag_verbose_baofit_setup_ if necessary
+    // updating flag_verbose_compute_plate_neighbours_ if necessary
     it = input_flag.find("flag_verbose");
     it2 = input_flag.find("flag_verbose_compute_plate_neighbours");
     if (it != input_flag.end() and it2 == input_flag.end()){
@@ -1332,11 +1218,32 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_verbose_covariance_matrix_ = flag_verbose_;
     }
     
+    // updating flag_verbose_covariance_plate if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_covariance_plate");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_covariance_plate_ = flag_verbose_;
+    }
+    
     // updating flag_verbose_dla_dataset_ if necessary
     it = input_flag.find("flag_verbose");
     it2 = input_flag.find("flag_verbose_dla_dataset");
     if (it != input_flag.end() and it2 == input_flag.end()){
         flag_verbose_dla_dataset_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_distortion_matrix if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_distortion_matrix");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_distortion_matrix_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_distortion_plate if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_distortion_plate");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_distortion_plate_ = flag_verbose_;
     }
     
     // updating flag_verbose_lya_spectra_dataset_ if necessary
@@ -1510,15 +1417,18 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_compute_cross_correlation = false" << std::endl;
-        }        
+        }
+        if (flag_compute_distortion_){
+            log << "flag_compute_distortion = true" << std::endl;
+        }
+        else{
+            log << "flag_compute_distortion = false" << std::endl;
+        }
         if (flag_compute_plate_neighbours_){
             log << "flag_compute_plate_neighbours = true" << std::endl;
         }
         else{
             log << "flag_compute_plate_neighbours = false" << std::endl;
-        }
-        if (flag_covariance_matrix_from_file_){
-            log << "flag_covariance_matrix_from_file = true" << std::endl;
         }
         else{
             log << "flag_covariance_matrix_from_file = false" << std::endl;
@@ -1541,38 +1451,16 @@ void Input::WriteLog(){
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
         }
-        if (flag_run_baofit_){
-            log << "flag_run_baofit = true" << std::endl;
-        }
-        else{
-            log << "flag_run_baofit = false" << std::endl;
-        }
-        if (flag_run_baofit_best_fit_){
-            log << "flag_run_baofit_best_fit = true" << std::endl;
-        }
-        else{
-            log << "flag_run_baofit_best_fit = false" << std::endl;
-        }
-        if (flag_set_baofit_){
-            log << "flag_set_baofit = true" << std::endl;
-        }
-        else{
-            log << "flag_set_baofit = false" << std::endl;
-        }
-        if (flag_set_baofit_best_fit_){
-            log << "flag_set_baofit = true" << std::endl;
-        }
-        else{
-            log << "flag_set_baofit = false" << std::endl;
-        }
         log << "flag_verbose = " << flag_verbose_ << std::endl;
-        log << "flag_verbose_baofit_setup = " << flag_verbose_baofit_setup_ << std::endl;
         log << "flag_verbose_civ_spectra_dataset = " << flag_verbose_civ_spectra_dataset_ << std::endl;
         log << "flag_verbose_compute_plate_neighbours = " << flag_verbose_compute_plate_neighbours_ << std::endl;
         log << "flag_verbose_correlation_plate = " << flag_verbose_correlation_plate_ << std::endl;
         log << "flag_verbose_correlation_results = " << flag_verbose_correlation_results_ << std::endl;
         log << "flag_verbose_covariance_matrix_ = " << flag_verbose_covariance_matrix_ << std::endl;
+        log << "flag_verbose_covariance_plate = " << flag_verbose_covariance_plate_ << std::endl;
         log << "flag_verbose_dla_dataset = " << flag_verbose_dla_dataset_ << std::endl;
+        log << "flag_verbose_distortion_matrix = " << flag_verbose_distortion_matrix_ << std::endl;
+        log << "flag_verbose_distortion_plate_ = " << flag_verbose_distortion_plate_ << std::endl;
         log << "flag_verbose_lya_spectra_dataset = " << flag_verbose_lya_spectra_dataset_ << std::endl;
         log << "flag_verbose_main = " << flag_verbose_main_ << std::endl;
         log << "flag_verbose_pair_dataset = " << flag_verbose_pair_dataset_ << std::endl;
@@ -1607,18 +1495,7 @@ void Input::WriteLog(){
         log << "results = " << results_ << std::endl;
         log << std::endl;
         
-        log << std::endl;
-        log << "// -------------------------------------------------------------" << std::endl;
-        log << "// fit settings" << std::endl;
-        if (include_distorsions_){
-            log << "include_distorsions = true" << std::endl;
-        }
-        else{
-            log << "include_distorsions = false" << std::endl;
-        }
-        log << "baofit_model_root = " << baofit_model_root_ << std::endl;
-        log << std::endl;
-
+        
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;
         log << "// bin setting" << std::endl;

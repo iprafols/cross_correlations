@@ -129,37 +129,5 @@
             endingLineNumber = "21">
          </BreakpointContent>
       </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "covariance_matrix.cpp"
-            timestampString = "453369545.171644"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
-            landmarkName = "CovarianceMatrix::ComputeCovMat(const AstroObjectDataset&amp; object_list, const SpectraDataset&amp; spectra_list, const Input&amp; input, const PlateNeighbours&amp; kPlateNeighbours)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "covariance_matrix.cpp"
-            timestampString = "453369550.58378"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
-            landmarkName = "CovarianceMatrix::ComputeCovMat(const AstroObjectDataset&amp; object_list, const SpectraDataset&amp; spectra_list, const Input&amp; input, const PlateNeighbours&amp; kPlateNeighbours)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
