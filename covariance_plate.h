@@ -54,7 +54,7 @@ public:
     CovariancePlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
-    CovariancePlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_covariance_plate, size_t flag_write_partial_results);
+    CovariancePlate(const int plate_number, const int num_bins, const std::vector<int>& plate_neighbours, size_t flag_verbose_covariance_plate);
     
     // -------------------------------------------------------------
     // access methods
@@ -63,27 +63,19 @@ public:
     // access function for cov_mat_
     CovMat cov_mat() const {return cov_mat_;}
     
+    // access functions for weight_
+    std::vector<double> weight() const {return weight_;}
+    double weight(size_t index) const;
+    
     // access function for flag_verbose_covariance_plate_
     size_t flag_verbose_covariance_plate() const {return flag_verbose_covariance_plate_;}
-    
-    // access function for flag_write_partial_results_
-    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
     
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
     
-    // access function for pairs_file_name_
-    std::string pairs_file_name() const {return pairs_file_name_;}
-    
     // access function for plate_neigbours_
     std::vector<int> plate_neighbours() const {return plate_neighbours_;}
-    
-    // access function for results_
-    std::string results() const {return results_;}
 
-    // access functions for weight_
-    std::vector<double> weight() const {return weight_;}
-    double weight(size_t index) const;
     
     // -------------------------------------------------------------
     // set methods
@@ -141,23 +133,14 @@ private:
     // verbose flag
     size_t flag_verbose_covariance_plate_;
 
-    // flag to write partial results
-    size_t flag_write_partial_results_;
-
     // maximum number of pairs stored in each bin
     size_t max_pairs_;
     
     // number of bins
     size_t num_bins_;
     
-    // pairs file name
-    std::string pairs_file_name_;
-    
     // plate number for neighbouring plates
     std::vector<int> plate_neighbours_;
-    
-    // results directory (missing the bin number)
-    std::string results_;
     
     // weight
     std::vector<double> weight_;

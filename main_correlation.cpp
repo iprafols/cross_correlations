@@ -19,6 +19,7 @@
 #include "correlation_results.h"
 #include "covariance_matrix.h"
 #include "dla_dataset.h"
+#include "distortion_matrix.h"
 #include "input.h"
 #include "lya_spectra_dataset.h"
 #include "plate_neighbours.h"
@@ -145,7 +146,7 @@ int main(int argc, char *argv[]){
     }
     
     // compute distances to the objects (in Mpc/h)
-    if (input.flag_compute_cross_correlation() or input.flag_compute_covariance()){
+    if (input.flag_compute_cross_correlation() or input.flag_compute_covariance() or input.flag_compute_distortion()){
         if (flag_verbose_main >= 1){
             std::cout << "Computing distances (in Mpc/h) to objects" << std::endl;
         }
@@ -158,7 +159,6 @@ int main(int argc, char *argv[]){
     }
     
     // compute the cross-correlation
-    std::vector<CorrelationPlate> results_bootstrap;
     if (input.flag_compute_cross_correlation()){
         CorrelationResults results(input, kPlateNeighbours);
         
@@ -167,16 +167,19 @@ int main(int argc, char *argv[]){
             std::cout << "Plotting cross-correlation" << std::endl;
         }
         kPlots.PlotCrossCorrelation(results, input, true);
-        results_bootstrap = results.bootstrap();
+        
+        // compute bootstrap covariance matrix
+        if (input.flag_compute_bootstrap()){
+            CovarianceMatrix cov_mat(input, kPlateNeighbours);
+            std::vector<CorrelationPlate> results_bootstrap = results.bootstrap();
+            cov_mat.ComputeBootstrapCovMat(results_bootstrap);
+        }
+        
     }
     
     // compute covariance matrix
     if (input.flag_compute_covariance()){
-        
         CovarianceMatrix cov_mat(input, kPlateNeighbours);
-        if (input.flag_compute_bootstrap()){
-            cov_mat.ComputeBootstrapCovMat(results_bootstrap);
-        }
         
         cov_mat.ComputeCovMat(*object_list, *spectra_list, input, kPlateNeighbours);
     }

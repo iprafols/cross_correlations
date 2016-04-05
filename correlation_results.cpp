@@ -47,19 +47,19 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     // initialization of the plates map
     plates_list_ = kPlateNeighbours.GetPlatesList();
     for (size_t i = 0; i < plates_list_.size(); i ++){
-        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), false);
+        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
     }
     skip_plates_ = input.skip_plates();
     
     // initialization of the normalized cross-correlation variable
-    normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_), false);
+    normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
     if (flag_compute_bootstrap_){
         bootstrap_results_ = input.bootstrap_results();
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
-            bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_), false));
+            bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
         }
     }
     

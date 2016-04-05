@@ -142,7 +142,7 @@ double CovarianceMatrix::cov_mat(size_t i,size_t j) const{
     }
 }
 
-void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CovariancePlate>& bootstrap){
+void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap){
     /**
      EXPLANATION:
      Computes the covariance matrix using the bootstrap realizations
@@ -170,7 +170,7 @@ void CovarianceMatrix::ComputeBootstrapCovMat(const std::vector<CovariancePlate>
         std::cout << "There are " << bootstrap.size() << "bootstrap samples. This is not enough to do the calculation, skipping..." << std::endl;
         return;
     }
-        
+    
     // computing mean values
     std::vector<double> mean;
     mean.resize(num_bins_);
@@ -234,7 +234,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
     #pragma omp parallel for schedule(dynamic)
     for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
-        CovariancePlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
+        CovariancePlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
         
         #pragma omp critical (plates_computed)
         {
@@ -246,7 +246,7 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
                 }
             }
             else{
-                plate.set_flag_verbose_correlation_plate(0);
+                plate.set_flag_verbose_covariance_plate(0);
             }
         }
 

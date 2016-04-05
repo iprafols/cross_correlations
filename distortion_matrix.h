@@ -22,7 +22,7 @@
 ////////
 
 // classes needed
-#include "covariance_plate.h"
+#include "distortion_plate.h"
 #include "input.h"
 #include "plate_neighbours.h"
 #include "pair_dataset.h"

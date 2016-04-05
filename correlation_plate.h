@@ -59,9 +59,6 @@ public:
     // -------------------------------------------------------------
     // access methods
     
-    // access function for cov_mat_
-    CovMat cov_mat() const {return cov_mat_;}
-    
     // access function for flag_verbose_correlation_plate_
     size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
     

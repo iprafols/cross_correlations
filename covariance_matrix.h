@@ -22,6 +22,7 @@
 ////////
 
 // classes needed
+#include "correlation_plate.h"
 #include "covariance_plate.h"
 #include "input.h"
 #include "lya_auto_interpolation_map.h"
@@ -72,7 +73,7 @@ public:
     // other methods
     
     // compute covariance matrix from bootstrap realizations
-    void ComputeBootstrapCovMat(const std::vector<CovariancePlate>& bootstrap);
+    void ComputeBootstrapCovMat(const std::vector<CorrelationPlate>& bootstrap);
     
     // compute covariance matrix
     void ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours);

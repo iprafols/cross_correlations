@@ -1430,9 +1430,6 @@ void Input::WriteLog(){
         else{
             log << "flag_compute_plate_neighbours = false" << std::endl;
         }
-        else{
-            log << "flag_covariance_matrix_from_file = false" << std::endl;
-        }
         if (flag_load_only_){
             log << "flag_load_only = true" << std::endl;
         }

@@ -48,7 +48,7 @@ DistortionMatrix::DistortionMatrix(const Input& input, const PlateNeighbours& kP
     int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
     distortion_threads_.reserve(num_threads);
     for (size_t i = 0; i < num_threads; i ++){
-        distortion_threads_.push_back(CovariancePlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
+        distortion_threads_.push_back(DistortionPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
     }
     skip_plates_ = input.skip_plates();
     
@@ -114,7 +114,7 @@ void DistortionMatrix::ComputeDistMat(const AstroObjectDataset& object_list, con
     #pragma omp parallel for schedule(dynamic)
     for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
-        DistortionPlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]), true);
+        DistortionPlate plate (input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
         
         #pragma omp critical (plates_computed)
         {
@@ -126,7 +126,7 @@ void DistortionMatrix::ComputeDistMat(const AstroObjectDataset& object_list, con
                 }
             }
             else{
-                plate.set_flag_verbose_correlation_plate(0);
+                plate.set_flag_verbose_distortion_plate(0);
             }
         }
 
@@ -135,7 +135,7 @@ void DistortionMatrix::ComputeDistMat(const AstroObjectDataset& object_list, con
         
         // add to total value
         int thread_num = omp_get_thread_num();
-        covariance_threads_[thread_num] += plate;
+        distortion_threads_[thread_num] += plate;
 
     }
         

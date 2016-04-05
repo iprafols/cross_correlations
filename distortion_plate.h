@@ -53,7 +53,7 @@ public:
     DistortionPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
-    DistortionPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_distortion_plate, size_t flag_write_partial_results);
+    DistortionPlate(const int plate_number, const int num_bins, const std::vector<int>& plate_neighbours, size_t flag_verbose_distortion_plate);
     
     // -------------------------------------------------------------
     // access methods
@@ -140,7 +140,7 @@ private:
     // other methods
     
     // adding contribution to distortion matrix in the specified bin
-    DistortionPlate::AddPair(const LyaPixel& pixel, const LyaPixel& pixel2, const size_t& i, const size_t& j, const double& forest_total_weight, const double& forest_mean_loglam, const double& forest_aux);
+    void AddPair(const LyaPixel& pixel, const LyaPixel& pixel2, const size_t& i, const size_t& j, const double& forest_total_weight, const double& forest_mean_loglam, const double& forest_aux);
     
 };
 

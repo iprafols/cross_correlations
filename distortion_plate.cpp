@@ -6,7 +6,7 @@
  @version 1.0 04/04/2016
  */
 
-#include "covariance_plate.h"
+#include "distortion_plate.h"
 
 DistortionPlate::DistortionPlate(int bad_data){
     /**
@@ -56,19 +56,10 @@ DistortionPlate::DistortionPlate(const Input& input, const int plate_number, con
     
     // set flags from input
     flag_verbose_distortion_plate_ = input.flag_verbose_distortion_plate();
-    flag_write_partial_results_ = input.flag_write_partial_results();
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = input.num_bins();
-    if (plate_number_ == _NORM_){
-        results_ = "";
-        pairs_file_name_ = "";
-    }
-    else{
-        results_ = input.detailed_results();
-        pairs_file_name_ = ToStr(plate_number_);
-    }
     
     // initialize distortion matrix computation
     for (size_t i = 0; i < num_bins_; i++){
@@ -80,18 +71,16 @@ DistortionPlate::DistortionPlate(const Input& input, const int plate_number, con
     
 }
 
-DistortionPlate::DistortionPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_distortion_plate, size_t flag_write_partial_results){
+DistortionPlate::DistortionPlate(const int plate_number, const int num_bins, const std::vector<int>& plate_neighbours, size_t flag_verbose_distortion_plate){
     /**
      EXPLANATION:
      Cosntructs a DistortionPlate instance and initializes all its variables
      
      INPUTS:
      input - a Input instance
-     results - name of the folder where detailed information will be stored
      plate_number - an integer with the plate number
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      flag_verbose_distortion_plate - correlation_plate verbose flag
-     flag_write_partial_results - flag to write partial results
      
      OUTPUTS:
      NONE
@@ -104,19 +93,11 @@ DistortionPlate::DistortionPlate(const int plate_number, const int num_bins, con
      */
     
     flag_verbose_distortion_plate_ = flag_verbose_distortion_plate;
-    flag_write_partial_results_ = flag_write_partial_results;
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = num_bins;
-    if (plate_number_ == _NORM_){
-        results_ = "";
-        pairs_file_name_ = "";
-    }
-    else{
-        results_ = results;
-        pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
-    }
+    
     
     // initialize distortion matrix computation
     for (size_t i = 0; i < num_bins_; i++){
@@ -125,6 +106,32 @@ DistortionPlate::DistortionPlate(const int plate_number, const int num_bins, con
         }
     }
     weight_.resize(num_bins_,0.0);
+}
+
+double DistortionPlate::weight(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        return weight_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
 }
 
 void DistortionPlate::set_dist_mat(size_t i, size_t j, double value){
@@ -152,6 +159,33 @@ void DistortionPlate::set_dist_mat(size_t i, size_t j, double value){
     }
     else{
         std::cout << "Warining: in DistortionPlate::set_dist_mat(i, j, value): The given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
+void DistortionPlate::set_weight(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        weight_[index] = value;
+    }
+    else{
+        std::cout << "Warining: in CorrelationPlate::set_weight(index, value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -534,12 +568,14 @@ void DistortionPlate::ComputeDistMat(const AstroObjectDataset& object_list, cons
                             
                         }
                     
-                        AddPair(spectrum[pixel1], spectrum[pixel2], k_index1, const k_index2, const double& forest_total_weight, const double& forest_mean_loglam, const double& forest_aux);
+                        AddPair(spectrum[pixel1], spectrum[pixel2], k_index1, k_index2, forest_total_weight, forest_mean_loglam, forest_aux);
                         
                         if (pixel1 != pixel2){
-                            AddPair(spectrum[pixel2], spectrum[pixel1], k_index2, const k_index1, const double& forest_total_weight, const double& forest_mean_loglam, const double& forest_aux);
+                            AddPair(spectrum[pixel2], spectrum[pixel1], k_index2, k_index1, forest_total_weight, forest_mean_loglam, forest_aux);
                         }
                         
+                }
+            
                 }
             }
         }
@@ -647,7 +683,7 @@ DistortionPlate DistortionPlate::operator- (const DistortionPlate& other){
      */
 
     DistortionPlate temp;
-    temp = DistortionPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_distortion_plate_, flag_write_partial_results_);
+    temp = DistortionPlate(plate_number_, num_bins_, plate_neighbours_, flag_verbose_distortion_plate_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
@@ -691,7 +727,7 @@ DistortionPlate DistortionPlate::operator* (const DistortionPlate& other){
      NONE
      */
     DistortionPlate temp;
-    temp = DistortionPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_distortion_plate_, flag_write_partial_results_);
+    temp = DistortionPlate(plate_number_, num_bins_, plate_neighbours_, flag_verbose_distortion_plate_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){

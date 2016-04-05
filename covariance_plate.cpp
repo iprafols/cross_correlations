@@ -56,19 +56,10 @@ CovariancePlate::CovariancePlate(const Input& input, const int plate_number, con
     
     // set flags from input
     flag_verbose_covariance_plate_ = input.flag_verbose_covariance_plate();
-    flag_write_partial_results_ = input.flag_write_partial_results();
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = input.num_bins();
-    if (plate_number_ == _NORM_){
-        results_ = "";
-        pairs_file_name_ = "";
-    }
-    else{
-        results_ = input.detailed_results();
-        pairs_file_name_ = ToStr(plate_number_);
-    }
     
     // initialize covariance matrix computation
     for (size_t i = 0; i < num_bins_; i++){
@@ -78,28 +69,18 @@ CovariancePlate::CovariancePlate(const Input& input, const int plate_number, con
     }
     weight_.resize(num_bins_,0.0);
     
-    // pair storage settings
-    if (flag_write_partial_results_ > 0){
-        max_pairs_ = 100;
-        for (int i = 0; i < num_bins_; i++){
-            position_[i] = 0;
-        }
-        pairs_information_.reserve(max_pairs_);
-    }
 }
 
-CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_covariance_plate, size_t flag_write_partial_results){
+CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, const std::vector<int>& plate_neighbours, size_t flag_verbose_covariance_plate){
     /**
      EXPLANATION:
      Cosntructs a CovariancePlate instance and initializes all its variables
      
      INPUTS:
      input - a Input instance
-     results - name of the folder where detailed information will be stored
      plate_number - an integer with the plate number
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      flag_verbose_covariance_plate_ - correlation_plate verbose flag
-     flag_write_partial_results - flag to write partial results
      
      OUTPUTS:
      NONE
@@ -112,19 +93,10 @@ CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, con
      */
     
     flag_verbose_covariance_plate_ = flag_verbose_covariance_plate;
-    flag_write_partial_results_ = flag_write_partial_results;
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = num_bins;
-    if (plate_number_ == _NORM_){
-        results_ = "";
-        pairs_file_name_ = "";
-    }
-    else{
-        results_ = results;
-        pairs_file_name_ = "detailed_info_plate_" + ToStr(plate_number_);
-    }
     
     // initialize covariance matrix computation
     for (size_t i = 0; i < num_bins_; i++){
@@ -133,6 +105,32 @@ CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, con
         }
     }
     weight_.resize(num_bins_,0.0);
+}
+
+double CovariancePlate::weight(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        return weight_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
 }
 
 void CovariancePlate::set_cov_mat(size_t i, size_t j, double value){
@@ -160,6 +158,33 @@ void CovariancePlate::set_cov_mat(size_t i, size_t j, double value){
     }
     else{
         std::cout << "Warining: in CovariancePlate::set_cov_mat(i, j, value): The given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
+void CovariancePlate::set_weight(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for weight_
+     
+     INPUTS:
+     index - index of the selected weight_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < weight_.size()){
+        weight_[index] = value;
+    }
+    else{
+        std::cout << "Warining: in CorrelationPlate::set_weight(index, value): The given index is out of bouds, ignoring..." << std::endl;
     }
 }
 
@@ -660,7 +685,7 @@ void CovariancePlate::ComputeCovMat(const AstroObjectDataset& object_list, const
 void CovariancePlate::Normalize(){
     /**
      EXPLANATION:
-     Normalizes the cross correlation results
+     Normalizes the covariance matrix
      
      INPUTS:
      NONE
@@ -757,7 +782,7 @@ CovariancePlate CovariancePlate::operator- (const CovariancePlate& other){
      */
 
     CovariancePlate temp;
-    temp = CovariancePlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_covariance_plate_, flag_write_partial_results_);
+    temp = CovariancePlate(plate_number_, num_bins_, plate_neighbours_, flag_verbose_covariance_plate_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
@@ -801,7 +826,7 @@ CovariancePlate CovariancePlate::operator* (const CovariancePlate& other){
      NONE
      */
     CovariancePlate temp;
-    temp = CovariancePlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_covariance_plate_, flag_write_partial_results_);
+    temp = CovariancePlate(plate_number_, num_bins_, plate_neighbours_, flag_verbose_covariance_plate_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
