@@ -106,7 +106,7 @@ void DistortionMatrix::ComputeDistMat(const AstroObjectDataset& object_list, con
     if (flag_verbose_distortion_matrix_ >= 1){
         #pragma omp critical (cout)
         {
-            std::cout << "Computing the covariance matrix" << std::endl;
+            std::cout << "Computing the distortion matrix" << std::endl;
         }
     }
     // loop over plates
