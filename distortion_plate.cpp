@@ -228,7 +228,13 @@ void DistortionPlate::AddPair(const LyaPixel& pixel, const LyaPixel& pixel2, con
     
     // add to distortion matrix
     double weight = pixel.weight();
-    double add = 1.0-pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
+    double add;
+    if (i == j){
+        add = 1.0-pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel1.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
+    }
+    else{
+        add = -pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel1.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
+    }
     
     (*it).second += add*weight;
     
@@ -574,7 +580,7 @@ void DistortionPlate::ComputeDistMat(const AstroObjectDataset& object_list, cons
                             AddPair(spectrum[pixel2], spectrum[pixel1], k_index2, k_index1, forest_total_weight, forest_mean_loglam, forest_aux);
                         }
                         
-                }
+                    }
             
                 }
             }
