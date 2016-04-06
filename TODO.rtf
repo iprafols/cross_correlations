@@ -1,4 +1,4 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\rtf1\ansi\ansicpg1252\cocoartf1348\cocoasubrtf170
 {\fonttbl\f0\fnil\fcharset0 Menlo-Bold;\f1\fnil\fcharset0 Menlo-Regular;}
 {\colortbl;\red255\green255\blue255;}
 \margl1440\margr1440\vieww9000\viewh8400\viewkind0
@@ -11,18 +11,8 @@
 - Redshift of the pair equals to the unweighted average of the component's redshifts\
 \
 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
 
-\f0\b \cf0 Auto-correlations
-\f1\b0 \
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural
-\cf0 \
-- Add delta=1 and weight=1 for all point-like objects. Compute correlations with delta*delta*weight*weight\
-\
+\f0\b Add projection of delta\
 \
 
-\f0\b Covariance matrix 
-\f1\b0 \
-\
-- To reduce necessary disk space and speed-up reading and writing, make outputs in FITS files.\
-- Add an option to assign some elements to zero (and not compute them). These elements should be provided via a list or similar}
+\f1\b0 - In the reading of deltas, add a flag that specifies if they are to be projected or not, and then project them if necessary}

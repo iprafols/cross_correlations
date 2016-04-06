@@ -38,7 +38,7 @@ DistortionMatrix::DistortionMatrix(const Input& input, const PlateNeighbours& kP
     output_base_name_ = input.output() + input.output_base_name();
 
     if (flag_verbose_distortion_matrix_ >= 2){
-        std::cout << "Initializig covariance matrix" << std::endl;
+        std::cout << "Initializig distortion matrix" << std::endl;
     }
     
     // initialization of the normalized cross-correlation variable
@@ -209,9 +209,6 @@ void DistortionMatrix::SaveDistMat(){
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc);
         if (file.is_open()){
-            if (flag_verbose_distortion_matrix_ >= 2){
-                std::cout << "Saving distortion matrix" << std::endl;
-            }
             for (CovMat::iterator it = dist_mat_.begin(); it != dist_mat_.end(); it ++){
                 file << (*it).first.first << " " << (*it).first.second << " " << (*it).second << std::endl;
             }

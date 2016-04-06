@@ -576,7 +576,7 @@ void DistortionPlate::ComputeDistMat(const AstroObjectDataset& object_list, cons
                     
                         AddPair(spectrum[pixel1], spectrum[pixel2], k_index1, k_index2, forest_total_weight, forest_mean_loglam, forest_aux);
                         
-                        if (pixel1 != pixel2){
+                        if (k_index1 != k_index2){
                             AddPair(spectrum[pixel2], spectrum[pixel1], k_index2, k_index1, forest_total_weight, forest_mean_loglam, forest_aux);
                         }
                         
@@ -614,7 +614,7 @@ void DistortionPlate::Normalize(){
         for (size_t i = 0; i < num_bins_; i ++){
             for (size_t j = 0; j < num_bins_; j ++){
                 it = dist_mat_.find(std::pair<size_t,size_t>(i,j));
-                if (it != dist_mat_.end() and weight_[i] != 0.0){
+                if (it != dist_mat_.end() and weight_[i] != 0.0 and (*it).second != 0.0){
                     (*it).second /= weight_[i];
                 }
             }
