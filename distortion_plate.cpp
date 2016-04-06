@@ -230,10 +230,10 @@ void DistortionPlate::AddPair(const LyaPixel& pixel, const LyaPixel& pixel2, con
     double weight = pixel.weight();
     double add;
     if (i == j){
-        add = 1.0-pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel1.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
+        add = 1.0-pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
     }
     else{
-        add = -pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel1.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
+        add = -pixel2.weight()/forest_total_weight-(pixel2.loglam()-forest_mean_loglam)*(pixel.loglam()-forest_mean_loglam)*pixel2.weight()/forest_aux;
     }
     
     (*it).second += add*weight;
