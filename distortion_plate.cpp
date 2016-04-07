@@ -310,7 +310,7 @@ void DistortionPlate::ComputeDistMat(const AstroObjectDataset& object_list, cons
         std::vector<LyaPixel> spectrum = lya_spectrum.spectrum();
         
         // compute forest variables (loop over forest pixels, twice)
-        double forest_aux = 0.0; //forest_aux: sum of (loglam-forest_mean_loglam)*weigth of all the pixels in the forest
+        double forest_aux = 0.0; //forest_aux: sum of (loglam-forest_mean_loglam)**2*weigth of all the pixels in the forest
         double forest_total_weight = 0.0;
         double forest_mean_loglam = 0.0;
         

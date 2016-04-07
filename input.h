@@ -100,6 +100,9 @@ public:
     // access function for flag_plot_catalog_info_
     bool flag_plot_catalog_info() const {return flag_plot_catalog_info_;}
     
+    // access function for flag_project_deltas_
+    bool flag_project_deltas() const {return flag_project_deltas_;}
+    
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
 
@@ -284,6 +287,9 @@ private:
     
     // flag to plot catalogues info
     bool flag_plot_catalog_info_;
+    
+    // flag to project the delta field
+    bool flag_project_deltas_;
     
     // verbose flag
     size_t flag_verbose_;

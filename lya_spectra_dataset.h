@@ -65,6 +65,9 @@ private:
     // lya_spectra_dataset verbose flag
     size_t flag_verbose_lya_spectra_dataset_;
     
+    // project the delta field
+    void ProjectDeltas();
+    
 };
 
 #endif

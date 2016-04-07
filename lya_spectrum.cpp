@@ -216,6 +216,53 @@ LyaPixel LyaSpectrum::spectrum(size_t i) const {
     
 }
 
+void LyaSpectrum::ProjectDeltas(){
+    /**
+     EXPLANATION:
+     Projects the delta field
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // compute forest variables (loop over forest pixels, twice)
+    double forest_aux1 = 0.0; //forest_aux: sum of (loglam-forest_mean_loglam)**2*weigth of all the pixels in the forest
+    double forest_aux2 = 0.0; //forest_aux: sum of delta*(loglam-forest_mean_loglam)*weigth of all the pixels in the forest
+    double forest_total_weight = 0.0;
+    double forest_mean_loglam = 0.0;
+    double forest_mean_delta = 0.0;
+    
+    for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
+        forest_total_weight += spectrum_[pixel].weight();
+        forest_mean_loglam += spectrum_[pixel].loglam()*spectrum_[pixel].weight();
+        forest_mean_delta += spectrum_[pixel].delta()*spectrum_[pixel].weight();
+    }
+    forest_mean_loglam /= forest_total_weight;
+    forest_mean_delta /= forest_total_weight;
+    
+    for (size_t pixel = 0; pixel < spectrum.size(); pixel ++){
+        forest_aux1 += (spectrum_[pixel].loglam()-forest_mean_loglam)*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
+        forest_aux2 += spectrum_[pixel].delta()*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
+    }
+    double forest_aux = forest_aux2/forest_aux1;
+    
+    // project the delta field
+    double projected_delta;
+    for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
+        projected_delta = spectrum_[pixel]-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
+        spectrum_[pixel].set_delta(projected_delta);
+    }
+}
+
 void LyaSpectrum::SetDistance(const InterpolationMap& redshift_distance_map){
     /**
      EXPLANATION:

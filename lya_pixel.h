@@ -56,6 +56,10 @@ public:
     double z() const {return z_;}
     
     // -------------------------------------------------------------
+    // set methods
+    void set_delta(const double& delta) {delta_ = delta;}
+    
+    // -------------------------------------------------------------
     // other methods
     
     // set the distance to object

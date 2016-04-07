@@ -162,6 +162,7 @@ void Input::SetDefaultValues(){
     flag_load_only_ = false;
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
+    flag_project_deltas_ = flag_compute_distortion_;
     flag_verbose_ = 1;
     flag_verbose_civ_spectra_dataset_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;
@@ -539,6 +540,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_plot_catalog_info"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_project_deltas_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_project_deltas_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1183,6 +1204,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_plot_catalog_info_ = flag_load_only_;
     }
     
+    // updating flag_plot_catalog_info_ if necessary
+    it = input_flag.find("flag_compute_distortion");
+    it2 = input_flag.find("flag_project_deltas");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_project_deltas_ = flag_compute_distortion_;
+    }
+    
     // updating flag_verbose_compute_plate_neighbours_ if necessary
     it = input_flag.find("flag_verbose");
     it2 = input_flag.find("flag_verbose_compute_plate_neighbours");
@@ -1447,6 +1475,12 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_plot_catalog_info = false" << std::endl;
+        }
+        if (flag_project_deltas_){
+            log << "flag_project_deltas = true" << std::endl;
+        }
+        else{
+            log << "flag_project_deltas = false" << std::endl;
         }
         log << "flag_verbose = " << flag_verbose_ << std::endl;
         log << "flag_verbose_civ_spectra_dataset = " << flag_verbose_civ_spectra_dataset_ << std::endl;

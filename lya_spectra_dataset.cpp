@@ -30,6 +30,9 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     flag_verbose_lya_spectra_dataset_ = input.flag_verbose_lya_spectra_dataset();
     name_ = input.dataset2_name();
     Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl());
+    if (input.flag_project_deltas()){
+        ProjectDeltas();
+    }
     
 }
 
@@ -135,3 +138,51 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
         std::cout << "Error: in LyaSpectraDataset::Load : Could not read spectra catalog" << std::endl;
     }
 }
+
+void LyaSpectraDataset::ProjectDeltas(){
+    /**
+     EXPLANATION:
+     Projects the delta field
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaSpectrum
+     LyaSpectraDataset
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    // loop over plates
+    size_t plates_computed = 0;
+    #pragma omp parallel for schedule(dynamic)
+    for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != list_.end(); it ++){
+        
+        #pragma omp critical (plates_computed)
+        {
+            plates_computed ++;
+            if (flag_verbose_covariance_matrix_ >= 2 or (flag_verbose_covariance_matrix_ >= 1 and plates_computed == plates_computed/100*100)){
+                #pragma omp critical (cout)
+                {
+                    std::cout << plates_computed << " out of " << plates_list_.size() << " plates computed" << std::endl;
+                }
+            }
+            else{
+                plate.set_flag_verbose_covariance_plate(0);
+            }
+        }
+
+        // loop over spectra
+        for (size_t i = 0; i < (*it).second.size(); i ++){
+            *it).second[i].ProjectDeltas();
+        }
+    }
+    
+}
+
+

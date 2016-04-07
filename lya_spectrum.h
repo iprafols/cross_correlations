@@ -60,12 +60,15 @@ public:
     // -------------------------------------------------------------
     // other methods
     
+    // project the delta field
+    void ProjectDeltas();
+    
     // set the distance to object
     void SetDistance(const InterpolationMap& redshift_distance_map);
     
     // return the size of spectrum_;
     size_t SpectrumSize() const {return spectrum_.size();}
-    
+
     
     
 private:
