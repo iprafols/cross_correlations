@@ -249,7 +249,7 @@ void LyaSpectrum::ProjectDeltas(){
     forest_mean_loglam /= forest_total_weight;
     forest_mean_delta /= forest_total_weight;
     
-    for (size_t pixel = 0; pixel < spectrum.size(); pixel ++){
+    for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
         forest_aux1 += (spectrum_[pixel].loglam()-forest_mean_loglam)*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
         forest_aux2 += spectrum_[pixel].delta()*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
     }
@@ -258,7 +258,7 @@ void LyaSpectrum::ProjectDeltas(){
     // project the delta field
     double projected_delta;
     for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
-        projected_delta = spectrum_[pixel]-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
+        projected_delta = spectrum_[pixel].delta()-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
         spectrum_[pixel].set_delta(projected_delta);
     }
 }

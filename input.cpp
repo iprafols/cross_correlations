@@ -543,7 +543,7 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "flag_plot_catalog_info"){
+    else if (name == "flag_project_deltas"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             if (value == "true" or value == "TRUE" or value == "True"){

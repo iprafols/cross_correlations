@@ -158,28 +158,26 @@ void LyaSpectraDataset::ProjectDeltas(){
      NONE
      */
     
+    if (flag_verbose_lya_spectra_dataset_ >= 1){
+        std::cout << "Projecting deltas" << std::endl;
+    }
+    
     // loop over plates
     size_t plates_computed = 0;
-    #pragma omp parallel for schedule(dynamic)
     for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != list_.end(); it ++){
         
-        #pragma omp critical (plates_computed)
-        {
-            plates_computed ++;
-            if (flag_verbose_covariance_matrix_ >= 2 or (flag_verbose_covariance_matrix_ >= 1 and plates_computed == plates_computed/100*100)){
-                #pragma omp critical (cout)
-                {
-                    std::cout << plates_computed << " out of " << plates_list_.size() << " plates computed" << std::endl;
-                }
-            }
-            else{
-                plate.set_flag_verbose_covariance_plate(0);
+        plates_computed ++;
+        if (flag_verbose_lya_spectra_dataset_ >= 2 or (flag_verbose_lya_spectra_dataset_ >= 1 and plates_computed == plates_computed/100*100)){
+            #pragma omp critical (cout)
+            {
+                std::cout << plates_computed << " out of " << list_.size() << " plates computed" << std::endl;
             }
         }
 
         // loop over spectra
+        #pragma omp parallel for schedule(dynamic)
         for (size_t i = 0; i < (*it).second.size(); i ++){
-            *it).second[i].ProjectDeltas();
+            (*it).second[i].ProjectDeltas();
         }
     }
     
