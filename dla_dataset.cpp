@@ -32,22 +32,23 @@ DLADataset::DLADataset(const Input& input){
     nhi_min_ = input.nhi_min();
     nhi_max_ = input.nhi_max();
     cnr_min_ = input.cnr_min();
-    z_min_ = input.z_min();
-    z_max_ = input.z_max();
     rf_wl_max_ = input.rf_wl_max();
     rf_wl_min_ = input.rf_wl_min();
     rf_wl_forbidden_interval_ = input.rf_wl_forbidden_interval();
-    Load(input.dataset1());
+    lya_wl_ = input.lya_wl();
+    Load(input.z_min(), input.z_max(), input.dataset1());
     
     
 }
 
-void DLADataset::Load(const std::string& dataset1){
+void DLADataset::Load(const double& z_min, const double& z_max, const std::string& dataset1){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
      
      INPUTS:
+     z_min - minimum redshift to accept AstroObject into the dataset
+     z_max - maximum redshift to accept AstroObject into the dataset
      dataset1 - name of the catalog file
      
      OUTPUTS:
@@ -120,7 +121,7 @@ void DLADataset::Load(const std::string& dataset1){
                     nhi = atof(cols[nhi_index].c_str());
                     bi = atof(cols[bi_index].c_str());
                     cnr = atof(cols[cnr_index].c_str());
-                    rf_wl = lya_wl*(1.0-(z_qso-z_abs)/(1.0+z_qso))
+                    rf_wl = lya_wl_*(1.0-(z_qso-z_abs)/(1.0+z_qso));
                     
                     mpf = cols[mpf_index];
                     pos = mpf.find("-");
@@ -130,7 +131,7 @@ void DLADataset::Load(const std::string& dataset1){
                     plate = atoi(mpf.substr(pos+1, pos2).c_str());
                     fiber = atoi(mpf.substr(pos2+1).c_str());
                     
-                    if (z_abs >= z_min_ and z_abs < z_max_ and nhi >= nhi_min_ and nhi < nhi_max_ and cnr >= cnr_min_ and bi == 0.0 and rf_wl <= rf_wl_max_ and rf_wl >= rf_wl_min_ and (rf_wl <= rf_wl_forbidden_interval_.first or rf_wl >= rf_wl_forbidden_interval_.second)){
+                    if (z_abs >= z_min and z_abs < z_max and nhi >= nhi_min_ and nhi < nhi_max_ and cnr >= cnr_min_ and bi == 0.0 and rf_wl <= rf_wl_max_ and rf_wl >= rf_wl_min_ and (rf_wl <= rf_wl_forbidden_interval_.first or rf_wl >= rf_wl_forbidden_interval_.second)){
                         
                         // create AstroObject
                         AstroObject object(ra, dec, plate, fiber, mjd, z_abs, false);

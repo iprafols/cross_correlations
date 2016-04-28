@@ -53,7 +53,7 @@ public:
     // other methods
     
     // load the dataset
-    void Load(const std::string& dataset1);
+    void Load(const double& z_min, const double& z_max, const std::string& dataset1);
     
 private:
     
@@ -67,14 +67,13 @@ private:
     // limits on the continuum to noise ratio
     double cnr_min_;
     
-    // limits on the redshift
-    double z_min_;
-    double z_max_;
-    
     // constraints on the quasar restframe wavelength at which the DLA is observed
     double rf_wl_min_;
     double rf_wl_max_;
-    std::pair<double> rf_wl_forbidden_interval_;
+    std::pair<double, double> rf_wl_forbidden_interval_;
+    
+    // Lyman alpha wavelength
+    double lya_wl_;
 
 };
 

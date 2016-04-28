@@ -1046,7 +1046,7 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             comma_position = value.find(',');
             
             rf_wl_forbidden_interval_.first = double(atof(value.substr(open_parenthesis_position + 1, comma_position).c_str()));
-            rf_wl_forbidden_interval_.second = double(atof(value.subtr(comma_position + 1, close_parenthesis_position).c_str()));
+            rf_wl_forbidden_interval_.second = double(atof(value.substr(comma_position + 1, close_parenthesis_position).c_str()));
             input_flag[name] = true;
         }
         else{
@@ -1054,9 +1054,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    rf_wl_interval_.first = 1005.0; // in angs
-    rf_wl_interval_.second = 1037.0; // in angs
-
     else if (name == "sigma_psf"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
