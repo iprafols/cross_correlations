@@ -225,6 +225,15 @@ public:
     
     // access function for results_
     std::string results() const {return results_;}
+
+    // access function for rf_wl_forbidden_interval_
+    std::pair<double, double> rf_wl_forbidden_interval() const {rf_wl_forbidden_interval_;}
+    
+    // access function for rf_wl_max_
+    double rf_wl_max() const {rf_wl_max_;}
+    
+    // access function for rf_wl_min_
+    double rf_wl_min() const {rf_wl_min_;}
     
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
@@ -507,6 +516,14 @@ private:
     // minimum continuum to noise ratio to accept a DLA
     double cnr_min_;
     
+    // minimum quasar restframe wavelength at which the DLA is found to accept a DLA (in angs)
+    double rf_wl_min_;
+    
+    // maximum quasar restframe wavelength at which the DLA is found to accept a DLA (in angs)
+    double rf_wl_max_;
+    
+    // forbidden interval in the quasar interval wavelength at which the DLA is found (in angs)
+    std::pair<double, double> rf_wl_forbidden_interval_;
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants

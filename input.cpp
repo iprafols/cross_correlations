@@ -243,7 +243,7 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // line and redshift settings
-    lya_wl_ = 1215.67;
+    lya_wl_ = 1215.67; // in angs
     z_min_ = 2.0;
     z_max_ = 3.5;
     z_min_interpolation_ = 1.5; 
@@ -252,6 +252,10 @@ void Input::SetDefaultValues(){
     nhi_min_ = 15.0;
     nhi_max_ = 30.0;
     cnr_min_ = 3.0;
+    rf_wl_min_ = 1026.0; // in angs
+    rf_wl_max_ = 1195.395; // in angs
+    rf_wl_forbidden_interval_.first = 1005.0; // in angs
+    rf_wl_forbidden_interval_.second = 1037.0; // in angs
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants
@@ -1011,6 +1015,48 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "rf_wl_min"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            rf_wl_min_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "rf_wl_max"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            rf_wl_max_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "rf_wl_forbidden_interval"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            size_t open_parenthesis_position, close_parenthesis_position, comma_position;
+            open_parenthesis_position = value.find('(');
+            close_parenthesis_position = value.find(')');
+            comma_position = value.find(',');
+            
+            rf_wl_forbidden_interval_.first = double(atof(value.substr(open_parenthesis_position + 1, comma_position).c_str()));
+            rf_wl_forbidden_interval_.second = double(atof(value.subtr(comma_position + 1, close_parenthesis_position).c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    rf_wl_interval_.first = 1005.0; // in angs
+    rf_wl_interval_.second = 1037.0; // in angs
+
     else if (name == "sigma_psf"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1579,6 +1625,9 @@ void Input::WriteLog(){
         log << "nhi_min = " << nhi_min_ << std::endl;
         log << "nhi_max = " << nhi_max_ << std::endl;
         log << "cnr_min = " << cnr_min_ << std::endl;
+        log << "rf_wl_min = " << rf_wl_min_ << std::endl;
+        log << "rf_wl_max = " << rf_wl_max_ << std::endl;
+        log << "rf_wl_forbidden_interval = (" << rf_wl_forbidden_interval_.first << ", " << rf_wl_forbidden_interval_.second << ")" << std::endl;
         log << std::endl;
         
         
