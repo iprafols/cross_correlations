@@ -249,8 +249,8 @@ void Input::SetDefaultValues(){
     z_min_interpolation_ = 1.5; 
     z_max_interpolation_ = 4.0; 
     num_points_interpolation_ = 30000; 
-    nhi_min_ = 15.0;
-    nhi_max_ = 30.0;
+    nhi_min_ = 20.0;
+    nhi_max_ = 22.0;
     cnr_min_ = 3.0;
     rf_wl_min_ = 1026.0; // in angs
     rf_wl_max_ = 1195.395; // in angs

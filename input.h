@@ -227,13 +227,13 @@ public:
     std::string results() const {return results_;}
 
     // access function for rf_wl_forbidden_interval_
-    std::pair<double, double> rf_wl_forbidden_interval() const {rf_wl_forbidden_interval_;}
+    std::pair<double, double> rf_wl_forbidden_interval() const {return rf_wl_forbidden_interval_;}
     
     // access function for rf_wl_max_
-    double rf_wl_max() const {rf_wl_max_;}
+    double rf_wl_max() const {return rf_wl_max_;}
     
     // access function for rf_wl_min_
-    double rf_wl_min() const {rf_wl_min_;}
+    double rf_wl_min() const {return rf_wl_min_;}
     
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
