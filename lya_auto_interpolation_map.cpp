@@ -154,7 +154,7 @@ void LyaAutoInterpolationMap::ProjectLyaAuto(){
     double forest_mean_xi = 0.0;
     
     for (it = interpolation_map_.begin(); it != interpolation_map_.end(); it ++){
-        forest_total_weight += 1.0
+        forest_total_weight += 1.0;
         forest_mean_z += (*it).first;
         forest_mean_xi += (*it).second;
     }
@@ -171,7 +171,7 @@ void LyaAutoInterpolationMap::ProjectLyaAuto(){
     double projected_delta;
     for (it = interpolation_map_.begin(); it != interpolation_map_.end(); it ++){
         projected_delta = (*it).second-forest_mean_xi-forest_aux*((*it).first-forest_mean_z);
-        (*it).second = projected_delta;
+        interpolation_map_[(*it).first] = projected_delta;
     }
 
     
