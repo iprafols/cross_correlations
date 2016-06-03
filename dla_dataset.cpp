@@ -131,7 +131,7 @@ void DLADataset::Load(const double& z_min, const double& z_max, const std::strin
                     plate = atoi(mpf.substr(pos+1, pos2).c_str());
                     fiber = atoi(mpf.substr(pos2+1).c_str());
                     
-                    if (z_abs >= z_min and z_abs < z_max and nhi > nhi_min_ and nhi <= nhi_max_ and cnr > cnr_min_ and bi == 0.0 and rf_wl <= rf_wl_max_ and rf_wl >= rf_wl_min_ and (rf_wl <= rf_wl_forbidden_interval_.first or rf_wl >= rf_wl_forbidden_interval_.second)){
+                    if (z_abs >= z_min and z_abs < z_max and nhi >= nhi_min_ and nhi < nhi_max_ and cnr >= cnr_min_ and bi == 0.0 and rf_wl <= rf_wl_max_ and rf_wl >= rf_wl_min_ and (rf_wl <= rf_wl_forbidden_interval_.first or rf_wl >= rf_wl_forbidden_interval_.second)){
                         
                         // create AstroObject
                         AstroObject object(ra, dec, plate, fiber, mjd, z_abs, false);

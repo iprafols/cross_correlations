@@ -59,6 +59,10 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
             k_pk.push_back(std::pair<double, double>(double(atof(cols[1].c_str())), double(atof(cols[2].c_str()))));
             
         }
+        
+        if (input.flag_project_deltas()){
+            ProjectLyaAuto();
+        }
     }
     else{
         std::cout << "Error: in LyaAutoInterpolationMap::LyaAutoInterpolationMap : Could not read file" << std::endl;
@@ -122,6 +126,55 @@ double LyaAutoInterpolationMap::IntegratePk(const std::vector<std::pair<double, 
     return sum;
 }
 
+void LyaAutoInterpolationMap::ProjectLyaAuto(){
+    /**
+     EXPLANATION:
+     Projects the 1D autocorrelation
+     
+     INPUTS:
+     NONE
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaAutoInterpolationMap
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    std::map<double,double>::const_iterator it;
+    
+    // compute forest variables (loop over forest pixels, twice)
+    double forest_aux1 = 0.0; //forest_aux: sum of (z-forest_mean_z)**2 of all the pixels in the forest
+    double forest_aux2 = 0.0; //forest_aux2: sum of xi*(z-forest_mean_z) of all the pixels in the forest
+    double forest_total_weight = 0.0;
+    double forest_mean_z = 0.0;
+    double forest_mean_xi = 0.0;
+    
+    for (it = interpolation_map_.begin(); it != interpolation_map_.end(); it ++){
+        forest_total_weight += 1.0
+        forest_mean_z += (*it).first;
+        forest_mean_xi += (*it).second;
+    }
+    forest_mean_z /= forest_total_weight;
+    forest_mean_xi /= forest_total_weight;
+    
+    for (it = interpolation_map_.begin(); it != interpolation_map_.end(); it ++){
+        forest_aux1 += ((*it).first-forest_mean_z)*((*it).first-forest_mean_z);
+        forest_aux2 += (*it).second*((*it).first-forest_mean_z);
+    }
+    double forest_aux = forest_aux2/forest_aux1;
+    
+    // project the delta field
+    double projected_delta;
+    for (it = interpolation_map_.begin(); it != interpolation_map_.end(); it ++){
+        projected_delta = (*it).second-forest_mean_xi-forest_aux*((*it).first-forest_mean_z);
+        (*it).second = projected_delta;
+    }
 
-
+    
+    
+}
 

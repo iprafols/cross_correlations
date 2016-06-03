@@ -169,7 +169,7 @@ int main(int argc, char *argv[]){
         kPlots.PlotCrossCorrelation(results, input, true);
         
         // compute bootstrap covariance matrix
-        if (input.flag_compute_bootstrap()){
+        if (input.flag_compute_bootstrap() and input.flag_compute_covariance()){
             CovarianceMatrix cov_mat(input, kPlateNeighbours);
             std::vector<CorrelationPlate> results_bootstrap = results.bootstrap();
             cov_mat.ComputeBootstrapCovMat(results_bootstrap);

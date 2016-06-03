@@ -435,7 +435,7 @@ void CorrelationResults::SaveCrossCorrelation(){
     std::string filename;
     
     // save plate contribution to cross-correlation in each of the bins
-    if (flag_write_partial_results_ >= 1){
+    if (flag_write_partial_results_ >= 2){
         if (flag_verbose_correlation_results_ >= 1){
             std::cout << "Saving individual plate contributions to the cross-correlations" << std::endl;
         }
@@ -546,7 +546,7 @@ void CorrelationResults::SaveCrossCorrelation(){
                     
                     for (size_t j = 0; j < num_bins_; j++){
                         
-                        file << j << " " << bootstrap_[i].Info(j) << std::endl;
+                        file << j << " " << bootstrap_[i].xi(j) << std::endl;
                     }
                     
                     file.close();
@@ -565,6 +565,23 @@ void CorrelationResults::SaveCrossCorrelation(){
                     for (size_t j = 0; j < num_bins_; j++){
                         
                         file << bootstrap_[i].Info(j) << " " << j << std::endl;
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
+            }
+            
+            filename = bootstrap_results_ + output_base_name_ + ".bootstrap" + ToStr(i) + ".grid";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    
+                    for (size_t j = 0; j < num_bins_; j++){
+                        
+                        file << j << " " << bootstrap_[i].mean_pi(j) << " " << bootstrap_[i].mean_sigma(j) << " " << bootstrap_[i].mean_z_in_bin(j) << std::endl;
                     }
                     
                     file.close();

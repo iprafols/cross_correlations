@@ -45,6 +45,8 @@ private:
     // integrate the power spectrum
     double IntegratePk(const std::vector<std::pair<double, double> >& vec, const int& n, const double& lya_pixel_width, const double& sigma_psf);
 
+    // project the 1D autocorrelation
+    void ProjectLyaAuto();
 };
 
 
