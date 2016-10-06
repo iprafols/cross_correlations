@@ -37,26 +37,44 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     flag_compute_covariance_ =  input.flag_compute_covariance();
     
     // setting the number of bins from input
+    if (flag_verbose_correlation_results_ >= 3){
+        std::cout << "CorrelationResults: setting the number of bins" << std::endl;
+    }
     num_bins_ = input.num_bins();
     
     // setting the results directory and the pairs file name from input
+    if (flag_verbose_correlation_results_ >= 3){
+        std::cout << "CorrelationResults: setting the results directory" << std::endl;
+    }
     results_ = input.results();
     detailed_results_ = input.detailed_results();
     output_base_name_ = input.output() + input.output_base_name();
     
     // initialization of the plates map
+    if (flag_verbose_correlation_results_ >= 3){
+        std::cout << "CorrelationResults: initialize plates map" << std::endl;
+    }
     plates_list_ = kPlateNeighbours.GetPlatesList();
-    for (size_t i = 0; i < plates_list_.size(); i ++){
-        correlation_plates_[plates_list_[i]] = CorrelationPlate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
+    int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
+    correlation_threads_.reserve(num_threads);
+    for (size_t i = 0; i < num_threads; i ++){
+        correlation_threads_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
     }
     skip_plates_ = input.skip_plates();
+
     
     // initialization of the normalized cross-correlation variable
+    if (flag_verbose_correlation_results_ >= 3){
+        std::cout << "CorrelationResults: initialize the normalized cross-correlation variable" << std::endl;
+    }
     normalized_correlation_ = CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_));
     
     // initialization of the bootstrap variable
     if (flag_compute_bootstrap_){
-        bootstrap_results_ = input.bootstrap_results();
+        if (flag_verbose_correlation_results_ >= 3){
+            std::cout << "CorrelationResults: initialize bootstrap varaibles" << std::endl;
+        }
+        bootstrap_results_ = input.bootstrap_results() + input.output_base_name();
         bootstrap_.reserve(input.num_bootstrap());
         for (size_t i = 0; i < input.num_bootstrap(); i++){
             bootstrap_.push_back(CorrelationPlate(input, _NORM_, kPlateNeighbours.GetNeighboursList(_NORM_)));
@@ -64,7 +82,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     }
     
     // creating bin files
-    if (flag_write_partial_results_ >= 1 and skip_plates_ == 0){
+    if (flag_write_partial_results_ >= 2 and skip_plates_ == 0){
         if (flag_verbose_correlation_results_ >= 2){
             std::cout << "Creating detailed info files" << std::endl;
         }
@@ -98,35 +116,6 @@ CorrelationPlate CorrelationResults::bootstrap(size_t i) const {
     }
 }
 
-CorrelationPlate CorrelationResults::correlation_plates(int plate_num) const {
-    /**
-     EXPLANATION:
-     Access function for correlation_plates_
-     
-     INPUTS:
-     plate_num - index of the selected correlation_plates_ element
-     
-     OUTPUTS:
-     NONE
-     
-     CLASSES USED:
-     CorrelationResults
-     
-     FUNCITONS USED:
-     NONE
-     */
-    
-    PlatesMapSimple<CorrelationPlate>::map::const_iterator it;
-    it = correlation_plates_.find(plate_num);
-    if (it == correlation_plates_.end()){
-        CorrelationPlate cp(_BAD_DATA_INT_);
-        return cp;
-    }
-    else{
-        return (*it).second;
-    }
-}
-
 int CorrelationResults::plates_list(int index) const {
     /**
      EXPLANATION:
@@ -152,7 +141,7 @@ int CorrelationResults::plates_list(int index) const {
     }
 }
 
-void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
+void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours){
     /**
      EXPLANATION:
      Computes the cross-correlation for all plates
@@ -161,6 +150,7 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
      object_list - an AstroObjectDataset instance
      spectra_list - a SpectraDataset instance
      input - a Input instance to load the bin settings
+     kPlateNeighbours - a PlateNeighbours instance
      
      OUTPUTS:
      NONE
@@ -179,12 +169,34 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
         std::cout << "Computing the cross-correlation" << std::endl;
     }
     
+    // prepare bootstrap variables if necessary
+    std::vector<std::vector<size_t> > picked_plates;
+    if (flag_compute_bootstrap_){
+        size_t number_of_plates = plates_list_.size();
+        std::vector<size_t> aux;
+        aux.resize(number_of_plates);
+        picked_plates.resize(bootstrap_.size(), aux);
+        for (size_t i = 0; i < bootstrap_.size(); i ++){
+            
+            for (size_t j = 0; j < number_of_plates; j ++){
+                
+                // pick plate
+                picked_plates[i][j] = plates_list_[rand() % number_of_plates];
+                
+            }
+        }
+    }
+
+    
     // loop over plates
     size_t plates_computed = 0;
     #pragma omp parallel for ordered schedule(dynamic)
     for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
-        PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.find(plates_list_[i]);
+        if (input.flag_verbose() >= 3){
+            std::cout << "Loading plate " << plates_list_[i] << std::endl;
+        }
+        CorrelationPlate plate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
         
         #pragma omp critical (plates_computed)
         {
@@ -196,35 +208,48 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
                 }
             }
             else{
-                (*it).second.set_flag_verbose_correlation_plate(0);
+                plate.set_flag_verbose_correlation_plate(0);
             }
         }
         
         // compute cross-correlation in selected plate
-        (*it).second.ComputeCrossCorrelation(object_list, spectra_list, input);
+        plate.ComputeCrossCorrelation(object_list, spectra_list, input);
         
+        // save the cross-correlation in selected plate
+        if (flag_write_partial_results_ >= 1){
+            if (input.flag_verbose() >= 1){
+                std::cout << "saving the cross-correlation" << std::endl;
+            }
+            plate.SaveCrossCorrelation(input);
+        }
+        
+        // add to total value
+        int thread_num = omp_get_thread_num();
+        correlation_threads_[thread_num] += plate;
+        
+        // add to bootstrap realizations
+        if (flag_compute_bootstrap_){
+            AddToBootstrapRealizations(picked_plates, plate);
+        }
+                                       
     }
     
     // normalize cross-correlation
     NormalizeCrossCorrelation();
-    
-    // compute bootstap realizations
-    if (flag_compute_bootstrap_){        
-        ComputeBootstrapRealizations();
-    }
     
     // save cross-correlation measurements
     SaveCrossCorrelation();
     
 }
 
-void CorrelationResults::ComputeBootstrapRealizations(){
+void CorrelationResults::AddToBootstrapRealizations(const std::vector<std::vector<size_t> >& picked_plates, const CorrelationPlate& plate){
     /**
      EXPLANATION:
-     Computes and normalizes the bootstrap realizations
+     Adds the contribution of a single plate to the corresponding bootstrap realizations
      
      INPUTS:
-     NONE
+     picked_plates - a vector containing the selected plates for each of the bootstrap realizations
+     plate - a CorrelationPlate with the correlation measured in a single plate
      
      OUTPUTS:
      NONE
@@ -236,36 +261,24 @@ void CorrelationResults::ComputeBootstrapRealizations(){
      FUNCITONS USED:
      NONE
      */
-    int number_of_plates = plates_list_.size();
-    int plate_chosen;
     
-    if (flag_verbose_correlation_results_ >= 1){
-        std::cout << "Computing bootstrap realizations" << std::endl;
+    if (flag_verbose_correlation_results_ >= 2){
+        std::cout << "Adding plate to bootstrap realizations" << std::endl;
     }
     
     #pragma omp parallel for ordered schedule(dynamic)
     for (size_t i = 0; i < bootstrap_.size(); i ++){
-
-        for (size_t j = 0; j < number_of_plates; j ++){
-                        
-            // pick plate
-            plate_chosen = rand() % number_of_plates;
-            
-            // add to average
-            bootstrap_[i] += (*correlation_plates_.find(plates_list_[plate_chosen])).second;
-            
-        }
         
-        bootstrap_[i].Normalize();
-        
-        if (flag_verbose_correlation_results_ >= 2 or (flag_verbose_correlation_results_ >= 1 and i == i/100*100)){
-            #pragma omp critical (cout)
-            {
-            std::cout << i << " out of " << bootstrap_.size() << " bootstrap realizatons computed" << std::endl;
+        for (size_t j = 0; j < picked_plates[i].size(); j ++){
+            
+            // add plate to bootstrap realization
+            if (picked_plates[i][j] == plate.plate_number()){
+                bootstrap_[i] += plate;
             }
         }
-        
     }
+    
+    
 }
 
 void CorrelationResults::CreateBinFiles(){
@@ -288,95 +301,20 @@ void CorrelationResults::CreateBinFiles(){
     
     for (int bin = 0; bin < num_bins_; bin ++){
         
-        std::string file = detailed_results_ + ToStr(bin) + ".fits";
+        std::string filename = detailed_results_ + ToStr(bin) + ".dat";
         if (flag_verbose_correlation_results_ >= 1){
-            std::cout << "creating file:" << std::endl << file << std::endl;
+            std::cout << "creating file:" << std::endl << filename << std::endl;
         }
         
-        // removing previous bin file
-        remove(file.c_str());
-        
-        // construct fits object
-        std::auto_ptr<CCfits::FITS> pFits(0);
-        
-        try{
-            pFits.reset(new CCfits::FITS(file, CCfits::Write));
-            
-        }
-        catch(CCfits::FITS::CantOpen){
-            
-            throw "Error: Couldn't open file";
-        }
-        
-        // define columns
-        size_t rows = 0;
-        std::vector<std::string> colName(6);
-        std::vector<std::string> colFormat(6);
-        std::vector<std::string> colUnits(6);
-        
-        colName[0] = "spectrum RA";
-        colFormat[0] = "D";
-        colUnits[0] = "rad";
-        
-        colName[1] = "spectrum DEC";
-        colFormat[1] = "D";
-        colUnits[1] = "rad";
-        
-        colName[2] = "pixel dist";
-        colFormat[2] = "D";
-        colUnits[2] = "h^{-1}Mpc";
-        
-        colName[3] = "pixel number";
-        colFormat[3] = "I";
-        colUnits[3] = "";
-        
-        colName[4] = "pixel weight";
-        colFormat[4] = "D";
-        colUnits[4] = "";
-        
-        colName[5] = "pixel z";
-        colFormat[5] = "D";
-        colUnits[5] = "";
-        
-        // create a header data unit for each of the plates
-        for (PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.begin(); it != correlation_plates_.end(); it ++){
-            
-            std::string hduName = ToStr((*it).first);
-            CCfits::Table* newTable = (*pFits).addTable(hduName, rows, colName, colFormat, colUnits);
-        }
-        
-        
-        /*
-         OLD STUFF
-        // creating directory for the bin
-        std::string directory_name = detailed_results_ + ToStr(bin)+"/";
-        if (flag_verbose_correlation_results_ >= 2){
-            std::string command = "mkdir -p -v " + directory_name;
-            std::cout << command << std::endl;
-            system(command.c_str());
+        // writing headers in file (open the file erasing the previous content)
+        std::ofstream bin_file(filename.c_str(),std::ofstream::trunc);
+        if (bin_file.is_open()){
+            bin_file << "# obj_plate obj_num spec_plate spec_fiber spec_MJD pixel_number pixel_delta pixel_z pixel_w \n";
+            bin_file.close();
         }
         else{
-            std::string command = "mkdir -p " + directory_name;
-            system(command.c_str());
+            std::cout << "Error : In CorrelationResults::CreateBinFiles : Unable to open file:" << std::endl << filename << std::endl;
         }
-        
-        // creating bin files for each of the plates
-        for (PlatesMapSimple<CorrelationPlate>::map::iterator it = correlation_plates_.begin(); it != correlation_plates_.end(); it ++){
-            
-            std::string filename = directory_name + (*it).second.pairs_file_name();
-            
-            // writing headers in file (open the file erasing the previous content)
-            std::ofstream bin_file(filename.c_str(),std::ofstream::trunc); 
-            if (bin_file.is_open()){
-                bin_file << "# spectrum_RA spectrum_DEC pixel_dist pixel_number pixel_w\n";
-                bin_file.close();
-            }
-            else{
-                std::cout << "Error : In CorrelationResults::CreateBinFiles : Unable to open file:" << std::endl << filename << std::endl;
-            }            
-            
-        }
-        */
     }
 }
 
@@ -403,13 +341,19 @@ void CorrelationResults::NormalizeCrossCorrelation(){
         std::cout << "Normalizing cross-correlation" << std::endl;
     }
     
-    for (size_t i = 0; i < plates_list_.size(); i++){
-        
-        normalized_correlation_ += (*correlation_plates_.find(plates_list_[i])).second;
-    
+    for (size_t i = 0; i < correlation_threads_.size(); i++){
+        normalized_correlation_ += correlation_threads_[i];
     }
+    
     normalized_correlation_.Normalize();
 
+    // noremalize bootstrap realizations
+    if (flag_compute_bootstrap_){
+        for (size_t i = 0; i < bootstrap_.size(); i ++){
+            bootstrap_[i].Normalize();
+        }
+    }
+    
     
 }
 
@@ -433,35 +377,6 @@ void CorrelationResults::SaveCrossCorrelation(){
      */
     
     std::string filename;
-    
-    // save plate contribution to cross-correlation in each of the bins
-    if (flag_write_partial_results_ >= 2){
-        if (flag_verbose_correlation_results_ >= 1){
-            std::cout << "Saving individual plate contributions to the cross-correlations" << std::endl;
-        }
-        for (int bin = 0; bin < num_bins_; bin ++){
-            
-            filename = results_ + output_base_name_ + ".bin" + ToStr(bin) + ".data";
-            
-            // open the file erasing the previous content)
-            std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-            if (file.is_open()){
-                file << "# Note: the following are not normalized" << std::endl;
-                file << "# " << CorrelationPlate::InfoHeader() << std::endl;
-                
-                for (size_t i = 0; i < plates_list_.size(); i++){
-                    
-                    file << (*correlation_plates_.find(plates_list_[i])).second.Info(bin) << std::endl;
-                }
-                
-                file.close();
-            }
-            else{
-                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
-            }
-        }
-        
-    }
     
     // save normalized cross-correlation
     if (flag_verbose_correlation_results_ >= 1){
@@ -534,12 +449,12 @@ void CorrelationResults::SaveCrossCorrelation(){
         }
     }
     // save bootstrap realizations
-    if (flag_compute_bootstrap_ and flag_write_partial_results_ >= 1){
+    if (flag_compute_bootstrap_){
         if (flag_verbose_correlation_results_ >= 1){
             std::cout << "Saving bootstrap realizations" << std::endl;
         }
         for (size_t i = 0; i < bootstrap_.size(); i ++){
-            filename = bootstrap_results_ + output_base_name_ + ".bootstrap" + ToStr(i) + ".data";
+            filename = bootstrap_results_ + ".bootstrap" + ToStr(i) + ".data";
             {
                 std::ofstream file(filename.c_str(),std::ofstream::trunc); 
                 if (file.is_open()){
@@ -556,25 +471,7 @@ void CorrelationResults::SaveCrossCorrelation(){
                 }
             }
             
-            filename = output_base_name_ + ".bootstrap" + ToStr(i) + ".full.data";
-            {
-                std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-                if (file.is_open()){
-                    file << "# bin index " << CorrelationPlate::InfoHeader() << std::endl;
-                    
-                    for (size_t j = 0; j < num_bins_; j++){
-                        
-                        file << bootstrap_[i].Info(j) << " " << j << std::endl;
-                    }
-                    
-                    file.close();
-                }
-                else{
-                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
-                }
-            }
-            
-            filename = bootstrap_results_ + output_base_name_ + ".bootstrap" + ToStr(i) + ".grid";
+            filename = bootstrap_results_ + ".bootstrap" + ToStr(i) + ".grid";
             {
                 std::ofstream file(filename.c_str(),std::ofstream::trunc);
                 if (file.is_open()){

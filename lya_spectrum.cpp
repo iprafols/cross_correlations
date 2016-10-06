@@ -129,9 +129,8 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     data.keyWord(spmf).value(pmf);
     
     plate_ = atoi(strtok((char*)pmf.c_str(),"-"));
-    mjd_ = atoi(strtok((char*)pmf.c_str(),"-"));
-    fiber_ = atoi(strtok((char*)pmf.c_str(),"-"));
-
+    mjd_ = atoi(strtok(NULL,"-"));
+    fiber_ = atoi(strtok(NULL,"-"));
 }
 
 LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::valarray<double>& lobs, std::valarray<double>& delta, std::valarray<double>& weight, const double& lya_wl, const bool radians){

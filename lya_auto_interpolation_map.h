@@ -14,6 +14,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <vector>
 ////////

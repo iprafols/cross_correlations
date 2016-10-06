@@ -203,6 +203,8 @@ void PairDataset::Load(const std::vector<int>& plates){
     // setting size to zero
     size_ = 0;
     
+    // TODO: fix fits HDU
+    /*
     // setting the catalog columns to be read
     std::vector<std::string> fields(6);
     fields[0] = "spectrum RA";
@@ -281,7 +283,7 @@ void PairDataset::Load(const std::vector<int>& plates){
         }
         
     }
-    
+    */
     if (flag_verbose_pair_dataset_ >= 1){
         std::cout << "Loaded " << size_ << " pairs" << std::endl;
     }

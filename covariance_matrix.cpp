@@ -108,7 +108,7 @@ double CovarianceMatrix::bootstrap_cov_mat(size_t i,size_t j) const{
 double CovarianceMatrix::cov_mat(size_t i,size_t j) const{
     /**
      EXPLANATION:
-     Access function for covmat_
+     Access function for cov_mat_
      
      INPUTS:
      i,j - Indexes of the selected cov_mat_ element
@@ -253,6 +253,12 @@ void CovarianceMatrix::ComputeCovMat(const AstroObjectDataset& object_list, cons
         // compute covariance matrix in selected plate
         plate.ComputeCovMat(object_list, spectra_list, input, lya_auto);
         
+        // save covariance matrix in plate
+        if (input.flag_write_partial_results() >= 1){
+            plate.SaveCovMat(input);
+        }
+        
+        
         // add to total value
         int thread_num = omp_get_thread_num();
         covariance_threads_[thread_num] += plate;
@@ -327,28 +333,13 @@ void CovarianceMatrix::NormalizeCovMat(){
         std::cout << "Normalizing covariance matrix" << std::endl;
     }
     
-    /*for (size_t i = 0; i < plates_list_.size(); i++){
-        
-        normalized_cov_mat_ += (*covariance_plates_.find(plates_list_[i])).second;
-        
-    }*/
     for (size_t i = 0; i < covariance_threads_.size(); i++){
         
         normalized_cov_mat_ += covariance_threads_[i];
         
     }
     
-    // test tocheck the total weights of the bins
-    if (flag_verbose_covariance_matrix_ >= 3){
-        std::cout << "TEST TO CHECK THE TOTAL WEIGHTS OF THE BINS: compare the values with those of *.full.data" << std::endl;
-        for (size_t i = 0; i < num_bins_; i++){
-            std::cout << i << " " << normalized_cov_mat_.weight(i) << std::endl;
-        }
-        std::cout << "END OF TEST" << std::endl;
-    }
-    
     normalized_cov_mat_.Normalize();
-
     cov_mat_ = normalized_cov_mat_.cov_mat();
 }
 

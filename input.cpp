@@ -65,6 +65,10 @@ Input::Input(const std::string& filename){
     }
     command = "mkdir -p -v " + output_ + plots_;
     system(command.c_str());
+    if (flag_compute_bootstrap_){
+        command = "mkdir -p -v " + bootstrap_results_;
+        system(command.c_str());
+    }
     
     // write the used and unused parameters from the .ini file
     if (filename != ""){
@@ -222,16 +226,19 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // bootstrap settings
-    num_bootstrap_ = 10000;
-    bootstrap_results_ = results_ + "bootstrap_realizations/";
+    num_bootstrap_ = 100;
+    bootstrap_results_ = output_ + "bootstrap_realizations/";
     
     
     // -------------------------------------------------------------
     // lya autocorrelation settings
-    lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft_interpolated.out";
+    lya_auto_correlation_ = input_ + "lya_auto_correlation.dat";
     lya_pixel_width_ = 210.0; // (in km/s)
     sigma_psf_ = 70.0; // (in km/s)
     pixels_separation_ = 5; // (in number of pixels)
+    z_min_interpolation_ = 1.96;
+    z_max_interpolation_ = 3.44;
+    num_points_interpolation_ = 400;
     
     
     // -------------------------------------------------------------
@@ -246,9 +253,6 @@ void Input::SetDefaultValues(){
     lya_wl_ = 1215.67; // in angs
     z_min_ = 2.0;
     z_max_ = 3.5;
-    z_min_interpolation_ = 1.5; 
-    z_max_interpolation_ = 4.0; 
-    num_points_interpolation_ = 30000; 
     nhi_min_ = 20.0;
     nhi_max_ = 22.0;
     cnr_min_ = 3.0;
@@ -1197,15 +1201,9 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     // updating bootstrap_results_ if necessary
     it = input_flag.find("output");
-    it2 = input_flag.find("results");  
-    it3 = input_flag.find("bootstrap_results");
-    if ((it != input_flag.end() or it2 != input_flag.end()) and it3 == input_flag.end()){
-        if (it2 != input_flag.end()){
-            bootstrap_results_ = results_ + "bootstrap_realizations/";
-        }
-        else{
-            bootstrap_results_ = output_ + "partial_results/bootstrap_realizations/";
-        }
+    it2 = input_flag.find("bootstrap_results");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        bootstrap_results_ = output_ + "bootstrap_realizations/";
     }
     
     // updating dataset1_ if necessary
@@ -1356,7 +1354,12 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it = input_flag.find("input");
     it2 = input_flag.find("lya_auto_correlation");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        lya_auto_correlation_ = input_ + "PalanqueDelabrouille_1DPk-Fft.out";
+        if (flag_project_deltas_){
+            lya_auto_correlation_ = input_ + "lya_auto_correlation_projected.dat";
+        }
+        else{
+            lya_auto_correlation_ = input_ + "lya_auto_correlation.dat";
+        }
     }
     else if (it2 != input_flag.end() and lya_auto_correlation_[0] != '/'){
         lya_auto_correlation_ = input_ + lya_auto_correlation_;

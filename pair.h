@@ -37,13 +37,28 @@ public:
     Pair(double bad_data);
     
     // constructs object and initializes its variables
-    Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight, const double& pixel_z);
+    Pair(const int& obj_plate, const int& object_num, const int& spec_plate, const int& spec_fiber, const int& spec_mjd, const int& pixel_number, const double& pixel_delta, const double& pixel_z, const double& pixel_weight);
     
     // -------------------------------------------------------------
     // access methods
     
-    // distance to pixel
-    double pixel_dist() const {return pixel_dist_;}
+    // object plate
+    int obj_plate() const {return obj_plate_;}
+    
+    // object num in that plate's list
+    int obj_num() const {return obj_num_;}
+    
+    // spectrum plate
+    int spec_plate() const {return spec_plate_;}
+    
+    // spectrum fiber
+    int spec_fiber() const {return spec_fiber_;}
+    
+    // spectrum mjd
+    int spec_mjd() const {return spec_mjd_;}
+    
+    // pixel delta field
+    double pixel_delta() const {return pixel_delta_;}
     
     // pixel number
     int pixel_number() const {return pixel_number_;}
@@ -54,16 +69,6 @@ public:
     // pixel redshift
     double pixel_z() const {return pixel_z_;}
     
-    // spectrum angle
-    SpherePoint spectrum_angle() const {return spectrum_angle_;}
-    
-    // spectrm right asention
-    double spectrum_ra() const {return spectrum_angle_.ra();}
-    
-    // spectrm declination
-    double spectrum_dec() const {return spectrum_angle_.dec();}
-
-
     // -------------------------------------------------------------
     // other methods
     
@@ -72,8 +77,24 @@ public:
     
     
 private:
-    // distance to pixel
-    double pixel_dist_;
+    
+    // object plate
+    int obj_plate_;
+    
+    // object num in that plate's list
+    int obj_num_;
+    
+    // spectrum plate
+    int spec_plate_;
+    
+    // spectrum fiber
+    int spec_fiber_;
+    
+    // spectrum mjd
+    int spec_mjd_;
+    
+    // pixel delta field
+    double pixel_delta_;
     
     // pixel number
     int pixel_number_;
@@ -83,10 +104,6 @@ private:
     
     // pixel redshift
     double pixel_z_;
-    
-    // spectrum angle
-    SpherePoint spectrum_angle_;
-    
 
     
 };

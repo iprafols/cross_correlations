@@ -162,7 +162,7 @@ int main(int argc, char *argv[]){
     if (input.flag_compute_cross_correlation()){
         CorrelationResults results(input, kPlateNeighbours);
         
-        results.ComputeCrossCorrelation(*object_list, *spectra_list, input);
+        results.ComputeCrossCorrelation(*object_list, *spectra_list, input, kPlateNeighbours);
         if (flag_verbose_main >= 2){
             std::cout << "Plotting cross-correlation" << std::endl;
         }

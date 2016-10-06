@@ -71,6 +71,9 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     }
     
     // initialize cross-correlation computations
+    if (flag_verbose_correlation_plate_ >= 3){
+        std::cout << "CorrelationPlate: initialize cross-correlation" << std::endl;
+    }
     xi_.resize(num_bins_,0.0);
     mean_pi_.resize(num_bins_,0.0);
     mean_sigma_.resize(num_bins_,0.0);
@@ -81,12 +84,20 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     weight_z_ = 0.0;
     
     // pair storage settings
-    if (flag_write_partial_results_ > 0){
-        max_pairs_ = 100;
-        for (int i = 0; i < num_bins_; i++){
-            position_[i] = 0;
+    if (flag_write_partial_results_ >= 2){
+        if (flag_verbose_correlation_plate_ >= 3){
+            std::cout << "CorrelationPlate: pair storage settings" << std::endl;
         }
-        pairs_information_.reserve(max_pairs_);
+        max_pairs_ = 100;
+        position_.resize(num_bins_, 0);
+        if (flag_verbose_correlation_plate_ >= 3){
+            std::cout << "CorrelationPlate: reserving space" << std::endl;
+        }
+        
+        std::vector<Pair> aux;
+        aux.resize(max_pairs_, Pair(_BAD_DATA_));
+        pairs_information_.resize(num_bins_, aux);
+        
     }
 }
 
@@ -601,7 +612,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                             {
                                 std::cout << "min_sigma = " << pair_min_sigma << std::endl;
                                 std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_sigma << std::endl << std::endl;
                             }
                         }
                     }
@@ -629,7 +640,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                             {
                                 std::cout << "max_pi = " << pair_max_pi << std::endl;
                                 std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_max_pi << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_max_pi << std::endl << std::endl;
                             }
                         }
                     }
@@ -648,7 +659,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                             {
                                 std::cout << "min_pi = " << pair_min_pi << std::endl;
                                 std::cout << "ra_object dec_object ra_spectra dec_spectra cos_theta theta min_sigma" << std::endl;
-                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_pi << std::endl;
+                                std::cout << object.angle() << " " << lya_spectrum.angle() << " " << cos_theta << " " << acos(cos_theta) << " " << pair_min_pi << std::endl << std::endl;
                             }
                         }
                     }
@@ -729,25 +740,49 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                         
                     }
                     // add contribution to xi in the specified bin
+                    if (flag_verbose_correlation_plate_ >= 3){
+                        #pragma omp critical (cout)
+                        {
+                            std::cout << "Pixel accepted: addign contribution to bin " << k_index << std::endl;
+                        }
+                    }
                     AddPair(k_index, spectrum[p], pi, sigma);
                     
                     // add contribution to mean redshift
+                    if (flag_verbose_correlation_plate_ >= 3){
+                        #pragma omp critical (cout)
+                        {
+                            std::cout << "Pixel accepted: addign contribution to mean redshift " << k_index << std::endl;
+                        }
+                    }
                     mean_z_ += spectrum[p].z()*spectrum[p].weight();
                     weight_z_ += spectrum[p].weight();
                     
                     // write down pair information in bin file
-                    if (flag_write_partial_results_ >= 1){
-                        KeepPair(k_index, lya_spectrum, p);
+                    if (flag_write_partial_results_ >= 2){
+                        if (flag_verbose_correlation_plate_ >= 3){
+                            #pragma omp critical (cout)
+                            {
+                                std::cout << "Pixel accepted: keeping pair" << std::endl;
+                            }
+                        }
+                        KeepPair(k_index, lya_spectrum, p, plate_number_, i);
                     }
                     
                 }
             }
         }
     }
+    if (flag_verbose_correlation_plate_ >= 3){
+        std::cout << "CorrelationPlate: correlation computed" << std::endl;
+    }
     
-    if (flag_write_partial_results_ >= 1){
+    if (flag_write_partial_results_ >= 2){
         for (size_t i = 0; i < num_bins_; i++){
             if (position_[i] > 0){
+                if (flag_verbose_correlation_plate_ >= 3){
+                    std::cout << "CorrelationPlate: saving pairs" << std::endl;
+                }
                 SavePairs(i);
             }
         }
@@ -806,7 +841,7 @@ std::string CorrelationPlate::InfoHeader(){
     return "xi mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
 }
 
-void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number){
+void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t obj_plate, const size_t obj_num){
     /**
      EXPLANATION:
      Keeps the pair information to save at an appropiate time
@@ -815,6 +850,8 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
      k_index - an integer specifying the pair's bin
      lya_spectrum - a LyaSpectrum instance
      pixel_number - an unsigned integral with the position of the pixel contributing to the pair
+     obj_plate - plate the object is found in
+     obj_num - number of object in that plate list
      
      OUTPUTS:
      NONE
@@ -830,16 +867,25 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
      ToStr
      */
     
-    LyaPixel pixel = lya_spectrum.spectrum(pixel_number);
-    SpherePoint angle = lya_spectrum.angle();
+    if (flag_verbose_correlation_plate_ >= 3){
+        std::cout << "CorrelationPlate: format pair to store" << std::endl;
+    }
     
-    Pair pair(angle.ra(), angle.dec(), pixel_number, pixel.dist(), pixel.weight(), pixel.z());
+    LyaPixel pixel = lya_spectrum.spectrum(pixel_number);
+    
+    Pair pair(obj_plate, obj_num, lya_spectrum.plate(), lya_spectrum.fiber(), lya_spectrum.mjd(), pixel_number, pixel.delta(), pixel.z(), pixel.weight());
+    
+    if (flag_verbose_correlation_plate_ >= 3){
+        std::cout << "CorrelationPlate: store pair" << std::endl;
+    }
     
     pairs_information_[k_index][position_[k_index]] = pair;
     position_[k_index] ++;
     
     if (position_[k_index] == max_pairs_){
-        
+        if (flag_verbose_correlation_plate_ >= 3){
+            std::cout << "CorrelationPlate: saving pairs" << std::endl;
+        }
         SavePairs(k_index);
     }
 }
@@ -868,8 +914,8 @@ void CorrelationPlate::Normalize(){
                 
             if (weight_[i] == 0.0){
                 // if the weight is zero, complain and exit the function
-                std::cout << "Zero Division Error in CorrelationPlate::Normalize. Aborting..." << std::endl;
-                return;
+                std::cerr << "Zero Division Error in CorrelationPlate::Normalize. Ignoring..." << std::endl;
+                continue;
             }
             // if the weight is 1.0, normalization is not needed
             else if (weight_[i] != 1.0){
@@ -888,6 +934,81 @@ void CorrelationPlate::Normalize(){
     else{
         // if plate number is not _NORM_, the instance is not supposed to normalize
         std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+    }
+    
+}
+
+void CorrelationPlate::SaveCrossCorrelation(const Input& input){
+    /**
+     EXPLANATION:
+     Saves the cross correlation measured in a specific plate
+     
+     INPUTS:
+     input - a Input instance 
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    std::string filename;
+    
+    if (plate_number_ == _NORM_){
+        // if plate number is _NORM_, the instance is not supposed to be saved using this function
+        std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+    }
+    else{
+        // save normalized cross-correlation
+        if (flag_verbose_correlation_plate_ >= 1){
+            std::cout << "Saving cross-correlation for plate " << pairs_file_name_ << std::endl;
+        }
+        filename = input.results() + "plate_" + pairs_file_name_ + ".data";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    if (weight_[i] != 0.0){
+                        file << i << " " << xi_[i]/weight_[i] << std::endl;
+                    }
+                    else{
+                        file << i << " NaN" << std::endl;
+                    }
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+        filename = input.results() + "plate_" + pairs_file_name_ + ".grid";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    if (weight_[i] != 0.0){
+                        file << i << " " <<  mean_pi_[i]/weight_[i] << " " << mean_sigma_[i]/weight_[i] << " " << mean_z_in_bin_[i]/weight_[i] << std::endl;
+                    }
+                    else{
+                        file << i << " NaN NaN Nan" << std::endl;
+                    }
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+
     }
     
 }
@@ -915,52 +1036,28 @@ void CorrelationPlate::SavePairs(const int& k_index){
      */
     
     std::string filename;
-    filename = results_ + ToStr(k_index) + ".fits";
     
-    // prepare variables to write in the table
-    size_t size = position_[k_index];
+    filename = results_ + ToStr(k_index) + ".dat";
+    std::ofstream bin_file(filename.c_str(),std::ofstream::app);
     
-    std::valarray<double> spectrum_ra(size);
-    std::valarray<double> spectrum_dec(size);
-    std::valarray<double> pixel_dist(size);
-    std::valarray<int> pixel_number(size);
-    std::valarray<double> pixel_weight(size);
-    std::valarray<double> pixel_z(size);
-    
-    for (size_t i = 0; i < size; i++){
-        spectrum_ra[i] = pairs_information_[k_index][i].spectrum_ra();
-        spectrum_dec[i] = pairs_information_[k_index][i].spectrum_dec();
-        pixel_dist[i] = pairs_information_[k_index][i].pixel_dist();
-        pixel_number[i] = pairs_information_[k_index][i].pixel_number();
-        pixel_weight[i] = pairs_information_[k_index][i].pixel_weight();
-        pixel_z[i] = pairs_information_[k_index][i].pixel_z();
-    }
-    
-    // construct fits object
-    #pragma omp critical(writepartialresults)
-    {
-        std::auto_ptr<CCfits::FITS> pFits(0);
-    
-        try{
-            pFits.reset(new CCfits::FITS(filename,CCfits::Write));
+    if (bin_file.is_open()){
+        for (size_t i = 0; i < position_[k_index]; i++){
+            bin_file << pairs_information_[k_index][i].obj_plate() << " ";
+            bin_file << pairs_information_[k_index][i].obj_num() << " ";
+            bin_file << pairs_information_[k_index][i].spec_plate() << " ";
+            bin_file << pairs_information_[k_index][i].spec_fiber() << " ";
+            bin_file << pairs_information_[k_index][i].spec_mjd() << " ";
+            bin_file << pairs_information_[k_index][i].pixel_number() << " ";
+            bin_file << pairs_information_[k_index][i].pixel_delta() << " ";
+            bin_file << pairs_information_[k_index][i].pixel_z() << " ";
+            bin_file << pairs_information_[k_index][i].pixel_weight() << " \n";
+            
         }
-        catch(CCfits::FITS::CantOpen){
-            throw "Error : In CorrelationPlate::SavePairs : Unable to open file: \n " + ToStr(filename);
-        }
-        // read table from file
-        CCfits::ExtHDU& table = (*pFits).extension(pairs_file_name_);
-    
-        long NAXIS2 = table.axis(1);
-    
-        // write data in the table
-        table.column("spectrum RA").write(spectrum_ra,NAXIS2+1);
-        table.column("spectrum DEC").write(spectrum_dec,NAXIS2+1);
-        table.column("pixel dist").write(pixel_dist,NAXIS2+1);
-        table.column("pixel number").write(pixel_number,NAXIS2+1);
-        table.column("pixel weight").write(pixel_weight,NAXIS2+1);
-        table.column("pixel z").write(pixel_z,NAXIS2+1);
+        bin_file.close();
     }
-    
+    else{
+        std::cout << "Error : In CorrelationPlate::SavePairs : Unable to open file:" << std::endl << filename << std::endl;
+    }
     
     CorrelationPlate::position_[k_index] = 0;
 }

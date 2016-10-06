@@ -152,7 +152,10 @@ public:
     static std::string InfoHeader();
     
     // Normalizes the cross correlation results
-    void Normalize();    
+    void Normalize();
+    
+    // Saves the cross correlation resutls
+    void SaveCrossCorrelation(const Input& input);
     
     
     // -------------------------------------------------------------
@@ -228,7 +231,7 @@ private:
     void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
 
     // keeps the pair information for latter storage
-    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number);
+    void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t obj_plate, const size_t obj_num);
     
     // write down pair information in bin file
     void SavePairs(const int& k_index);

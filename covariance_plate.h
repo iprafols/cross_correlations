@@ -17,6 +17,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+// TODO: remove this test
+#include "omp.h"
+// end of test
 ////////
 
 // classes needed
@@ -64,8 +67,9 @@ public:
     CovMat cov_mat() const {return cov_mat_;}
     
     // access functions for weight_
+    //CovMat weight() const {return weight_;}
     std::vector<double> weight() const {return weight_;}
-    double weight(size_t index) const;
+    double weight(size_t i) const;
     
     // access function for flag_verbose_covariance_plate_
     size_t flag_verbose_covariance_plate() const {return flag_verbose_covariance_plate_;}
@@ -90,7 +94,8 @@ public:
     void set_num_averaged_pairs(size_t index, int value);
     
     // set weight_
-    void set_weight(size_t index, double value);
+    //void set_weight(size_t i, size_t j, double value);
+    void set_weight(size_t i, double value);
     
     // -------------------------------------------------------------
     // other methods
@@ -99,7 +104,10 @@ public:
     void ComputeCovMat(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const std::vector<LyaAutoInterpolationMap>& lya_auto);
     
     // Normalizes the cross correlation results
-    void Normalize();    
+    void Normalize();
+    
+    // Saves the covariance matrix
+    void SaveCovMat(const Input& input);
     
     
     // -------------------------------------------------------------
@@ -139,10 +147,14 @@ private:
     // number of bins
     size_t num_bins_;
     
+    // pairs file name
+    std::string pairs_file_name_;
+    
     // plate number for neighbouring plates
     std::vector<int> plate_neighbours_;
     
     // weight
+    //CovMat weight_;
     std::vector<double> weight_;
 
     // -------------------------------------------------------------

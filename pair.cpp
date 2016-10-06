@@ -30,24 +30,32 @@ Pair::Pair(double bad_data){
         std::exit(EXIT_FAILURE);
     }
 
+    obj_plate_ = _BAD_DATA_INT_;
+    obj_num_ = _BAD_DATA_INT_;
+    spec_plate_ = _BAD_DATA_INT_;
+    spec_fiber_ = _BAD_DATA_INT_;
+    spec_mjd_ = _BAD_DATA_INT_;
     pixel_number_ = _BAD_DATA_INT_;
-    pixel_dist_ = _BAD_DATA_;
+    pixel_delta_ = _BAD_DATA_;
     pixel_weight_ = _BAD_DATA_;
     pixel_z_ = _BAD_DATA_;
 }
 
-Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pixel_number, const double& pixel_dist, const double& pixel_weight, const double& pixel_z){
+Pair::Pair(const int& obj_plate, const int& obj_num, const int& spec_plate, const int& spec_fiber, const int& spec_mjd, const int& pixel_number, const double& pixel_delta, const double& pixel_z, const double& pixel_weight){
     /**
      EXPLANATION:
      Cosntructs a Pair instance
      
      INPUTS:
-     spectrum_ra - spectrum's right ascension (in radians)
-     spectrum_dec - spectrum's declination (in radians)
+     obj_plate - plate the object is found in
+     obj_num - number of object in that plate list
+     spec_plate - spectrum's plate
+     spec_fiber - spectrum's fiber
+     spec_mjd - spectrum's MJD
      pixel_number - pixel number
-     pixel_dist - distance to pixel
-     pixel_weight - pixel's weight
+     pixel_delta - pixel's delta field
      pixel_z - pixel's redshift
+     pixel_weight - pixel's weight
      
      OUTPUTS:
      NONE
@@ -58,10 +66,14 @@ Pair::Pair(const double& spectrum_ra, const double& spectrum_dec, const int& pix
      FUNCITONS USED:
      NONE
      */
-    SpherePoint angle(spectrum_ra, spectrum_dec);
-    spectrum_angle_ = angle;
+    
+    obj_plate_ = obj_plate;
+    obj_num_ = obj_num;
+    spec_plate_ = spec_plate;
+    spec_fiber_ = spec_fiber;
+    spec_mjd_ = spec_mjd;
     pixel_number_ = pixel_number;
-    pixel_dist_ = pixel_dist;
+    pixel_delta_ = pixel_delta;
     pixel_weight_ = pixel_weight;
     pixel_z_ = pixel_z;
     

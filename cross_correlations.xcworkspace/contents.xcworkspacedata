@@ -5,7 +5,13 @@
       location = "container:main_correlation.cpp">
    </FileRef>
    <FileRef
-      location = "group:/Users/iprafols/software/development/cross_correlations/main_test.cpp">
+      location = "group:/Users/iprafols/software/development/cross_correlations/main_compute_lya_1d.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:test_lya_auto.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:test_lya_deltas.cpp">
    </FileRef>
    <Group
       location = "container:../../../Library/Autosave Information"
@@ -193,16 +199,17 @@
          location = "container:typedefs.h">
       </FileRef>
    </Group>
-   <FileRef
-      location = "group:esquema.rtf">
-   </FileRef>
+   <Group
+      location = "container:"
+      name = "Python complementary scripts">
+      <FileRef
+         location = "group:lib/correlation_process.py">
+      </FileRef>
+   </Group>
    <FileRef
       location = "group:makefile">
    </FileRef>
    <FileRef
-      location = "group:explanatory.ini">
-   </FileRef>
-   <FileRef
-      location = "group:TODO.rtf">
+      location = "group:config/explanatory.ini">
    </FileRef>
 </Workspace>

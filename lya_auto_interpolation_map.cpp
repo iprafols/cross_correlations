@@ -41,7 +41,12 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
         while (getline(file,line)){
             std::vector<std::string> cols = Split(line," ");
             
-            if (double(atof(cols[0].c_str())) != aux_z){
+            if (cols.size() < n + 2){
+                throw std::invalid_argument( "invalid distance between pixels, check that compute_lya_1d.run was executed with the correct value for pixels_separation" );
+            }
+            interpolation_map_[atof(cols[0].c_str())] = atof(cols[n + 1].c_str());
+            // TODO: remove old stuff
+            /*if (double(atof(cols[0].c_str())) != aux_z){
                 // integrate pk and add autocorrelation to interpolation map
                 if (not k_pk.empty()){
                     value = IntegratePk(k_pk, n, lya_pixel_width, sigma_psf);
@@ -57,6 +62,7 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
             
             // add pair of (k, p(k)) to vector
             k_pk.push_back(std::pair<double, double>(double(atof(cols[1].c_str())), double(atof(cols[2].c_str()))));
+            */
             
         }
         

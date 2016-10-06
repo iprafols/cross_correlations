@@ -69,10 +69,6 @@ public:
     // access function for output_base_name_
     std::string output_base_name() const {return output_base_name_;}
     
-    // access function for correlation_plates_
-    PlatesMapSimple<CorrelationPlate>::map correlation_plates() const {return correlation_plates_;}
-    CorrelationPlate correlation_plates(int plate_num) const;
-    
     // access function for compute_bootstrap_
     bool flag_compute_bootstrap() const {return flag_compute_bootstrap_;}
     
@@ -97,7 +93,7 @@ public:
     // other methods
         
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const PlateNeighbours& kPlateNeighbours);
     
     // create bin files
     void CreateBinFiles();
@@ -114,8 +110,8 @@ private:
     // bootstrap results folder
     std::string bootstrap_results_;
     
-    // map containing the correlation in the different plates
-    PlatesMapSimple<CorrelationPlate>::map correlation_plates_;
+    // vector containing the correlation computed with different threads
+    std::vector<CorrelationPlate> correlation_threads_;
     
     // detailed results directory (this is where the pairs detailed contribution to the corresponding plate and bin is stored)
     std::string detailed_results_;
@@ -156,10 +152,10 @@ private:
     // -------------------------------------------------------------
     // methods
     
-    // compute bootstrap realizations
-    void ComputeBootstrapRealizations();
+    // add the contribution of a single plate to the corresponding bootstrap realizations
+    void AddToBootstrapRealizations(const std::vector<std::vector<size_t> >& picked_plates, const CorrelationPlate& plate);
 
-    // Normalizes the cross correlation results
+    // normalize the cross correlation results
     void NormalizeCrossCorrelation();
     
     // save the cross correlation results

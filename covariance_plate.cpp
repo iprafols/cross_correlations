@@ -60,14 +60,16 @@ CovariancePlate::CovariancePlate(const Input& input, const int plate_number, con
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = input.num_bins();
+    pairs_file_name_ = ToStr(plate_number_);
     
     // initialize covariance matrix computation
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
             cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
+            //weight_[std::pair<size_t,size_t>(i,j)] = 0.0;
         }
     }
-    weight_.resize(num_bins_,0.0);
+    weight_.resize(num_bins_, 0.0);
     
 }
 
@@ -102,12 +104,13 @@ CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, con
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
             cov_mat_[std::pair<size_t,size_t>(i,j)] = 0.0;
+            //weight_[std::pair<size_t,size_t>(i,j)] = 0.0;
         }
     }
-    weight_.resize(num_bins_,0.0);
+    weight_.resize(num_bins_, 0.0);
 }
 
-double CovariancePlate::weight(size_t index) const {
+double CovariancePlate::weight(size_t i) const{
     /**
      EXPLANATION:
      Access function for weight_
@@ -116,7 +119,7 @@ double CovariancePlate::weight(size_t index) const {
      index - index of the selected weight_ element
      
      OUTPUTS:
-     NONE
+     the weight for the selected bin
      
      CLASSES USED:
      CorrelationPlate
@@ -124,11 +127,11 @@ double CovariancePlate::weight(size_t index) const {
      FUNCITONS USED:
      NONE
      */
-    
-    if (index < weight_.size()){
-        return weight_[index];
+    if (i < weight_.size()){
+        return weight_[i];
     }
     else{
+        std::cout << "Warining: in CovariancePlate::set_weight(i, value): The given index is out of bouds, returning BAD_DATA..." << std::endl;
         return _BAD_DATA_;
     }
 }
@@ -161,7 +164,8 @@ void CovariancePlate::set_cov_mat(size_t i, size_t j, double value){
     }
 }
 
-void CovariancePlate::set_weight(size_t index, double value){
+//void CovariancePlate::set_weight(size_t i, size_t j, double value){
+void CovariancePlate::set_weight(size_t i, double value){
     /**
      EXPLANATION:
      Set function for weight_
@@ -180,12 +184,19 @@ void CovariancePlate::set_weight(size_t index, double value){
      NONE
      */
     
-    if (index < weight_.size()){
-        weight_[index] = value;
+    if (i < weight_.size()){
+        weight_[i] = value;
     }
     else{
-        std::cout << "Warining: in CorrelationPlate::set_weight(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        std::cout << "Warining: in CovariancePlate::set_weight(i, value): The given index is out of bouds, ignoring..." << std::endl;
     }
+    /*CovMat::iterator it = weight_.find(std::pair<size_t, size_t>(i,j));
+    if (it != weight_.end()){
+        (*it).second = value;
+    }
+    else{
+        std::cout << "Warining: in CovariancePlate::set_weight(i, j, value): The given index is out of bouds, ignoring..." << std::endl;
+    }*/
 }
 
 void CovariancePlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, const size_t& i, const size_t& j, const LyaAutoInterpolationMap& lya_auto){
@@ -210,28 +221,35 @@ void CovariancePlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, co
      NONE
      */
     
-    CovMat::iterator it;
+    CovMat::iterator it, it_weight;
     if (i <= j){
-        it = cov_mat_.find(std::pair<int, int>(i, j));
+        it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
+        //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
     }
     else{
-        it = cov_mat_.find(std::pair<int, int>(j, i));
+        it = cov_mat_.find(std::pair<size_t, size_t>(j, i));
+        //it_weight = weight_.find(std::pair<size_t, size_t>(j, i));
     }
-    if (it == cov_mat_.end()){
+    if (it == cov_mat_.end()){ //or it_weight == weight_.end()){
         std::cout << "Warning : In CovarianceMatrix::ComputeCovMat : Element " << i << ", " << j << " of the covariance matrix not found. Ignoring..."  << std::endl;
         return;
     }
     
     // add to covariance matrix
     double weight = pixel1.weight()*pixel2.weight();
-    double add;
+    double add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
+    // TODO: remove old stuff
+    /*double add;
     if (pixel1.dist() == pixel2.dist()){
         add = pow(1.0+pixel1.z(),CovariancePlate::half_gamma_)/pixel1.weight()/CovariancePlate::one_plus_z0_to_the_half_gamma_;
+        //add += lya_auto.LinearInterpolation(pixel1.z())*weight;
     }
     else{
         add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
+    }*/
+    if (add != _BAD_DATA_){
+        (*it).second += add*weight;
     }
-    (*it).second += add*weight;
     
 }
 
@@ -484,11 +502,11 @@ void CovariancePlate::ComputeCovMat(const AstroObjectDataset& object_list, const
                         
                     }
                     
-                    // add pixel's weight to the total weight of the bin
+                    // pair found, add weight to denominator
                     weight_[k_index1] += spectrum[pixel1].weight();
                     
                     // loop over neighbouring plates 2
-                    for (size_t plate_neighbours_num2 = 0; plate_neighbours_num2 < plate_neighbours_.size(); plate_neighbours_num2 ++){
+                    for (size_t plate_neighbours_num2 = plate_neighbours_num1; plate_neighbours_num2 < plate_neighbours_.size(); plate_neighbours_num2 ++){
                         
                         size_t number_of_objects2 = object_list.num_objects_in_plate(plate_neighbours_[plate_neighbours_num2]);
                         if (number_of_objects2 == 0){
@@ -667,6 +685,11 @@ void CovariancePlate::ComputeCovMat(const AstroObjectDataset& object_list, const
                                     
                                 }
                                 
+                                // avoid double counting
+                                if (pixel2 == pixel1 and plate_neighbours_num2 == plate_neighbours_num1 and object_num2 < object_num1){
+                                    continue;
+                                }
+                                
                                 // compute covariance matrix contribution
                                 AddPair(spectrum[pixel1],spectrum[pixel2],k_index1,k_index2, lya_auto[pixel2 - pixel1]);
                             }
@@ -702,22 +725,91 @@ void CovariancePlate::Normalize(){
     
     if (plate_number_ == _NORM_){
         
-        CovMat::iterator it;
+        CovMat::iterator it, it_weight;
         for (size_t i = 0; i < num_bins_; i ++){
             for (size_t j = i; j < num_bins_; j ++){
                 it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-                if (it != cov_mat_.end() and weight_[i] != 0.0 and weight_[j] != 0.0){
+                if (weight_[i] != 0.0 and weight_[j] != 0.0){
                     (*it).second /= weight_[i];
                     (*it).second /= weight_[j];
                 }
+                else{
+                    (*it).second == 0.0;
+                }
+                //it_weight = weight_.find(std::pair<size_t,size_t>(i,j));
+                //if (it != cov_mat_.end() and it_weight != weight_.end()){
+                //    (*it).second /= (*it_weight).second;
+                //}
             }
-            //weight_[i] = 1.0;
         }
         
     }
     else{
         // if plate number is not _NORM_, the instance is not supposed to normalize
         std::cout << "Warning : In CovariancePlate::Normalize : Plate number is not set to _NORM_. This CovariancePlate instance should not be normalized. Ignoring..." << std::endl;
+    }
+    
+}
+
+void CovariancePlate::SaveCovMat(const Input& input){
+    /**
+     EXPLANATION:
+     Saves the covariance matrix measured in a specific plate
+     
+     INPUTS:
+     input - a Input instance
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CovariancePlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (plate_number_ == _NORM_){
+        // if plate number is _NORM_, the instance is not supposed to be saved using this function
+        std::cout << "Warning : In CovariancePlate::Normalize : Plate number is not set to _NORM_. This CovariancePlate instance should not be normalized. Ignoring..." << std::endl;
+    }
+    else{
+        std::string filename;
+        CovMat::iterator it, it_weight;
+        
+        if (flag_verbose_covariance_plate_ >= 1){
+            std::cout << "Saving covariance matrix from plate " << pairs_file_name_ << std::endl;
+        }
+        
+        filename = input.results() + "plate_" + pairs_file_name_ + ".cov";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                if (flag_verbose_covariance_plate_ >= 2){
+                    std::cout << "Saving full covariance matrix" << std::endl;
+                }
+                for (size_t i = 0; i < num_bins_; i ++){
+                    for (size_t j = i; j < num_bins_; j ++){
+                        it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
+                        //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
+                        //if (it != cov_mat_.end() and it_weight != weight_.end() and (*it_weight).second != 0.0){
+                        //    file << i << " " << j << " " << (*it).second/(*it_weight).second << std::endl;
+                        //}
+                        if (it != cov_mat_.end() and weight_[i] != 0.0 and weight_[j] != 0.0){
+                            file << i << " " << j << " " << (*it).second/weight_[i]/weight_[j] << std::endl;
+                        }
+                        else{
+                            file << i << " " << j << " NaN" << std::endl;
+                        }
+                    }
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CovarianceMatrix::SaveCovMat : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+        
     }
     
 }
@@ -747,18 +839,26 @@ void CovariancePlate::operator+= (const CovariancePlate& other){
         return;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    CovMat::iterator it, it_weight;
+    CovMat::const_iterator other_it, other_it_weight;
         
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
-            it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-            other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
+            it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
+            other_it = other.cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //other_it_weight = other.weight_.find(std::pair<size_t, size_t>(i, j));
+            
             if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
                 (*it).second += (*other_it).second;
             }
+            /*if (it_weight != weight_.end() and other_it_weight != other.weight_.end()){
+                (*it_weight).second += (*other_it_weight).second;
+            }*/
         }
-        weight_[i] += other.weight(i);
+    }
+    for (size_t index = 0; index < weight_.size(); index ++){
+        weight_[index] += other.weight(index);
     }
     
 }
@@ -790,18 +890,27 @@ CovariancePlate CovariancePlate::operator- (const CovariancePlate& other){
         return temp;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    CovMat::iterator it, it_weight;
+    CovMat::const_iterator other_it, other_it_weight;
     
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
-            it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-            other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
+            it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
+            other_it = other.cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //other_it_weight = other.weight_.find(std::pair<size_t, size_t>(i, j));
+            
             if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
                 temp.set_cov_mat(i, j, (*it).second - (*other_it).second);
             }
+            //if (it_weight != weight_.end() and other_it_weight != other.weight_.end()){
+            //    temp.set_weight(i, j, (*it_weight).second - (*other_it_weight).second);
+            //}
         }
-        temp.set_weight(i, weight_[i] - other.weight(i));
+    }
+    
+    for (size_t index = 0; index < weight_.size(); index ++){
+        temp.set_weight(index, other.weight(index) - weight_[index]);
     }
     
     return temp;
@@ -834,18 +943,26 @@ CovariancePlate CovariancePlate::operator* (const CovariancePlate& other){
         return temp;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    CovMat::iterator it, it_weight;
+    CovMat::const_iterator other_it, other_it_weight;
     
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = i; j < num_bins_; j++){
-            it = cov_mat_.find(std::pair<size_t,size_t>(i,j));
-            other_it = other.cov_mat_.find(std::pair<size_t,size_t>(i,j));
+            it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
+            other_it = other.cov_mat_.find(std::pair<size_t, size_t>(i, j));
+            //other_it_weight = other.weight_.find(std::pair<size_t, size_t>(i, j));
+            
             if (it != cov_mat_.end() and other_it != other.cov_mat_.end()){
                 temp.set_cov_mat(i, j, (*it).second*(*other_it).second);
             }
+            //if (it_weight != weight_.end() and other_it_weight != other.weight_.end()){
+            //    temp.set_weight(i, j, (*it_weight).second*(*other_it_weight).second);
+            //}
         }
-        temp.set_weight(i, weight_[i]*other.weight(i));
+    }
+    for (size_t index = 0; index < weight_.size(); index ++){
+        temp.set_weight(index, other.weight(index)*weight_[index]);
     }
     
     return temp;
