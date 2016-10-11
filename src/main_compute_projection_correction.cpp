@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
     // define copies of mean_delta and total_weight for each of the threads
     int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
     std::vector<std::vector<double> > mean_delta_thread;
-    correlation_thread.resize(num_threads, mean_delta);
+    mean_delta_thread.resize(num_threads, mean_delta);
     std::vector<std::vector<double> > total_weight_thread;
     total_weight_thread.resize(num_threads, total_weight);
     
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
                 }
                 else{
                     weight = spectrum[pixel_number].weight();
-                    correlation_thread[thread_num][z_index] += spectrum[pixel_number].delta()*weight;
+                    mean_delta_thread[thread_num][z_index] += spectrum[pixel_number].delta()*weight;
                     total_weight_thread[thread_num][z_index] += weight;
                 }
             }
@@ -162,8 +162,8 @@ int main(int argc, char *argv[]){
     
     // combine the measurements from the different threads
     for (size_t index = 0; index < num_points_interpolation; index ++){
-        for (size_t thread_num = 0; thread_num < correlation_thread.size(); thread_num ++){
-            correlation[index] += correlation_thread[thread_num][index];
+        for (size_t thread_num = 0; thread_num < mean_delta_thread.size(); thread_num ++){
+            mean_delta[index] += mean_delta_thread[thread_num][index];
             total_weight[index] += total_weight_thread[thread_num][index];
         }
     }
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]){
             std::cerr << " shows zero weight. Consider reducing num_points_interpolation." << std::endl;
         }
         else{
-            correlation[index] /= total_weight[index];
+            mean_delta[index] /= total_weight[index];
         }
     }
     

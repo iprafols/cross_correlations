@@ -2,13 +2,13 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:src/main_correlation.cpp">
+   </FileRef>
+   <FileRef
       location = "group:src/main_compute_lya_1d.cpp">
    </FileRef>
    <FileRef
       location = "group:src/main_compute_projection_correction.cpp">
-   </FileRef>
-   <FileRef
-      location = "group:src/main_correlation.cpp">
    </FileRef>
    <FileRef
       location = "group:src/main_test.cpp">
@@ -105,13 +105,13 @@
          location = "group:../../software/development/cross_correlations/src/function_compute_plate_neighbours.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/src/function_remove_blank_spaces.hpp">
+         location = "group:../../software/development/cross_correlations/lib/function_remove_blank_spaces.hpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/src/function_split.hpp">
+         location = "group:../../software/development/cross_correlations/lib/function_split.hpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/src/function_to_str.hpp">
+         location = "group:../../software/development/cross_correlations/lib/function_to_str.hpp">
       </FileRef>
    </Group>
    <Group

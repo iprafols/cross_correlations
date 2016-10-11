@@ -12,12 +12,12 @@
 CC = g++
 
 # this variable sets the library headers files' path
-INCLUDE = -I/usr/local/include/CCfits -I/opt/ccfits/include/CCfits -I/./lib
-#INCLUDE = -I/opt/ccfits/include/CCfits
+INCLUDE = -I/usr/local/include/CCfits -I/opt/ccfits/include/CCfits -I./lib
+#INCLUDE = -I/opt/ccfits/include/CCfits -I./lib
 
 # this variable sets the library name and path
-LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/
-#LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/ -L/opt/ccfits/lib/
+LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/ -L./lib
+#LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/ -L/opt/ccfits/lib/ -L./lib
 
 # this variables sets the name of the executable
 EXECUTABLE_CORRELATION = programs/correlation.run
@@ -26,15 +26,13 @@ EXECUTABLE_PROJECTION_CORRECTION = programs/compute_projection_correction.run
 EXECUTABLE_TEST_LYA_DELTAS = programs/test_lya_deltas.run
 
 # this variable contains the list of sources
-SOURCES = $(wildcard *.cpp)
 SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp correlation_plate.cpp correlation_results.cpp covariance_matrix.cpp covariance_plate.cpp dataset.cpp distortion_matrix.cpp distortion_plate.cpp dla_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp pair.cpp pair_dataset.cpp plate.cpp plate_neighbours.cpp plots_object.cpp quasar_dataset.cpp spectra_dataset.cpp sphere_point.cpp z_dist_interpolation_map.cpp
-SOURCES_LYA1D = main_compute_lya_1d.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
-SOURCES_PROJECTION_CORRECTION = main_compute_projection_correction.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
+SOURCES_LYA1D = main_compute_lya_1d.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
+SOURCES_PROJECTION_CORRECTION = main_compute_projection_correction.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
 SOURCES_PLOT = $(wildcard ./output/plots/*.py)
 SOURCES_TEST_LYA_DELTAS = test_lya_deltas.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
 
 # this variable contains the list of object files
-OBJECTS = $(patsubst %.cpp,build/%.o,$(SOURCES))
 OBJECTS_CORRELATION = $(patsubst %.cpp,build/%.o,$(SOURCES_CORRELATION))
 OBJECTS_LYA1D = $(patsubst %.cpp,build/%.o,$(SOURCES_LYA1D))
 OBJECTS_PROJECTION_CORRECTION = $(patsubst %.cpp,build/%.o,$(SOURCES_PROJECTION_CORRECTION))
