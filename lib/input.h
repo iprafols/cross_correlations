@@ -166,6 +166,9 @@ public:
     // access function for lya_spectra_dir_
     std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
+    // acccess function for lya_projection_correction_
+    std::string lya_projection_correction() const {return lya_projection_correction_;}
+    
     // access function for lya_wl_
     double lya_wl() const {return lya_wl_;}
     
@@ -458,7 +461,10 @@ private:
     
     
     // -------------------------------------------------------------
-    // lya autocorrelation settings
+    // lya autocorrelation and projection correction settings
+    
+    // name of the file containing the correction to be applied to the projected delta field
+    std::string lya_projection_correction_;
     
     // name of the file containing the lyman-alpha auto-correlation
     std::string lya_auto_correlation_;

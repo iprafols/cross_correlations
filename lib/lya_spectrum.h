@@ -28,6 +28,7 @@
 // classes needed
 #include "astro_object.h"
 #include "interpolation_map.h"
+#include "lya_mean_projected_deltas_interpolation_map.h"
 #include "lya_pixel.h"
 #include "sphere_point.h"
 ////////
@@ -61,7 +62,7 @@ public:
     // other methods
     
     // project the delta field
-    void ProjectDeltas();
+    void ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas, const bool ignore_correction = false);
     
     // set the distance to object
     void SetDistance(const InterpolationMap& redshift_distance_map);

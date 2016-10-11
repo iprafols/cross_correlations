@@ -28,23 +28,32 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
      NONE
      */
     
-    double lya_pixel_width = input.lya_pixel_width();
+    // TODO: remove old stuff
+    /*double lya_pixel_width = input.lya_pixel_width();
     double sigma_psf = input.sigma_psf();
     
     double aux_z = 0.0;
     double value;
     std::vector<std::pair<double, double> > k_pk;
+     */
     std::string line;
+    bool header = true;
     
     std::ifstream file (input.lya_auto_correlation().c_str());
     if (file.is_open()){
         while (getline(file,line)){
             std::vector<std::string> cols = Split(line," ");
             
+            if (header){
+                header = false;
+                continue;
+            }
             if (cols.size() < n + 2){
                 throw std::invalid_argument( "invalid distance between pixels, check that compute_lya_1d.run was executed with the correct value for pixels_separation" );
             }
             interpolation_map_[atof(cols[0].c_str())] = atof(cols[n + 1].c_str());
+            
+            
             // TODO: remove old stuff
             /*if (double(atof(cols[0].c_str())) != aux_z){
                 // integrate pk and add autocorrelation to interpolation map
@@ -66,9 +75,10 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
             
         }
         
-        if (input.flag_project_deltas()){
+        // TODO: remove old stuff
+        /*if (input.flag_project_deltas()){
             ProjectLyaAuto();
-        }
+        }*/
     }
     else{
         std::cout << "Error: in LyaAutoInterpolationMap::LyaAutoInterpolationMap : Could not read file" << std::endl;

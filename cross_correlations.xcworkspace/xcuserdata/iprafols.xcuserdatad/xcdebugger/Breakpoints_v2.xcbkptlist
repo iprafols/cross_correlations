@@ -332,7 +332,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "812"
-            endingLineNumber = "812">
+            endingLineNumber = "812"
+            landmarkName = "CovariancePlate::SaveCovMat(const Input&amp; input)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -394,7 +396,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "861"
-            endingLineNumber = "861">
+            endingLineNumber = "861"
+            landmarkName = "CovariancePlate::operator+= (const CovariancePlate&amp; other)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -425,7 +429,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "863"
             endingLineNumber = "863"
-            landmarkName = "CovariancePlate::operator- (const CovariancePlate&amp; other)"
+            landmarkName = "CovariancePlate::operator+= (const CovariancePlate&amp; other)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -441,7 +445,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "862"
             endingLineNumber = "862"
-            landmarkName = "CovariancePlate::operator- (const CovariancePlate&amp; other)"
+            landmarkName = "CovariancePlate::operator+= (const CovariancePlate&amp; other)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -536,7 +540,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "914"
-            endingLineNumber = "914">
+            endingLineNumber = "914"
+            landmarkName = "CovariancePlate::operator- (const CovariancePlate&amp; other)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -551,7 +557,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "915"
             endingLineNumber = "915"
-            landmarkName = "CovariancePlate::operator* (const CovariancePlate&amp; other)"
+            landmarkName = "CovariancePlate::operator- (const CovariancePlate&amp; other)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1334,70 +1340,6 @@
             startingLineNumber = "110"
             endingLineNumber = "110"
             landmarkName = "CovariancePlate::CovariancePlate(const int plate_number, const int num_bins, const std::vector&lt;int&gt;&amp; plate_neighbours, size_t flag_verbose_covariance_plate)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "lya_auto_interpolation_map.cpp"
-            timestampString = "496660361.604195"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input&amp; input, const int&amp; n)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "lya_auto_interpolation_map.cpp"
-            timestampString = "496660362.582323"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input&amp; input, const int&amp; n)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "lya_auto_interpolation_map.cpp"
-            timestampString = "496660363.866433"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
-            landmarkName = "LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input&amp; input, const int&amp; n)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "lya_auto_interpolation_map.cpp"
-            timestampString = "496660364.512803"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input&amp; input, const int&amp; n)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

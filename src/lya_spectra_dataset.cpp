@@ -8,13 +8,15 @@
 
 #include "lya_spectra_dataset.h"
 
-LyaSpectraDataset::LyaSpectraDataset(const Input& input){
+LyaSpectraDataset::LyaSpectraDataset(const Input& input, const bool ignore_mean_proj_delta_correction){
     /**
      EXPLANATION:
      Cosntructs a LyaSpectraDataset instance and loads a catalog of LyaSpectrum objects into it
      
      INPUTS:
-     input - object of type cInput
+     input - object of type Input
+     ignore_mean_proj_delta_correction - a boolean to be passed to ProjectDeltas if the correction
+                                         to the projected deltas is to be ignored
      
      OUTPUTS:
      NONE
@@ -31,7 +33,7 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     name_ = input.dataset2_name();
     Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl());
     if (input.flag_project_deltas()){
-        ProjectDeltas();
+        ProjectDeltas(input, ignore_mean_proj_delta_correction);
     }
     
 }
@@ -139,13 +141,15 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
     }
 }
 
-void LyaSpectraDataset::ProjectDeltas(){
+void LyaSpectraDataset::ProjectDeltas(const Input& input, const bool ignore_mean_proj_delta_correction){
     /**
      EXPLANATION:
      Projects the delta field
      
      INPUTS:
-     NONE
+     input - object of type Input
+     ignore_mean_proj_delta_correction - a boolean to be passed to ProjectDeltas if the correction
+                                         to the projected deltas is to be ignored
      
      OUTPUTS:
      NONE
@@ -162,6 +166,10 @@ void LyaSpectraDataset::ProjectDeltas(){
         std::cout << "Projecting deltas" << std::endl;
     }
     
+    // load the average of the projected deltas as a function of redshift
+    LyaMeanProjectedDeltasInterpolationMap mean_proj_deltas(input);
+    
+    
     // loop over plates
     size_t plates_computed = 0;
     for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != list_.end(); it ++){
@@ -177,7 +185,7 @@ void LyaSpectraDataset::ProjectDeltas(){
         // loop over spectra
         #pragma omp parallel for schedule(dynamic)
         for (size_t i = 0; i < (*it).second.size(); i ++){
-            (*it).second[i].ProjectDeltas();
+            (*it).second[i].ProjectDeltas(mean_proj_deltas, ignore_mean_proj_delta_correction);
         }
     }
     

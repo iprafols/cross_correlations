@@ -215,13 +215,14 @@ LyaPixel LyaSpectrum::spectrum(size_t i) const {
     
 }
 
-void LyaSpectrum::ProjectDeltas(){
+void LyaSpectrum::ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas, const bool ignore_correction){
     /**
      EXPLANATION:
      Projects the delta field
      
      INPUTS:
-     NONE
+     mean_proj_deltas - a LyaMeanProjectedDeltasInterpolationMap instance with the correction to apply after projecting the deltas
+     ignore_correction - a boolean specifying if the correction needs to be ignored
      
      OUTPUTS:
      NONE
@@ -245,19 +246,35 @@ void LyaSpectrum::ProjectDeltas(){
         forest_mean_loglam += spectrum_[pixel].loglam()*spectrum_[pixel].weight();
         forest_mean_delta += spectrum_[pixel].delta()*spectrum_[pixel].weight();
     }
-    forest_mean_loglam /= forest_total_weight;
-    forest_mean_delta /= forest_total_weight;
+    if (forest_total_weight == 0.0){
+        forest_mean_loglam = 0.0;
+        forest_mean_delta = 0.0;
+    }
+    else{
+        forest_mean_loglam /= forest_total_weight;
+        forest_mean_delta /= forest_total_weight;
+    }
     
     for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
         forest_aux1 += (spectrum_[pixel].loglam()-forest_mean_loglam)*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
         forest_aux2 += spectrum_[pixel].delta()*(spectrum_[pixel].loglam()-forest_mean_loglam)*spectrum_[pixel].weight();
     }
-    double forest_aux = forest_aux2/forest_aux1;
+    double forest_aux;
+    if (forest_aux1 == 0.0){
+        forest_aux = 0.0;
+    }
+    else{
+        forest_aux = forest_aux2/forest_aux1;
+    }
+    
     
     // project the delta field
     double projected_delta;
     for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
         projected_delta = spectrum_[pixel].delta()-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
+        if (not ignore_correction){
+            projected_delta -= mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
+        }
         spectrum_[pixel].set_delta(projected_delta);
     }
 }

@@ -1,6 +1,6 @@
 /**
  main_correlation.cpp
- Purpose: Compute the cross correlation of the Lyman-alpha forest and quasars. Future versions should compute the cross-correlation of two species in general
+ Purpose: Compute the variance, the contribution to the covariance matrix as a function of redshift and pixel separation
  
  @author Ignasi Pérez-Ràfols
  @version 1.0 06/17/2014
@@ -155,7 +155,7 @@ int main(int argc, char *argv[]){
                     if (pixel_separation + pixel_number < spectrum.size()){
                         // locate the bin in z the pixel belongs to
                         double mean_z = (spectrum[pixel_number].z() + spectrum[pixel_number + pixel_separation].z())/2.0;
-                        int z_index = int((mean_z - input.z_min_interpolation())/z_step) ;
+                        int z_index = int((mean_z - input.z_min_interpolation())/z_step);
                         if ((z_index < 0) or (z_index > z_correlation.size())){
                             #pragma omp critical (cerr)
                             {
@@ -221,7 +221,7 @@ int main(int argc, char *argv[]){
         file.close();
     }
     else{
-        std::cerr << "Error : In test_lya_deltas : Unable to open file:" << std::endl << filename << std::endl;
+        std::cerr << "Error : In compute_lya_1d : Unable to open file:" << std::endl << filename << std::endl;
     }
     
     

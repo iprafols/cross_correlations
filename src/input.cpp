@@ -231,7 +231,8 @@ void Input::SetDefaultValues(){
     
     
     // -------------------------------------------------------------
-    // lya autocorrelation settings
+    // lya autocorrelation and projection correction settings
+    lya_projection_correction_ = output_ + "projection_correction.dat";
     lya_auto_correlation_ = input_ + "lya_auto_correlation.dat";
     lya_pixel_width_ = 210.0; // (in km/s)
     sigma_psf_ = 70.0; // (in km/s)
@@ -818,6 +819,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "lya_projection_correction"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            lya_projection_correction_ = value;
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "lya_spectra_dir"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1367,6 +1379,16 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
 
     // updating lya_spectra_dir_ if necessary
     it = input_flag.find("input");
+    it2 = input_flag.find("lya_projection_correction");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        lya_projection_correction_ = output_ + "projection_correction.dat";
+    }
+    else if (it2 != input_flag.end() and lya_spectra_dir_[0] != '/'){
+        lya_projection_correction_ = output_ + lya_projection_correction_;
+    }
+    
+    // updating lya_spectra_dir_ if necessary
+    it = input_flag.find("input");
     it2 = input_flag.find("lya_spectra_dir");
     if (it != input_flag.end() and it2 == input_flag.end()){
         lya_spectra_dir_ = input_ + "spectrum_fits_files/";
@@ -1597,13 +1619,13 @@ void Input::WriteLog(){
         
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;
-        log << "// lya autocorrelation settings" << std::endl;
+        log << "// lya autocorrelation and projection correction settings" << std::endl;
+        log << "lya_projection_correction = " << lya_projection_correction_ << std::endl;
         log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
         log << "lya_pixel_width = " << lya_pixel_width_ << std::endl;
         log << "sigma_psf = " << sigma_psf_ << std::endl;
         log << "pixels_separation = " << pixels_separation_ << std::endl;
         log << std::endl;
-        
         
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;

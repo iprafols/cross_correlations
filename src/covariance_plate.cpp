@@ -238,6 +238,8 @@ void CovariancePlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, co
     // add to covariance matrix
     double weight = pixel1.weight()*pixel2.weight();
     double add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
+
+    
     // TODO: remove old stuff
     /*double add;
     if (pixel1.dist() == pixel2.dist()){

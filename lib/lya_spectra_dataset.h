@@ -23,6 +23,7 @@
 #include "dataset.h"
 #include "input.h"
 #include "z_dist_interpolation_map.h"
+#include "lya_mean_projected_deltas_interpolation_map.h"
 #include "lya_spectrum.h"
 #include "spectra_dataset.h"
 ////////
@@ -40,7 +41,7 @@ public:
     // constructors
     
     // constructs object and initializes its variables
-    LyaSpectraDataset(const Input& input);
+    LyaSpectraDataset(const Input& input, const bool ignore_mean_proj_delta_correction = false);
     
     // -------------------------------------------------------------
     // access methods
@@ -66,7 +67,7 @@ private:
     size_t flag_verbose_lya_spectra_dataset_;
     
     // project the delta field
-    void ProjectDeltas();
+    void ProjectDeltas(const Input& input, const bool ignore_mean_proj_delta_correction);
     
 };
 

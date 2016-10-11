@@ -1,6 +1,6 @@
 /**
  main_correlation.cpp
- Purpose: Compute the cross correlation of the Lyman-alpha forest and quasars. Future versions should compute the cross-correlation of two species in general
+ Purpose: Compute the cross correlation between a continuus sample, such as the Lyman-alpha forest, and a discrete sample, such as quasars
  
  @author Ignasi Pérez-Ràfols
  @version 1.0 06/17/2014

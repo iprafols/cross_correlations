@@ -2,201 +2,207 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "container:main_correlation.cpp">
+      location = "group:src/main_compute_lya_1d.cpp">
    </FileRef>
    <FileRef
-      location = "group:/Users/iprafols/software/development/cross_correlations/main_compute_lya_1d.cpp">
+      location = "group:src/main_compute_projection_correction.cpp">
    </FileRef>
    <FileRef
-      location = "group:test_lya_auto.cpp">
+      location = "group:src/main_correlation.cpp">
    </FileRef>
    <FileRef
-      location = "group:test_lya_deltas.cpp">
+      location = "group:src/main_test.cpp">
    </FileRef>
    <Group
       location = "container:../../../Library/Autosave Information"
       name = "classes">
       <FileRef
-         location = "container:astro_object.cpp">
+         location = "group:../../software/development/cross_correlations/src/astro_object_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:astro_object_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/astro_object.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/civ_spectra_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/civ_spectra_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:correlation_plate.cpp">
+         location = "group:../../software/development/cross_correlations/src/correlation_plate.cpp">
       </FileRef>
       <FileRef
-         location = "container:correlation_results.cpp">
+         location = "group:../../software/development/cross_correlations/src/correlation_results.cpp">
       </FileRef>
       <FileRef
-         location = "container:covariance_matrix.cpp">
+         location = "group:../../software/development/cross_correlations/src/covariance_matrix.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/covariance_plate.cpp">
+         location = "group:../../software/development/cross_correlations/src/covariance_plate.cpp">
       </FileRef>
       <FileRef
-         location = "container:dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/dataset.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/distortion_matrix.cpp">
+         location = "group:../../software/development/cross_correlations/src/distortion_matrix.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/distortion_plate.cpp">
+         location = "group:../../software/development/cross_correlations/src/distortion_plate.cpp">
       </FileRef>
       <FileRef
-         location = "container:dla_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/dla_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:input.cpp">
+         location = "group:../../software/development/cross_correlations/src/input.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/interpolation_map.cpp">
+         location = "group:../../software/development/cross_correlations/src/interpolation_map.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/lya_auto_interpolation_map.cpp">
+         location = "group:../../software/development/cross_correlations/src/lya_auto_interpolation_map.cpp">
       </FileRef>
       <FileRef
-         location = "container:lya_pixel.cpp">
+         location = "group:../../software/development/cross_correlations/src/lya_mean_projected_deltas_interpolation_map.cpp">
       </FileRef>
       <FileRef
-         location = "container:lya_spectra_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/lya_pixel.cpp">
       </FileRef>
       <FileRef
-         location = "container:lya_spectrum.cpp">
+         location = "group:../../software/development/cross_correlations/src/lya_spectra_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/pair.cpp">
+         location = "group:../../software/development/cross_correlations/src/lya_spectrum.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/pair_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/pair_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:plate.cpp">
+         location = "group:../../software/development/cross_correlations/src/pair.cpp">
       </FileRef>
       <FileRef
-         location = "container:plate_neighbours.cpp">
+         location = "group:../../software/development/cross_correlations/src/plate_neighbours.cpp">
       </FileRef>
       <FileRef
-         location = "container:plots_object.cpp">
+         location = "group:../../software/development/cross_correlations/src/plate.cpp">
       </FileRef>
       <FileRef
-         location = "container:quasar_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/plots_object.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/spectra_dataset.cpp">
+         location = "group:../../software/development/cross_correlations/src/quasar_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:sphere_point.cpp">
+         location = "group:../../software/development/cross_correlations/src/spectra_dataset.cpp">
       </FileRef>
       <FileRef
-         location = "container:z_dist_interpolation_map.cpp">
+         location = "group:../../software/development/cross_correlations/src/sphere_point.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/src/z_dist_interpolation_map.cpp">
       </FileRef>
    </Group>
    <Group
       location = "container:../../../Library/Autosave Information"
       name = "functions">
       <FileRef
-         location = "container:function_compute_plate_neighbours.cpp">
+         location = "group:../../software/development/cross_correlations/src/function_compute_plate_neighbours.cpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/function_remove_blank_spaces.hpp">
+         location = "group:../../software/development/cross_correlations/src/function_remove_blank_spaces.hpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/function_split.hpp">
+         location = "group:../../software/development/cross_correlations/src/function_split.hpp">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/function_to_str.hpp">
+         location = "group:../../software/development/cross_correlations/src/function_to_str.hpp">
       </FileRef>
    </Group>
    <Group
       location = "container:../../../Library/Autosave Information"
       name = "headers">
       <FileRef
-         location = "container:astro_object.h">
+         location = "group:../../software/development/cross_correlations/lib/astro_object_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:astro_object_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/astro_object.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/civ_spectra_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/civ_spectra_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:correlation_plate.h">
+         location = "group:../../software/development/cross_correlations/lib/correlation_plate.h">
       </FileRef>
       <FileRef
-         location = "container:correlation_results.h">
+         location = "group:../../software/development/cross_correlations/lib/correlation_results.h">
       </FileRef>
       <FileRef
-         location = "container:covariance_matrix.h">
+         location = "group:../../software/development/cross_correlations/lib/covariance_matrix.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/covariance_plate.h">
+         location = "group:../../software/development/cross_correlations/lib/covariance_plate.h">
       </FileRef>
       <FileRef
-         location = "container:dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/dataset.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/distortion_matrix.h">
+         location = "group:../../software/development/cross_correlations/lib/defines.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/distortion_plate.h">
+         location = "group:../../software/development/cross_correlations/lib/distortion_matrix.h">
       </FileRef>
       <FileRef
-         location = "container:dla_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/distortion_plate.h">
       </FileRef>
       <FileRef
-         location = "container:input.h">
+         location = "group:../../software/development/cross_correlations/lib/dla_dataset.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/interpolation_map.h">
+         location = "group:../../software/development/cross_correlations/lib/input.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/lya_auto_interpolation_map.h">
+         location = "group:../../software/development/cross_correlations/lib/interpolation_map.h">
       </FileRef>
       <FileRef
-         location = "container:lya_pixel.h">
+         location = "group:../../software/development/cross_correlations/lib/lya_auto_interpolation_map.h">
       </FileRef>
       <FileRef
-         location = "container:lya_spectra_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/lya_mean_projected_deltas_interpolation_map.h">
       </FileRef>
       <FileRef
-         location = "container:lya_spectrum.h">
+         location = "group:../../software/development/cross_correlations/lib/lya_pixel.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/pair.h">
+         location = "group:../../software/development/cross_correlations/lib/lya_spectra_dataset.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/pair_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/lya_spectrum.h">
       </FileRef>
       <FileRef
-         location = "container:plate.h">
+         location = "group:../../software/development/cross_correlations/lib/pair_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:plate_neighbours.h">
+         location = "group:../../software/development/cross_correlations/lib/pair.h">
       </FileRef>
       <FileRef
-         location = "container:plots_object.h">
+         location = "group:../../software/development/cross_correlations/lib/plate_neighbours.h">
       </FileRef>
       <FileRef
-         location = "container:quasar_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/plate.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/spectra_dataset.h">
+         location = "group:../../software/development/cross_correlations/lib/plots_object.h">
       </FileRef>
       <FileRef
-         location = "container:sphere_point.h">
+         location = "group:../../software/development/cross_correlations/lib/quasar_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:z_dist_interpolation_map.h">
+         location = "group:../../software/development/cross_correlations/lib/spectra_dataset.h">
       </FileRef>
       <FileRef
-         location = "container:defines.h">
+         location = "group:../../software/development/cross_correlations/lib/sphere_point.h">
       </FileRef>
       <FileRef
-         location = "container:typedefs.h">
+         location = "group:../../software/development/cross_correlations/lib/typedefs.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/lib/z_dist_interpolation_map.h">
       </FileRef>
    </Group>
    <Group
