@@ -167,6 +167,21 @@ int main(int argc, char *argv[]){
                             correlation_thread[thread_num][pixel_separation][z_index] += spectrum[pixel_number].delta()*spectrum[pixel_number + pixel_separation].delta()*weight;
                             total_weight_thread[thread_num][pixel_separation][z_index] += weight;
                         }
+                        
+                        // TODO: remove this test
+                        /*if (mean_z >= 3.426){
+                            #pragma omp critical (cout)
+                            {
+                                std::cout << "In thread " << thread_num << ": mean_z = " << mean_z;
+                                std::cout << "delta1 = " << spectrum[pixel_number].delta();
+                                std::cout << ", delta2 = " << spectrum[pixel_number + pixel_separation].delta();
+                                std::cout << ", weight = " << weight;
+                                std::cout << ", corr[" << pixel_separation << "] = " << correlation_thread[thread_num][pixel_separation][z_index];
+                                std::cout << ", weight[" << pixel_separation << "] = " << total_weight_thread[thread_num][pixel_separation][z_index];
+                                std::cout << std::endl;
+                            }
+                        }*/
+                        // end of test
                     }
                 }
             }

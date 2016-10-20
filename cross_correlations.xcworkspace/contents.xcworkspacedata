@@ -142,9 +142,6 @@
          location = "group:../../software/development/cross_correlations/lib/dataset.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/lib/defines.h">
-      </FileRef>
-      <FileRef
          location = "group:../../software/development/cross_correlations/lib/distortion_matrix.h">
       </FileRef>
       <FileRef
@@ -199,10 +196,13 @@
          location = "group:../../software/development/cross_correlations/lib/sphere_point.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/lib/typedefs.h">
+         location = "group:../../software/development/cross_correlations/lib/z_dist_interpolation_map.h">
       </FileRef>
       <FileRef
-         location = "group:../../software/development/cross_correlations/lib/z_dist_interpolation_map.h">
+         location = "group:../../software/development/cross_correlations/lib/defines.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/lib/typedefs.h">
       </FileRef>
    </Group>
    <Group

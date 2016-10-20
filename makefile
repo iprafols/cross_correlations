@@ -68,8 +68,8 @@ plots: $(OBJECTS_PLOT)
 #
 # COMPILATION TARGETS
 #
-build/%.o: %.cpp
-	$(CC) $(CFLAGS) src/$< -o $@
+build/%.o: src/%.cpp
+	$(CC) $(CFLAGS) $< -o $@
 
 %.pyc: %.py
 	python $<

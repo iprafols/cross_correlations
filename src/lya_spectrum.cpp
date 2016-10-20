@@ -273,10 +273,17 @@ void LyaSpectrum::ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& me
     for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
         projected_delta = spectrum_[pixel].delta()-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
         if (not ignore_correction){
-            projected_delta -= mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
+            double correction = mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
+            if (correction != _BAD_DATA_){
+                projected_delta -= mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
+            }
         }
         spectrum_[pixel].set_delta(projected_delta);
+        
+
     }
+    
+    
 }
 
 void LyaSpectrum::SetDistance(const InterpolationMap& redshift_distance_map){
