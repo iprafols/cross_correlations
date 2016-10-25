@@ -135,12 +135,12 @@ class CorrData(object):
             data = CorrData("my_measurement", np.arange(-80, 80 + 2, 2), np.arange(0, 80 + 2, 2))
         """
         # check parameters' types
-        try:
-            assert type(filename) == str
-            assert isinstance(pi, np.ndarray)
-            assert isinstance(sigma, np.ndarray)
-        except AssertionError:
-            raise CorrDataError(self.__init__, 'Incorrect type of the parameters. Could not generate instance')
+        if not (type(filename) == str):
+            raise CorrDataError(self.__init__, 'Incorrect type of the parameter "filename". Could not generate instance')
+        if not (isinstance(pi, np.ndarray)):
+            raise CorrDataError(self.__init__, 'Incorrect type of the parameter "pi". Could not generate instance')
+        if not (isinstance(sigma, np.ndarray)):
+            raise CorrDataError(self.__init__, 'Incorrect type of the parameter "sigma". Could not generate instance')
         
         # read data
         try:
@@ -170,16 +170,19 @@ class CorrData(object):
         
         # format data into matrixes
         self._formatData()
-        try:
-            assert self._cov_mat.shape[0] == self._data_mat.size
-            if self._has_grid:
-                assert self._grid_pi_mat.size == self._data_mat.size
-                assert self._grid_sigma_mat.size == self._data_mat.size
-                assert self._grid_z_mat.size == self._data_mat.size
-            if self._has_dist:
-                assert self._dist_mat.shape[0] == self._data_mat.size
-        except AssertionError:
-            raise CorrDataError(self.__init__, 'Read data do not have the correct shapes')
+        # check that matrix shapes are consistent
+        if not (self._cov_mat.shape[0] == self._data_mat.size):
+            raise CorrDataError(self.__init__, 'Read cov_mat and data have shapes that are not consistent. cov_mat.shape = {}, data.shape = {}'.format(self._cov_mat.shape, self._data_mat.shape))
+        if not (self._grid_pi_mat.size == self._data_mat.size):
+            raise CorrDataError(self.__init__, 'Read grid_pi_mat and data have shapes that are not consistent. grid_pi_mat.shape = {}, data.shape = {}'.format(self._grid_pi_mat.shape, self._data_mat.shape))
+            if not (self._grid_sigma_mat.size == self._data_mat.size):
+                raise CorrDataError(self.__init__, 'Read grid_sigma_mat and data have shapes that are not consistent. grid_sigma_mat.shape = {}, data.shape = {}'.format(self._grid_sigma_mat.shape, self._data_mat.shape))
+        if self._has_grid:
+            if not (self._grid_z_mat.size == self._data_mat.size):
+                raise CorrDataError(self.__init__, 'Read grid_z_mat and data have shapes that are not consistent. grid_z_mat.shape = {}, data.shape = {}'.format(self._grid_z_mat.shape, self._data_mat.shape))
+        if self._has_dist:
+            if not (self._dist_mat.shape[0] == self._data_mat.size):
+                raise CorrDataError(self.__init__, 'Read dist_mat and data have shapes that are not consistent. dist_mat.shape = {}, data.shape = {}'.format(self._dist_mat.shape, self._data_mat.shape))
 
         # save intervals for later usage
         self._pi = np.copy(pi)
@@ -244,12 +247,12 @@ class CorrData(object):
             data.computeTransformatiomMatrix(np.arange(-80, 80 + 4, 4), np.arange(0, 80+4, 4), keep_matrix=False)
         """
         # check parameters' types
-        try:
-            assert isinstance(new_pi, np.ndarray)
-            assert isinstance(new_sigma, np.ndarray)
-            assert type(keep_matrix) == bool
-        except AssertionError:
-            raise CorrDataError(self.computeTransformationMatrix, 'Incorrect type of the parameters.')
+        if not (isinstance(new_pi, np.ndarray)):
+            raise CorrDataError(self.computeTransformationMatrix, 'Incorrect type of the parameter "new_pi".')
+        if not (isinstance(new_sigma, np.ndarray)):
+            raise CorrDataError(self.computeTransformationMatrix, 'Incorrect type of the parameter "new_sigma".')
+        if not (type(keep_matrix) == bool):
+            raise CorrDataError(self.computeTransformationMatrix, 'Incorrect type of the parameter "keep_matrix".')
 
         # check parameters' consistency
         try:
@@ -302,8 +305,8 @@ class CorrData(object):
         # compute the overall relation between old and new bins, then fill the transformation matrix
         k_conv = {old_k_pi * (self._sigma.size - 1) + old_k_sigma:new_k_pi * (new_sigma.size - 1) + new_k_sigma for old_k_pi, new_k_pi in k_pi_conv.items() for old_k_sigma, new_k_sigma in k_sigma_conv.items()}
         for old, new in k_conv.items():
-            transformation_matrix[old, new] = 1.0
-
+            transformation_matrix[old, new] = 1.0#"""
+            
         # keep transformation instances
         if keep_matrix:
             self._transformatiom_matrix = np.copy(transformation_matrix)
@@ -360,13 +363,13 @@ class CorrData(object):
                 grid_sigma_mat_new, grid_z_mat_new = data.rebinData(transf_matrix, keep_results=False)
         """
         # check parameters' types
-        try:
-            assert isinstance(transformation_matrix, np.ndarray)
-            assert type(keep_results) == bool
-            assert type(rebin_grid) == bool
-        except AssertionError:
-            raise CorrDataError(self.rebinData, 'Incorrect type of the parameters.')
-
+        if not (isinstance(transformation_matrix, np.ndarray)):
+            raise CorrDataError(self.rebinData, 'Incorrect type of the parameter "transformation_matrix".')
+        if not (type(keep_results) == bool):
+            raise CorrDataError(self.rebinData, 'Incorrect type of the parameter "keep_results".')
+        if not (type(rebin_grid) == bool):
+            raise CorrDataError(self.rebinData, 'Incorrect type of the parameter "rebin_grid".')
+ 
         # check parameters' consistency
         try:
             assert transformation_matrix.shape[0] == self._data_mat.size
@@ -393,10 +396,15 @@ class CorrData(object):
         # then rebin data and grid
         data_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), np.dot(inv_cov_mat, self._data_mat)))
         if rebin_grid:
-            grid_pi_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), np.dot(inv_cov_mat, self._grid_pi_mat)))
-            grid_sigma_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), np.dot(inv_cov_mat, self._grid_sigma_mat)))
+            # rebin grid omitting covariance matrix
+            inv_id_cov_mat = np.identity(self._cov_mat.shape[0], dtype=float)
+            inv_id_cov_mat_new = np.dot(transformation_matrix.transpose(), np.dot(inv_id_cov_mat, transformation_matrix))
+            id_cov_mat_new = np.linalg.inv(inv_id_cov_mat_new)
+
+            grid_pi_mat_new = np.dot(id_cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_pi_mat))
+            grid_sigma_mat_new = np.dot(id_cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_sigma_mat))
             if self._has_grid:
-                grid_z_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), np.dot(inv_cov_mat, self._grid_z_mat)))
+                grid_z_mat_new = np.dot(id_cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_z_mat))
 
         # TODO: finally rebin the distortion matrix
 
@@ -450,12 +458,12 @@ class CorrData(object):
             pos = data.whichBins(1.0, 3.0, rebinned=True)
         """
         # check parameters' types
-        try:
-            assert type(sigma_min) == float or isinstance(sigma_min, np.float64)
-            assert type(sigma_max) == float or isinstance(sigma_max, np.float64)
-            assert type(rebinned) == bool
-        except AssertionError:
-            raise CorrDataError(self.whichBins, 'Incorrect type of the parameters.')
+        if not (type(sigma_min) == float or isinstance(sigma_min, np.float64)):
+            raise CorrDataError(self.whichBins, 'Incorrect type of the parameter "sigma_min".')
+        if not (type(sigma_max) == float or isinstance(sigma_max, np.float64)):
+            raise CorrDataError(self.whichBins, 'Incorrect type of the parameter "sigma_max".')
+        if not (type(rebinned) == bool):
+            raise CorrDataError(self.whichBins, 'Incorrect type of the parameter "rebinned".')
 
         # check parameters' consistency
         try:
@@ -714,6 +722,7 @@ class CorrModel(object):
         whichBins(sigma_min, sigma_max, rebinned=False)
         model_mat(rebinned=False)
         grid_pi_mat(rebinend=False)
+        grid_sigma_mat(rebinned=False)
     PRIVATE METHODS (should not be called except by class methods):
         _formatData(self)
     PRIVATE VARIABLES (should not be accessed except by class methods):
@@ -738,7 +747,7 @@ class CorrModel(object):
         CorrModelError
     """
 
-    def __init__(self, filename, pi, sigma):
+    def __init__(self, filename):
         """
         Initialize class instance.
         
@@ -756,8 +765,11 @@ class CorrModel(object):
             model = CorrModel("my_fit_residuals.dat")
         """
         # check parameters' types
+        if not (type(filename) == str):
+            raise CorrDataError(self.__init__, 'Incorrect type of the parameter "filename". Could not generate instance')
+        
+        # check parameters' consistency
         try:
-            assert type(filename) == str
             assert filename[-13:] == 'residuals.dat'
         except AssertionError:
             raise CorrDataError(self.__init__, 'Incorrect type of the parameters. Could not generate instance')
@@ -801,7 +813,7 @@ class CorrModel(object):
         Compute the transformation matrix from the model bins to the given bins.
         
         FUNCTION: CorrModel.computeTransformationMatrix
-        TYPE: Public
+        TYPE: Public (deprecated)
         PURPOSE:
             Compute the transformation matrix from the model bins to the specified bins. The bins must be
             wider than the original bins. Upon options may store the resulting matrix as a instance
@@ -823,16 +835,16 @@ class CorrModel(object):
             model.computeTransformatiomMatrix(np.arange(-80, 80 + 4, 4), np.arange(0, 80+4, 4), keep_matrix=False)
         """
         # check parameters' types
-        try:
-            assert isinstance(new_pi, np.ndarray)
-            assert isinstance(new_sigma, np.ndarray)
-            assert type(keep_matrix) == bool
-        except AssertionError:
-            raise CorrModelError(self.computeTransformationMatrix, 'Incorrect type of the parameters.')
-        
+        if not (isinstance(new_pi, np.ndarray)):
+            raise CorrModelError(self.computeTransformationMatrix, 'Incorrect type of the parameter "new_pi".')
+        if not isinstance(new_sigma, np.ndarray):
+            raise CorrModelError(self.computeTransformationMatrix, 'Incorrect type of the parameter "new_sigma".')
+        if not (type(keep_matrix) == bool):
+            raise CorrModelError(self.computeTransformationMatrix, 'Incorrect type of the parameter "keep_matrix".')
+
         # check parameters' consistency
         try:
-            assert new_pi.size * new_k_sigma.size <= np.amax(self._index_mat)
+            assert new_pi.size * new_sigma.size <= np.amax(self._index_mat)
         except AssertionError:
             raise CorrModelError(self.computeTransformationMatrix, 'Given bins are smaller than the originals.')
     
@@ -840,7 +852,7 @@ class CorrModel(object):
         if hasattr(self, '_transformatiom_matrix'):
             del self._transformatiom_matrix
         
-        transformation_matrix = np.zeros((self.model_mat.size, (new_pi.size - 1) * (new_sigma.size - 1)))
+        transformation_matrix = np.zeros((self._model_mat.size, (new_pi.size - 1) * (new_sigma.size - 1)))
         
         # compute the overall relation between old and new bins
         k_conv = {}
@@ -872,31 +884,25 @@ class CorrModel(object):
             self._transformatiom_matrix = np.copy(transformation_matrix)
         return transformation_matrix
 
-    def rebinData(self, transformation_matrix, keep_results = False, rebin_grid = True):
+    def rebinModel(self, new_pi, new_sigma, keep_results = False):
         """
-        Rebins the data to the specified binning
+        Rebins the model to the specified binning
         
-        FUNCTION: CorrModel.rebinData
+        FUNCTION: CorrModel.rebinModel
         TYPE: Public
         PURPOSE:
-            Rebins the data to the specified binning.
-            The rebinning is performed as follows
-        
-            We first define
-                C_{new}^{-1} = S^{t} S,
-            where S is the specified transformation matrix
-        
-            The model, data, and grid are rebinned as
-                X_{new} = C_{new} S^{t} X
-        
-            Upon options the method may store the resulting matrix as instance attributes. 
+            Rebins the model to the specified binning. The bins must be
+            wider than the original bins. The binning is preformed by averaging
+            all the values of the original bin that fall into the new bin
+            Upon options the method may store the resulting matrix as instance attributes.
             Previous similar instances are deleted.
         
         ARGUMENTS:
-            transformation_matrix (np.ndarray): The matrix that will be used in the transformation
+            new_pi (np.ndarray):    An array specifying the limits of the parallel separation bins
+            new_sigma (np.ndarray): An array specifying the limits of the perpendicular separation bins
         KEYWORD ARGUMENTS:
-            keep_results (boolean):             If True, keeps the resulting rebinned matrixes as
-                                                private instances attributes -- Default: False
+            keep_results (boolean): If True, keeps the resulting rebinned matrixes as private instances 
+                                    attributes -- Default: False
         RETURNS:
             The rebinned matrixes. The order is model_mat_new, data_mat_new, grid_pi_mat_new, 
             grid_sigma_mat_new, grid_z_mat_new
@@ -905,25 +911,20 @@ class CorrModel(object):
             bins are smaller than the originals.
         EXAMPLES:
             model_mat_new, data_mat_new, grid_pi_mat_new,
-                grid_sigma_mat_new, grid_z_mat_new = model.rebinData(transf_matrix)
+                grid_sigma_mat_new, grid_z_mat_new = model.rebinModel(pi, sigma)
             model_mat_new, data_mat_new, grid_pi_mat_new,
-                grid_sigma_mat_new, grid_z_mat_new = model.rebinData(transf_matrix, keep_results=True)
+                grid_sigma_mat_new, grid_z_mat_new = model.rebinModel(pi, sigma, keep_results=True)
             model_mat_new, data_mat_new, grid_pi_mat_new,
-                grid_sigma_mat_new, grid_z_mat_new = model.rebinData(transf_matrix, keep_results=False)
+                grid_sigma_mat_new, grid_z_mat_new = model.rebinModel(pi, sigma, keep_results=False)
         """
         # check parameters' types
-        try:
-            assert isinstance(transformation_matrix, np.ndarray)
-            assert type(keep_results) == bool
-        except AssertionError:
-            raise CorrModelError(self.rebinData, 'Incorrect type of the parameters.')
-        
-        # check paramters' consistency
-        try:
-            assert transformation_matrix.shape[0] == self._data_mat.size
-        except AssertionError:
-            raise CorrModelError(self.rebinData, 'Incorrect shape of transformation_matrix. Expected ({},), found {}'.format(self._data_mat.size, transformation_matrix.shape))
-
+        if not (isinstance(new_pi, np.ndarray)):
+            raise CorrModelError(self.rebinModel, 'Incorrect type of the parameter "new_pi".')
+        if not isinstance(new_sigma, np.ndarray):
+            raise CorrModelError(self.rebinModel, 'Incorrect type of the parameter "new_sigma".')
+        if not (type(keep_results) == bool):
+            raise CorrModelError(self.rebinModel, 'Incorrect type of the parameter "keep_results".')
+    
         # delele previous rebinned instances if present
         if hasattr(self, '_model_mat_new'):
             del self._model_mat_new
@@ -936,7 +937,62 @@ class CorrModel(object):
         if hasattr(self, '_grid_z_mat_new'):
             del self._grid_z_mat_new
         
-        # first assume identity as original covariance matrix and rebin it
+        # initialize lists
+        model_mat_new = []
+        data_mat_new = []
+        grid_pi_mat_new = []
+        grid_sigma_mat_new = []
+        grid_z_mat_new = []
+
+        # loop over new bins
+        for pi_index in range(new_pi.size - 1):
+            for sigma_index in range(new_sigma.size - 1):
+
+                # initialize variables
+                counts_new = 0.0
+                model_new = 0.0
+                data_new = 0.0
+                grid_pi_new = 0.0
+                grid_sigma_new = 0.0
+                grid_z_new = 0.0
+                    
+                # loop over old bins
+                for (model, data, grid_pi, grid_sigma, grid_z) in zip(self._model_mat, self._data_mat, self._grid_pi_mat,
+                                                                      self._grid_sigma_mat, self._grid_z_mat):
+                    # check if old bin falls inside the new one
+                    if (grid_pi >= new_pi[pi_index] and grid_pi <= new_pi[pi_index + 1] and grid_sigma >= new_sigma[sigma_index]
+                        and grid_sigma <= new_sigma[sigma_index + 1]):
+                        counts_new += 1.0
+                        model_new += model
+                        data_new += data
+                        grid_pi_new += grid_pi
+                        grid_sigma_new += grid_sigma
+                        grid_z_new += grid_z
+                        # TODO: remove this test
+                        #print "adding measurement with pi={} and sigma={} to bin delimited by pi=({}, {}) and sigma=({}, {}), current values stored: counts={}, pi={}, sigma={}, model={}".format(grid_pi, grid_sigma, new_pi[pi_index], new_pi[pi_index + 1], new_sigma[sigma_index], new_sigma[sigma_index + 1], counts_new, grid_pi_new, grid_sigma_new, model_new)
+                        # end of test
+                
+                # normalize and add to list
+                if counts_new != 0.0:
+                    # TODO: remove this test
+                    #print "normalizing measurement in bin delimited by pi=({}, {}) and sigma=({}, {}): model = {}, pi = {}, sigma={}, counts={}\n\n".format(new_pi[pi_index], new_pi[pi_index + 1], new_sigma[sigma_index], new_sigma[sigma_index + 1], model_new, grid_pi_new, grid_sigma_new, counts_new)
+                    
+                    # end of test
+                    model_mat_new.append(model_new/counts_new)
+                    data_mat_new.append(data_new/counts_new)
+                    grid_pi_mat_new.append(grid_pi_new/counts_new)
+                    grid_sigma_mat_new.append(grid_sigma_new/counts_new)
+                    grid_z_mat_new.append(grid_z/counts_new)
+
+        # recast list to ndarrays
+        model_mat_new = np.array(model_mat_new)
+        data_mat_new = np.array(data_mat_new)
+        grid_pi_mat_new = np.array(grid_pi_mat_new)
+        grid_sigma_mat_new = np.array(grid_sigma_mat_new)
+        grid_z_mat_new = np.array(grid_z_mat_new)
+
+        # TODO: remove old stuff
+        """# first assume identity as original covariance matrix and rebin it
         inv_cov_mat_new = np.dot(transformation_matrix.transpose(), transformation_matrix)
         cov_mat_new = np.linalg.inv(inv_cov_mat_new)
         
@@ -945,7 +1001,7 @@ class CorrModel(object):
         data_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), self._data_mat))
         grid_pi_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_pi_mat))
         grid_sigma_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_sigma_mat))
-        grid_z_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_z_mat))
+        grid_z_mat_new = np.dot(cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_z_mat))"""
         
         # keep rebinned instances
         if keep_results:
@@ -961,7 +1017,7 @@ class CorrModel(object):
          grid_sigma_mat_new,
          grid_z_mat_new)
 
-    def whichBins(self, sigma_min, sigma_max, rebinned = False):
+    def whichBins(self, sigma_min, sigma_max, subset='all', rebinned = False):
         """
         Determines which bins have perpedicular separations between sigma_min and sigma_max
         
@@ -970,13 +1026,19 @@ class CorrModel(object):
         PURPOSE:
             Determines which bins have perpedicular separations between sigma_min and sigma_max.
             Bins with perpendicular separations equal to sigma_min are included and bins with
-            perpendicular separations equal to sigma_max are excluded.
+            perpendicular separations equal to sigma_max are excluded. Upon options only bins
+            with positive or negative values of pi are included.
         ARGUMENTS:
             sigma_min (float): Minimum value of perpendicular separation to include a bin in the
                                return list
             sigma_max (float): Maximum value of perpendicular separation to include a bin in the
                                return list.
         KEYWORD ARGUMENTS:
+            subset (string):   A string specifying whether or not there is an additional constrain
+                               on the value of the parallel separation. It can have the values 
+                               "pos" (includes only bins with positive or zero parallel separations),
+                               "neg" (includes only bins with negative or zero parallel separations),
+                               or "all" (no additional constrain) -- Default: "all"
             rebinned (bool):   If True, the rebinned matrixes will be considered except. If the
                                rebinned matrixes do not contain grid information, then this flag
                                is ignored. -- Default: False
@@ -984,14 +1046,20 @@ class CorrModel(object):
         EXAMPLES:
             pos = model.whichBins(1.0, 3.0)
             pos = model.whichBins(1.0, 3.0, rebinned=True)
+            pos = model.whichBins(1.0, 3.0, subset="neg")
+            
         """
         # check parameters' types
-        try:
-            assert type(sigma_min) == float or isinstance(sigma_min, np.float64)
-            assert type(sigma_max) == float or isinstance(sigma_max, np.float64)
-            assert type(rebinned) == bool
-        except AssertionError:
-            raise CorrModelError(self.whichBins, 'Incorrect type of the parameters.')
+        if not (type(sigma_min) == float or isinstance(sigma_min, np.float64)):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "sigma_min".')
+        if not (type(sigma_max) == float or isinstance(sigma_max, np.float64)):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "sigma_max".')
+        if not (type(subset) == str):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "subset".')
+        if not (subset == "pos" or subset == "neg" or subset == "all"):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "subset".')
+        if not (type(rebinned) == bool):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "rebinned".')
         
         # check parameters consistency
         try:
@@ -1000,9 +1068,19 @@ class CorrModel(object):
             raise CorrModelError(self.whichBins, 'sigma_max is lower than sigma_min')
 
         if rebinned:
-            if hasattr(self, '_grid_sigma_mat_new'):
-                return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max))
-        return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max))
+            if hasattr(self, '_grid_sigma_mat_new') and hasattr(self, '_grid_pi_mat_new'):
+                if subset == "all":
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max))
+                elif subset == "pos":
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new >= 0))
+                else:
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new <= 0))
+        if subset == "all":
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max))
+        elif subset == "pos":
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat >= 0))
+        else:
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat <= 0))
 
     def model_mat(self, rebinned = False):
         """
@@ -1028,7 +1106,7 @@ class CorrModel(object):
         """
         Returns a copy of _grid_pi_mat
             
-        FUNCTION: CorrModel.sigma()
+        FUNCTION: CorrModel.grid_pi_mat
         TYPE: Access
         PURPOSE: Returns a copy of _grid_pi_mat
         KEYWORD ARGUMENTS:
@@ -1043,6 +1121,26 @@ class CorrModel(object):
             if hasattr(self, '_grid_pi_mat_new'):
                 return np.copy(self._grid_pi_mat_new)
         return np.copy(self._grid_pi_mat)
+
+    def grid_sigma_mat(self, rebinned = False):
+        """
+        Returns a copy of _grid_sigma_mat
+        
+        FUNCTION: CorrModel.grid_sigma_mat
+        TYPE: Access
+        PURPOSE: Returns a copy of _grid_sigma_mat
+        KEYWORD ARGUMENTS:
+        rebinned: if True, returns a copy of _grid_sigma_mat_new instead. If _grid_sigma_mat_new does
+        not exist, then this flag is ignored
+        RETURNS: A copy of _grid_sigma_mat
+        EXAMPLES:
+        grid_sigma_mat = model.grid_sigma_mat()
+        grid_sigma_mat = model.grid_sigma_mat(rebinned=True)
+        """
+        if rebinned:
+            if hasattr(self, '_grid_sigma_mat_new'):
+                return np.copy(self._grid_sigma_mat_new)
+        return np.copy(self._grid_sigma_mat)
 
 
 class CorrModelError(Exception):
@@ -1155,8 +1253,10 @@ def invCovMatFromPlate(plate_num):
         The covariance matrix file 
     
     """
+    # TODO: fill function
+    return
 
-def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_rebinned_list = False, labels_list = None, shifts_list = None, save_extension = 'eps', base_fig_name='cross_correlation'):
+def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name='cross_correlation', rmin=10.0):
     """
     Plots the cross-correlation
     
@@ -1174,15 +1274,28 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
             or tuple of CorrData):               Data to plot. The format is either a 
                                                  single CorrData instance or a list of 
                                                  CorrData instances.
-         fmt_list (string, list of strings,
-         or tuple of strings):                   Format in whih to plot the different
-                                                 datsets. Its number of elements must be
-                                                 equal to the number of elements in 
-                                                 data_list. Each element must contain a 
-                                                 valid matplotlib-format string.
-        save_to (string):                        Directory where plots will be saved
+        save_to (string):                        Directory where plots will be saved.
     KEYWORD_ARGUMENTS:
-        sigma_bins (np.ndarray):                 Bins in parallel separation in which to 
+        fmt_list (string, list of strings,
+            or tuple of strings):                Format in whih to plot the different
+                                                 datsets. Its number of elements must be
+                                                 equal to the number of elements in
+                                                 data_list. Each element must contain a
+                                                 valid matplotlib-format string. Ignored
+                                                 if contour is set to True. -- Default: "ko"
+        model_list (CorrModel, list of CorrModel,
+            or tuple of CorrModel):              Models to plot. The format is either a
+                                                 single CorrModel instance or a list of
+                                                 CorrModel instances. Ignored if contour
+                                                 is set to True.
+        fmt_model_list (string, list of strings,
+            or tuple of strings):                Format in whih to plot the different
+                                                 models. Its number of elements must be
+                                                 equal to the number of elements in
+                                                 model_list. Each element must contain a
+                                                 valid matplotlib-format string. Ignored 
+                                                 if contour is set to True.
+        sigma_bins (np.ndarray):                 Bins in parallel separation in which to
                                                  plot the cross-correlation. If None, then
                                                  the binning will be taken from the first
                                                  dataset -- Default: None
@@ -1199,11 +1312,27 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
                                                  as many values as datasets are provided
                                                  If the dataset has no rebinned data, the flag
                                                  is ignored. -- Default: False
+        plot_model_rebinned_list (bool,
+            list of bool, tuple of bool):        If True, plots the rebinned arrays of the
+                                                 model. If a single value is passed for
+                                                 multiple models, then this value will be
+                                                 used for all of them. Otherwise there must be
+                                                 as many values as models are provided
+                                                 If the model has no rebinned data, the flag
+                                                 is ignored. Ignored if contour is set to True.
+                                                 -- Default: False
         labels_list (None, string, list of
             strings, or tuple of strings):       Name of the different datasets. Its number of
                                                  elements must be equal to the number of elements 
                                                  in data_list. Otherwise it has to be None, and no
-                                                 labels will be displayed on the plots
+                                                 labels will be displayed on the plots.
+        labels_model_list (None, string, 
+            list of strings, or tuple of 
+            strings):                            Name of the different models. Its number of
+                                                 elements must be equal to the number of elements
+                                                 in model_list. Otherwise it has to be None, and no
+                                                 labels will be displayed on the plots. Ignored if 
+                                                 contour is set to True.
         shifts_list (None, float, list of
             floats, or tuple of floats):         Shifts to be applied to the different datasets.
                                                  Its number of elements must be equal to the number 
@@ -1215,6 +1344,8 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
                                                  where # is replaced by the corresponding bin number, and
                                                  format is replaced by the value stored in save_extension
                                                  --- Default: "cross_correlation"
+        rmin (float or int, positive):           Minimum distance considered by the fitting model.
+                                                 --- Default: 10.0
      EXCEPTION SAFETY:
         Raises a CorrelationProcessError instance if the arguments are of incorrect type,
         or arguments are not consistent. Assumes formats are given in valid matplotlib-format
@@ -1232,54 +1363,98 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
         plot([data1, data2], [fmt1, fmt2], "./", plot_rebinned=(True, False))
     """
     # check parameters' types
-    try:
-        assert isinstance(data_list, CorrData) or type(data_list) == list or type(data_list) == tuple
-        if type(data_list) == list or type(data_list) == tuple:
-            for item in data_list:
-                assert isinstance(item, CorrData)
+    if not (isinstance(data_list, CorrData) or type(data_list) == list or type(data_list) == tuple):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "data_list".')
+    if type(data_list) == list or type(data_list) == tuple:
+        for item in data_list:
+            if not (isinstance(item, CorrData)):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "data_list".')
 
-        assert type(fmt_list) == str or type(fmt_list) == list or type(fmt_list) == tuple
-        if type(fmt_list) == list or type(fmt_list) == tuple:
-            for item in fmt_list:
-                assert type(item) == str
+    if not (type(save_to) == str):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "save_to".')
 
-        assert type(save_to) == str
-        
-        assert sigma_bins == None or isinstance(sigma_bins, np.ndarray)
-        
-        assert type(contour) == bool
-        
-        assert type(plot_rebinned_list) == bool or type(plot_rebinned_list) == list or type(plot_rebinned_list) == tuple
-        if type(plot_rebinned_list) == list or type(plot_rebinned_list) == tuple:
-            for item in plot_rebinned_list:
-                assert type(item) == bool
-
-        assert labels_list == None or type(labels_list) == str or type(labels_list) == list or type(labels_list) == tuple
-        if type(labels_list) == list or type(labels_list) == tuple:
-            for item in labels_list:
-                assert type(item) == str
-
-        assert shifts_list == None or type(shifts_list) == float or type(shifts_list) == list or type(shifts_list) == tuple
-        if type(shifts_list) == list or type(shifts_list) == tuple:
-            for item in shifts_list:
-                assert type(item) == float
-
-        assert type(save_extension) == str
-            
-        assert type(base_fig_name) == str
-
-    except AssertionError:
-        raise CorrelationProcessError(plot, 'Incorrect type of the parameters.')
+    if not (type(fmt_list) == str or type(fmt_list) == list or type(fmt_list) == tuple or contour):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "fmt_list".')
+    if (type(fmt_list) == list or type(fmt_list) == tuple) and (not contour):
+        for item in fmt_list:
+            if not (type(item) == str):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "fmt_list".')
     
+    if not (isinstance(model_list, CorrModel) or type(model_list) == list or type(model_list) == tuple or contour):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "model_list".')
+    if (type(model_list) == list or type(model_list) == tuple) and (not contour):
+        for item in model_list:
+            if not (isinstance(item, CorrModel)):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "model_list".')
+    
+    if not (type(fmt_model_list) == str or type(fmt_model_list) == list or type(fmt_model_list) == tuple or contour):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "fmt_model_list".')
+    if (type(fmt_model_list) == list or type(fmt_model_list) == tuple) and (not contour):
+        for item in fmt_model_list:
+            if not (type(item) == str):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "fmt_model_list".')
+    
+    if not (sigma_bins == None or isinstance(sigma_bins, np.ndarray)):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "sigma_bins".')
+
+    if not (type(contour) == bool):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "contour".')
+
+    if not (type(plot_rebinned_list) == bool or type(plot_rebinned_list) == list or type(plot_rebinned_list) == tuple):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "plot_rebinned_list".')
+    if type(plot_rebinned_list) == list or type(plot_rebinned_list) == tuple:
+        for item in plot_rebinned_list:
+            if not (type(item) == bool):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "plot_rebinned_list".')
+    
+    if not (type(plot_model_rebinned_list) == bool or type(plot_model_rebinned_list) == list or type(plot_model_rebinned_list) == tuple):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "plot_model_rebinned_list".')
+    if type(plot_model_rebinned_list) == list or type(plot_model_rebinned_list) == tuple:
+        for item in plot_model_rebinned_list:
+            if not (type(item) == bool):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "plot_model_rebinned_list".')
+
+    if not (labels_list == None or type(labels_list) == str or type(labels_list) == list or type(labels_list) == tuple):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_list".')
+    if type(labels_list) == list or type(labels_list) == tuple:
+        for item in labels_list:
+            if not (type(item) == str):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_list".')
+
+    if not (labels_model_list == None or type(labels_model_list) == str or type(labels_model_list) == list
+            or type(labels_model_list) == tuple or contour):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_model_list".')
+    if type(labels_model_list) == list or type(labels_model_list) == tuple:
+        for item in labels_list:
+            if not (type(item) == str):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_model_list.')
+
+    if not (shifts_list == None or type(shifts_list) == float or type(shifts_list) == list or type(shifts_list) == tuple):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "shifts_list".')
+    if type(shifts_list) == list or type(shifts_list) == tuple:
+        for item in shifts_list:
+            if not (type(item) == float):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "shifts_list".')
+
+    if not (type(save_extension) == str):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "save_extension".')
+
+    if not (type(base_fig_name) == str):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "base_fig_name".')
+
+    if not (type(rmin) == float or type(rmin) == int):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "rmin".')
+    if type(rmin) == int:
+        rmin = float(rmin)
+    if not (rmin > 0.0):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "rmin".')
+
     # check parameters' consistency
     try:
         if contour:
             if type(data_list) == list or type(data_list) == tuple:
                 assert len(data_list) == 1
                 data_list = data_list[0]
-            if type(fmt_list) == list or type(fmt_list) == tuple:
-                assert len(fmt_list) == 1
-                fmt_list = fmt_list[0]
             if type(plot_rebinned_list) == list or type(plot_rebinned_list) == tuple:
                 assert len(plot_rebinned_list) == 1
                 plot_rebinned_list == plot_rebinned_list[0]
@@ -1287,30 +1462,66 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
                 assert len(shifts_list) == 1
                 shifts_list == shifts_list[0]
         else:
+            # convert all parameters to one element lists if necessary
             if isinstance(data_list, CorrData):
                 data_list = [data_list]
+            
             if type(fmt_list) == str:
                 fmt_list = [fmt_list]
+
+            if isinstance(model_list, CorrModel):
+                model_list = [model_list]
+
+            if type(fmt_model_list) == str:
+                fmt_model_list = [fmt_model_list]
+
             if type(plot_rebinned_list) == bool:
                 plot_rebinned_list = [plot_rebinned_list]
+
+            if type(plot_model_rebinned_list) == bool:
+                plot_model_rebinned_list = [plot_model_rebinned_list]
+
             if type(labels_list) == str:
                 labels_list = [labels_list]
+
+            if type(labels_model_list) == str:
+                labels_model_list = [labels_model_list]
+
             if type(shifts_list) == float:
                 shifts_list = [shifts_list]
+                    
+            # check that all lists have the appropiate length and correct for it in special cases
+            # (check parameters description)
             assert len(fmt_list) == 1 or len(fmt_list) == len(data_list)
             if len(fmt_list) == 1:
                 fmt_list = [fmt_list[0]] * len(data_list)
+
+            assert len(fmt_model_list) == 1 or len(fmt_model_list) == len(model_list)
+            if len(fmt_model_list) == 1:
+                fmt_model_list = [fmt_model_list[0]] * len(model_list)
+
             assert len(plot_rebinned_list) == 1 or len(plot_rebinned_list) == len(data_list)
             if len(plot_rebinned_list) == 1:
                 plot_rebinned_list = [plot_rebinned_list[0]] * len(data_list)
+
+            assert len(plot_model_rebinned_list) == 1 or len(plot_model_rebinned_list) == len(model_list)
+            if len(plot_model_rebinned_list) == 1:
+                plot_model_rebinned_list = [plot_model_rebinned_list[0]] * len(model_list)
+
             assert labels_list == None or len(labels_list) == 1 or len(labels_list) == len(data_list)
             if labels_list != None and len(labels_list) == 1:
                 labels_list = [labels_list[0]] * len(data_list)
+
+            assert labels_model_list == None or len(labels_model_list) == 1 or len(labels_model_list) == len(model_list)
+            if labels_model_list != None and len(labels_model_list) == 1:
+                labels_model_list = [labels_model_list[0]] * len(model_list)
+
             assert shifts_list == None or len(shifts_list) == 1 or len(shifts_list) == len(shifts_list)
             if shifts_list != None and len(shifts_list) == 1:
                 shifts_list = [shifts_list[0]] * len(data_list)
             elif shifts_list == None:
                 shifts_list = [0.0] * len(data_list)
+
             if sigma_bins == None:
                 sigma_bins = data[0].sigma(rebinned=plot_rebinned_list[0])
     except AssertionError:
@@ -1352,12 +1563,30 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
             sigma_max = sigma_bins[bin_num + 1]
             print 'plotting sigma bin {}'.format(bin_num)
             pos_list = [ data.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned) for data, plot_rebinned in zip(data_list, plot_rebinned_list) ]
+            # check if the model is continuus or discontinuus in this region
+            if sigma_max >= rmin:
+                model_pos_list = [ model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="all") for model, plot_rebinned in zip(model_list, plot_model_rebinned_list) ]
+            else:
+                model_pos_list_positive = [ model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="pos") for model, plot_rebinned in zip(model_list, plot_model_rebinned_list) ]
+                model_pos_list_negative = [ model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="neg") for model, plot_rebinned in zip(model_list, plot_model_rebinned_list) ]
             fig = plt.figure(figsize=figsize)
             ax = fig.add_subplot(gs[0])
             if labels_list == None:
                 [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt) for data, fmt, plot_rebinned, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, pos_list, shifts_list) ]
             else:
                 [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt, label=label) for data, fmt, plot_rebinned, label, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, labels_list, pos_list, shifts_list) ]
+            if labels_model_list == None:
+                if sigma_max >= rmin:
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt) for model, fmt, plot_rebinned, pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list) ]
+                else:
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt) for model, fmt, plot_rebinned, pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list_positive) ]
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt) for model, fmt, plot_rebinned, pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list_negative) ]
+            else:
+                if sigma_max >= rmin:
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt, label=label) for model, fmt, plot_rebinned, pos, label in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list, labels_model_list) ]
+                else:
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt, label=label) for model, fmt, plot_rebinned, pos, label in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list_positive, labels_model_list) ]
+                    [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[pos], model.model_mat(rebinned=plot_rebinned)[pos], fmt) for model, fmt, plot_rebinned, pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list_negative) ]
             ax.set_xlabel('$\\pi\\,\\left(\\rm h^{-1}Mpc\\right)$', fontsize=fontsize)
             ax.set_ylabel('$\\xi\\left(\\pi, \\sigma\\right)$', fontsize=fontsize)
             ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < \\sigma <' + str(sigma_max) + '$', fontsize=fontsize, transform=ax.transAxes)
@@ -1366,7 +1595,7 @@ def plot(data_list, fmt_list, save_to, sigma_bins = None, contour = False, plot_
             yticks[0].label1.set_visible(False)
             if labels_list != None:
                 ax.legend(numpoints=1, loc=4)
-            fig.savefig('{}_sigma_bin_{}.{}'.format(base_fig_name, bin_num, save_extension))
+            fig.savefig('{}{}_sigma_bin_{}.{}'.format(save_to, base_fig_name, bin_num, save_extension))
             plt.close(fig)
 
 
@@ -1395,12 +1624,12 @@ def rebinIgnoringCovMat(data, pi, sigma):
         data_mat_new = rebinIgnoringCovMat(data, np.array([-10, 10]), np.array([10, 20]))
     """
     # check parameters type
-    try:
-        assert isinstance(data, CorrData)
-        assert isinstance(pi, np.ndarray)
-        assert isinstance(sigma, np.ndarray)
-    except AssertionError:
-        raise CorrelationProcessError(rebinIgnoringCovMat, 'Incorrect type of the parameters.')
+    if not (isinstance(data, CorrData)):
+        raise CorrelationProcessError(rebinIgnoringCovMat, 'Incorrect type of the parameter "data".')
+    if not (isinstance(pi, np.ndarray)):
+        raise CorrelationProcessError(rebinIgnoringCovMat, 'Incorrect type of the parameter "pi".')
+    if not (isinstance(sigma, np.ndarray)):
+        raise CorrelationProcessError(rebinIgnoringCovMat, 'Incorrect type of the parameter "sigma".')
 
 
     data_mat = data.data_mat()
@@ -1442,17 +1671,18 @@ def showDocumentation(fnc):
         showDocumentation("all")
     """
     # check parameters' type
-    try:
-        if not type(fnc) == tuple:
-            assert type(fnc) == list or inspect.isfunction(fnc) or inspect.isclass(fnc) or inspect.ismethod(fnc) or type(fnc) == str
-            assert type(fnc) == str and fnc == 'all' or fnc == 'module'
-        if type(fnc) == tuple or type(fnc) == list:
-            for item in fnc:
-                assert inspect.isfunction(item) or inspect.isclass(item) or inspect.ismethod(item)
+    if type(fnc) == tuple or type(fnc) == list:
+        for item in fnc:
+            if not (inspect.isfunction(item) or inspect.isclass(item) or inspect.ismethod(item)):
+                raise CorrelationProcessError(showDocumentation, 'Incorrect type of the parameter "fnc".')
+    elif type(fnc) == str:
+        if not (fnc == 'all' or fnc == 'module'):
+            raise CorrelationProcessError(showDocumentation, 'Incorrect type of the parameter "fnc".')
+    else:
+        if not (inspect.isfunction(fnc) or inspect.isclass(fnc) or inspect.ismethod(fnc)):
+            raise CorrelationProcessError(showDocumentation, 'Incorrect type of the parameter "fnc".')
 
-    except AssertionError:
-        raise CorrelationProcessError(showDocumentation, 'Incorrect type of the parameters.')
-
+    # print the entire documentation
     if fnc == 'all':
         module = sys.modules[__name__]
         functions_list = inspect.getmembers(module, inspect.isfunction)
@@ -1472,11 +1702,14 @@ def showDocumentation(fnc):
                 print trim(item[1].__doc__)
                 print '\n'
 
+    # print the module documentation
     elif fnc == 'module':
         module = sys.modules[__name__]
         print '\nDocumentation for module {}:\n'.format(module.__name__)
         print trim(module.__doc__)
         print '\n'
+    
+    # print the documentation for the selected classes, functions, and methods
     elif type(fnc) == tuple or type(fnc) == list:
         for item in fnc:
             if hasattr(item, 'im_class'):
@@ -1515,10 +1748,8 @@ def trim(docstring):
         trim(object.__doc__)
     """
     # check parameters' type
-    try:
-        assert type(docstring) == str
-    except AssertionError:
-        raise CorrelationProcessError(trim, 'Incorrect type of the parameters.')
+    if not (type(docstring) == str):
+        raise CorrelationProcessError(trim, 'Incorrect type of the parameter "docstring".')
     
     if not docstring:
         return ''
@@ -1551,8 +1782,8 @@ def testRebinning(num_test_groups):
     TYPE: Test function
     PURPOSE:
         Test the rebinning performed by the functions CorrData.rebinData and rebinIgnoringCovMat.
-        To do so, the function used the data found in 'test#.data', 'test#.cov', and 'test#.grid'
-        in folder 'test_rebinning/' (where # is an integer going from 1 to num_tests_groups, both
+        To do so, the function uses the data found in 'test#.data', 'test#.cov', and 'test#.grid'
+        in folder 'test_rebinning/' (where # is an integer going from 1 to num_test_groups, both
         included). The function performs the rebinnings proposed in 'test#.rebin' and compares 
         the results against 'test#.sol'.
         
@@ -1585,7 +1816,7 @@ def testRebinning(num_test_groups):
         that lines must not end with a white space, and that no new line must be found at end of
         file. Examples:
             'RI2 data 52.5000 22.5000'
-            'R2 30.1449 50.0489 cov 2.0017 -0.0450 -0.0450 1.5010'
+            'R2 data 30.1449 50.0489 cov 2.0017 -0.0450 -0.0450 1.5010'
             
         The function will write a 'test#.res' file with the result. If this file is identical
         to 'test#.sol', all the tests will have passed. Line-to-line differences show the test
@@ -1598,10 +1829,8 @@ def testRebinning(num_test_groups):
         testRebinning(3)
     """
     # check parameters' type
-    try:
-        assert type(num_tests_groups) == int
-    except AssertionError:
-        raise CorrelationProcessError(testRebinning, 'Incorrect type of the parameters.')
+    if not (type(num_test_groups) == int):
+        raise CorrelationProcessError(testRebinning, 'Incorrect type of the parameter "num_test_groups".')
 
     print '\n\nTesting the functions CorrData.rebinData and rebinIgnoringCovMat.'
     print 'There are {} test groups specified\n'.format(num_test_groups)
@@ -1674,10 +1903,8 @@ def testRebinning(num_test_groups):
         for name, pi, sigma in tests:
             if name[1].isdigit():
                 transf_matrix = test_data.computeTransformationMatrix(pi, sigma)
-                if test_data.has_grid():
-                    cov_mat_new, data_mat_new, tmp, tmp, tmp = test_data.rebinData(transf_matrix)
-                else:
-                    cov_mat_new, data_mat_new = test_data.rebinData(transf_matrix)
+                cov_mat_new, data_mat_new, tmp, tmp, tmp = test_data.rebinData(transf_matrix)
+
                 result = '{} data'.format(name)
                 for item in data_mat_new:
                     result += ' {:.4f}'.format(item)
@@ -1716,6 +1943,7 @@ def testRebinning(num_test_groups):
                     print line
 
 
+
 # what to do if the module is not imported but directly executed
 if __name__ == '__main__':
-    testRebinning(4)
+    testRebinning(6)
