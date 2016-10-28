@@ -1278,7 +1278,7 @@ def invCovMatFromPlate(plate_num):
     # TODO: fill function
     return
 
-def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name='cross_correlation', rmin_list=10.0, smooth=True):
+def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = []):
     """
     Plots the cross-correlation
     
@@ -1390,6 +1390,16 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
                                                  is performed with the two adjacent bins. Otherwise does
                                                  nothing. Ignored if contour is set to False.
                                                  --- Default: True
+        plot_separated_errors (bool):            If True, plots the average errors outside the plot chart
+                                                 at the positions specified by error_pos_list. The datapoints
+                                                 are plotted without errorbars. Otherwise does nothing. 
+                                                 Ignored if contour is set to True. --- Default: False
+        error_pos_list (float, list of floats or
+            tuple of floats):                    Position to plot the average errorbars relative to the 
+                                                 axis size. Its number of elements must be equal to the
+                                                 number of elements in data_list. All values must be between
+                                                 0.0 and 1.0. Ignored if contour is set to True or if 
+                                                 plot_separated_errors is set to False. --- Default: []
      EXCEPTION SAFETY:
         Raises a CorrelationProcessError instance if the arguments are of incorrect type,
         or arguments are not consistent. Assumes formats are given in valid matplotlib-format
@@ -1495,6 +1505,16 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
     if not (type(smooth) == bool or (not contour)):
         raise CorrelationProcessError(plot, 'Incorrect type of the parameter "smooth".')
 
+    if not (type(plot_separated_errors) == bool or contour):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "plot_separated_errors".')
+
+    if not (type(error_pos_list) == float or type(error_pos_list) == list or type(error_pos_list) == tuple or contour or (not plot_separated_errors)):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "error_pos_list".')
+    if (type(error_pos_list) == list or type(error_pos_list) == tuple):
+        for item in error_pos_list:
+            if not (type(item) == float or contour or (not plot_separated_errors)):
+                raise CorrelationProcessError(plot, 'Incorrect type of the parameter "error_pos_list".')
+
     # check parameters' consistency
     try:
         if contour:
@@ -1549,7 +1569,10 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
                 rmin_list = [float(rmin_list)]
             if type(rmin_list) == tuple or type(rmin_list) == list:
                 rmin_list = [float(item) for item in rmin_list]
-                    
+
+            if type(error_pos_list) == float and plot_separated_errors:
+                error_pos_list = [error_pos_list]
+    
             # check that all lists have the appropiate length and correct for it in special cases
             # (check parameters description)
             assert len(fmt_list) == 1 or len(fmt_list) == len(data_list)
@@ -1588,6 +1611,10 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
             assert len(rmin_list) == 1 or len(rmin_list) == len(model_list)
             if len(rmin_list) == 1:
                 rmin_list = [rmin_list[0]] * len(model_list)
+
+            if plot_separated_errors:
+                assert len(error_pos_list) == len(data_list)
+
     except AssertionError:
         raise CorrelationProcessError(plot, 'Given parameters are not consistent.')
 
@@ -1716,8 +1743,12 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
     # plot the cross-correlation in different sigma bins
     else:
         # figure settings
-        gs = gridspec.GridSpec(1, 1)
-        gs.update(left=0.2, bottom=0.2)
+        if plot_separated_errors:
+            gs = gridspec.GridSpec(1, 2, width_ratios=[10,1])
+            gs.update(left=0.2, bottom=0.2, wspace=0.01)
+        else:
+            gs = gridspec.GridSpec(1, 1)
+            gs.update(left=0.2, bottom=0.2)
         fontsize = 32
         labelsize = 22
         figsize = (9, 7)
@@ -1738,10 +1769,29 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
             # plot the data
             fig = plt.figure(figsize=figsize)
             ax = fig.add_subplot(gs[0])
-            if labels_list == None:
-                [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt) for data, fmt, plot_rebinned, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, pos_list, shifts_list) ]
+            # if plot_separated_errors is set to True plot datapoints without errorbars and plot the errors at the specified positions
+            if plot_separated_errors:
+                if labels_list == None:
+                    [ ax.plot(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], fmt) for data, fmt, plot_rebinned, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, pos_list, shifts_list) ]
+                else:
+                    [ ax.plot(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], fmt, label=label) for data, fmt, plot_rebinned, label, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, labels_list, pos_list, shifts_list) ]
+                        
+                # compute errors average and plot them at the specified positions
+                mean_error_list = [np.sum(data.error(rebinned=plot_rebinned)[pos])/data.error(rebinned=plot_rebinned)[pos].size for data, plot_rebinned, pos in zip(data_list, plot_rebinned_list, pos_list)]
+                ax2 = fig.add_subplot(gs[1])
+                [ax2.errorbar(pos, 0.2, yerr=mean_error/(ax.get_ylim()[1]-ax.get_ylim()[0]), fmt=fmt, transform=ax2.transAxes) for mean_error, fmt, pos in zip(mean_error_list, fmt_list, error_pos_list)]
+                ax2.tick_params(axis='both', bottom='off', left='off', top='off', right='off')
+                ax2.axis('off')
+                ax2.tick_params(axis='both', bottom='off', top='off', left='off', right='off', labelbottom='off', labeltop='off', labelleft='off', labelright='off')
+                ax2.set_ylim(ax.get_ylim())
+            
+            # otherwise plot datapoints with their errorbars
             else:
-                [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt, label=label) for data, fmt, plot_rebinned, label, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, labels_list, pos_list, shifts_list) ]
+                if labels_list == None:
+                    [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt) for data, fmt, plot_rebinned, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, pos_list, shifts_list) ]
+                else:
+                    [ ax.errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt, label=label) for data, fmt, plot_rebinned, label, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, labels_list, pos_list, shifts_list) ]
+            # plot the model
             if labels_model_list == None:
                 for model, fmt, plot_rebinned, model_pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list):
                     [ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos]
@@ -1749,6 +1799,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list = [], fmt_model_list = 
                 for model, fmt, plot_rebinned, model_pos, label in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list, labels_model_list):
                     ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos[0]], model.model_mat(rebinned=plot_rebinned)[model_pos[0]], fmt, label=label)
                     [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos[1:] ]
+
             ax.set_xlabel('$\\pi\\,\\left(\\rm h^{-1}Mpc\\right)$', fontsize=fontsize)
             ax.set_ylabel('$\\xi\\left(\\pi, \\sigma\\right)$', fontsize=fontsize)
             ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < \\sigma <' + str(sigma_max) + '$', fontsize=fontsize, transform=ax.transAxes)
