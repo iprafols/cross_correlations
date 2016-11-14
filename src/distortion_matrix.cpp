@@ -133,6 +133,11 @@ void DistortionMatrix::ComputeDistMat(const AstroObjectDataset& object_list, con
         // compute distortion matrix in selected plate
         plate.ComputeDistMat(object_list, spectra_list, input);
         
+        // save distortion matrix contribution in plate
+        if (input.flag_write_partial_results() >= 1){
+            plate.SaveDistMat(input);
+        }
+        
         // add to total value
         int thread_num = omp_get_thread_num();
         distortion_threads_[thread_num] += plate;

@@ -60,7 +60,7 @@ public:
     
     
     // access function for dist_mat_
-    CovMat dist_mat() const {return dist_mat_;}
+    DistMat dist_mat() const {return dist_mat_;}
     
     // access function for flag_verbose_distortion_plate_
     size_t flag_verbose_distortion_plate() const {return flag_verbose_distortion_plate_;}
@@ -102,6 +102,9 @@ public:
     // Normalizes the cross correlation results
     void Normalize();    
     
+    // Saves the distortion matrix contribution in this plate
+    void SaveDistMat(const Input& input);
+    
     
     // -------------------------------------------------------------
     // operator overload
@@ -119,13 +122,16 @@ public:
     
 private:
     // distortion matrix
-    CovMat dist_mat_;
+    DistMat dist_mat_;
     
     // verbose flag
     size_t flag_verbose_distortion_plate_;
 
     // number of bins
     size_t num_bins_;
+    
+    // pairs file name
+    std::string pairs_file_name_;
     
     // plate number for neighbouring plates
     std::vector<int> plate_neighbours_;

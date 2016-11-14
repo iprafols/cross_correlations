@@ -60,6 +60,7 @@ DistortionPlate::DistortionPlate(const Input& input, const int plate_number, con
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
     num_bins_ = input.num_bins();
+    pairs_file_name_ = ToStr(plate_number_);
     
     // initialize distortion matrix computation
     for (size_t i = 0; i < num_bins_; i++){
@@ -153,7 +154,7 @@ void DistortionPlate::set_dist_mat(size_t i, size_t j, double value){
      NONE
      */
     
-    CovMat::iterator it = dist_mat_.find(std::pair<size_t, size_t>(i,j));
+    DistMat::iterator it = dist_mat_.find(std::pair<size_t, size_t>(i,j));
     if (it != dist_mat_.end()){
         (*it).second = value;
     }
@@ -213,7 +214,7 @@ void DistortionPlate::AddPair(const LyaPixel& pixel, const LyaPixel& pixel2, con
      NONE
      */
     
-    CovMat::iterator it;
+    DistMat::iterator it;
     it = dist_mat_.find(std::pair<int, int>(i, j));
     
     if (it == dist_mat_.end()){
@@ -610,7 +611,7 @@ void DistortionPlate::Normalize(){
     
     if (plate_number_ == _NORM_){
         
-        CovMat::iterator it;
+        DistMat::iterator it;
         for (size_t i = 0; i < num_bins_; i ++){
             for (size_t j = 0; j < num_bins_; j ++){
                 it = dist_mat_.find(std::pair<size_t,size_t>(i,j));
@@ -618,7 +619,6 @@ void DistortionPlate::Normalize(){
                     (*it).second /= weight_[i];
                 }
             }
-            //weight_[i] = 1.0;
         }
         
     }
@@ -628,6 +628,67 @@ void DistortionPlate::Normalize(){
     }
     
 }
+
+void DistortionPlate::SaveDistMat(const Input& input){
+    /**
+     EXPLANATION:
+     Saves the distortion matrix measured in a specific plate
+     
+     INPUTS:
+     input - a Input instance
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CovariancePlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (plate_number_ == _NORM_){
+        // if plate number is _NORM_, the instance is not supposed to be saved using this function
+        std::cout << "Warning : In DistortionPlate::SaveDistMat : Plate number is not set to _NORM_. This DistortionPlate instance should not be saved using this function. Ignoring..." << std::endl;
+    }
+    else{
+        std::string filename;
+        DistMat::iterator it, it_weight;
+        
+        if (flag_verbose_distortion_plate_ >= 1){
+            std::cout << "Saving distortion matrix contribution from plate " << pairs_file_name_ << std::endl;
+        }
+        
+        filename = input.results() + "plate_" + pairs_file_name_ + ".dmat";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                if (flag_verbose_distortion_plate_ >= 2){
+                    std::cout << "Saving distortion matrix contribution" << std::endl;
+                }
+                file << "# i j dmat" << std::endl;
+                for (size_t i = 0; i < num_bins_; i ++){
+                    for (size_t j = 0; j < num_bins_; j ++){
+                        it = dist_mat_.find(std::pair<size_t,size_t>(i,j));
+                        if (it != dist_mat_.end()){
+                            file << i << " " << j << " " << (*it).second << std::endl;
+                        }
+                    }
+                }
+                file << "# i weight" << std::endl;
+                for (size_t i = 0; i < num_bins_; i ++){
+                    file << i << weight_[i] << std::endl;
+                }
+                file.close();
+            }
+            else{
+                std::cout << "Error : In DistortionPlate::SaveDistMat : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+        
+    }
+    
+}
+
 
 void DistortionPlate::operator+= (const DistortionPlate& other){
     /**
@@ -654,8 +715,8 @@ void DistortionPlate::operator+= (const DistortionPlate& other){
         return;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    DistMat::iterator it;
+    DistMat::const_iterator other_it;
         
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = 0; j < num_bins_; j++){
@@ -697,8 +758,8 @@ DistortionPlate DistortionPlate::operator- (const DistortionPlate& other){
         return temp;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    DistMat::iterator it;
+    DistMat::const_iterator other_it;
     
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = 0; j < num_bins_; j++){
@@ -741,8 +802,8 @@ DistortionPlate DistortionPlate::operator* (const DistortionPlate& other){
         return temp;
     }
     
-    CovMat::iterator it;
-    CovMat::const_iterator other_it;
+    DistMat::iterator it;
+    DistMat::const_iterator other_it;
     
     for (size_t i = 0; i < num_bins_; i++){
         for (size_t j = 0; j < num_bins_; j++){

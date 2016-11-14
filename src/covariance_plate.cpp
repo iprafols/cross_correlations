@@ -762,7 +762,7 @@ void CovariancePlate::SaveCovMat(const Input& input){
      */
     if (plate_number_ == _NORM_){
         // if plate number is _NORM_, the instance is not supposed to be saved using this function
-        std::cout << "Warning : In CovariancePlate::Normalize : Plate number is not set to _NORM_. This CovariancePlate instance should not be normalized. Ignoring..." << std::endl;
+        std::cout << "Warning : In CovariancePlate::SaveCovMat : Plate number is not set to _NORM_. This CovariancePlate instance should not be saved using this function. Ignoring..." << std::endl;
     }
     else{
         std::string filename;
@@ -795,7 +795,7 @@ void CovariancePlate::SaveCovMat(const Input& input){
                 file.close();
             }
             else{
-                std::cout << "Error : In CovarianceMatrix::SaveCovMat : Unable to open file:" << std::endl << filename << std::endl;
+                std::cout << "Error : In CovariancePlate::SaveCovMat : Unable to open file:" << std::endl << filename << std::endl;
             }
         }
         

@@ -106,7 +106,7 @@ public:
     // Normalizes the cross correlation results
     void Normalize();
     
-    // Saves the covariance matrix
+    // Saves the covariance matrix in this plate
     void SaveCovMat(const Input& input);
     
     

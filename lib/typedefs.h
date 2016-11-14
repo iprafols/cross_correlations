@@ -29,5 +29,6 @@ struct PlatesMapSimple{
 typedef std::map<std::string, bool> InputFlag;
 
 typedef std::map<std::pair<int,int>,double> CovMat;
+typedef std::map<std::pair<int,int>,double> DistMat;
 
 #endif
