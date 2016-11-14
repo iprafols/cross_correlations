@@ -239,16 +239,6 @@ void CovariancePlate::AddPair(const LyaPixel& pixel1, const LyaPixel& pixel2, co
     double weight = pixel1.weight()*pixel2.weight();
     double add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
 
-    
-    // TODO: remove old stuff
-    /*double add;
-    if (pixel1.dist() == pixel2.dist()){
-        add = pow(1.0+pixel1.z(),CovariancePlate::half_gamma_)/pixel1.weight()/CovariancePlate::one_plus_z0_to_the_half_gamma_;
-        //add += lya_auto.LinearInterpolation(pixel1.z())*weight;
-    }
-    else{
-        add = lya_auto.LinearInterpolation((pixel1.z()+pixel2.z())/2.0);
-    }*/
     if (add != _BAD_DATA_){
         (*it).second += add*weight;
     }
@@ -792,10 +782,7 @@ void CovariancePlate::SaveCovMat(const Input& input){
                 for (size_t i = 0; i < num_bins_; i ++){
                     for (size_t j = i; j < num_bins_; j ++){
                         it = cov_mat_.find(std::pair<size_t, size_t>(i, j));
-                        //it_weight = weight_.find(std::pair<size_t, size_t>(i, j));
-                        //if (it != cov_mat_.end() and it_weight != weight_.end() and (*it_weight).second != 0.0){
-                        //    file << i << " " << j << " " << (*it).second/(*it_weight).second << std::endl;
-                        //}
+                        
                         if (it != cov_mat_.end() and weight_[i] != 0.0 and weight_[j] != 0.0){
                             file << i << " " << j << " " << (*it).second/weight_[i]/weight_[j] << std::endl;
                         }
