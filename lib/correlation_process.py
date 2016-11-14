@@ -1622,14 +1622,14 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         # get pi and sigma limits from the CorrData instance
         pi_bins = data_list.pi(rebinned=plot_rebinned_list)
         sigma_bins = data_list.sigma(rebinned=plot_rebinned_list)
-        
+
         # compute the middle point in the bins
         pi_mid_bins = np.array([(pi_bins[i]+pi_bins[i + 1])/2.0 for i in range(pi_bins.size - 1)])
         sigma_mid_bins = np.array([(sigma_bins[i]+sigma_bins[i + 1])/2.0 for i in range(sigma_bins.size - 1)])
-        
+
         # compute the two-dimensional shape of the matrixes
         shape = (pi_mid_bins.size, sigma_mid_bins.size)
-        
+
         # format the data and error matrixes to a two-dimensional array
         data_values = data_list.data_mat(rebinned=plot_rebinned_list)
         if not (shape[0]*shape[1] == data_values.size):
@@ -1639,7 +1639,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         if not (shape[0]*shape[1] == error_values.size):
             raise CorrelationProcessError(plot, '"error" does not have the right number of elements, expected: {}, found: {}. If using the rebinning, check that all the relevant matrixes were stored'.format(shape[0]*shape[1], error_values.size))
         error_values = error_values.reshape(shape)
-        
+
         # fill the voids in the model
         aux = 0
         model_values = []
@@ -1701,40 +1701,60 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                         if v != 0.0:
                             data_averaged[pi_index][sigma_index] = v
 
-
         # figure settings
-        cmap = plt.cm.get_cmap('RdYlBu')
+        cmap = plt.cm.get_cmap('CMRmap')
         num_colors = 40.0
         vmin = np.amin(data_values)
         vmax = np.amax(data_values)
         step = (vmax - vmin) / num_colors
         levels = np.arange(vmin, vmax + step, step)
-        gs = gridspec.GridSpec(1, 2)
-        gs.update(bottom=0.2, wspace=0.2)
+        gs = gridspec.GridSpec(2, 3, width_ratios=[10, 10, 1], height_ratios=[2, 1])
+        gs.update(bottom=0.2, wspace=0.05, hspace=0.08)
         fontsize = 32
         labelsize = 22
         labelsize2 = 18
-        figsize=(16, 14)
+        figsize=(16, 26)
 
         # plot the data
         fig = plt.figure(figsize=figsize)
-        ax = fig.add_subplot(gs[0])
-        ax.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax = fig.add_subplot(gs[0,0])
+        #ax.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
         ax.set_ylabel('$\\pi {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
-        ax.tick_params(axis='both', pad=10, labelsize=labelsize)
+        ax.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
         if smooth:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         else:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        cbar = fig.colorbar(cs, ax=ax, shrink=0.9, format='%.2f')
-        cbar.ax.tick_params(labelsize=labelsize2)
 
-        ax2 = fig.add_subplot(gs[1])
-        ax2.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
-        ax2.tick_params(axis='both', pad=10, labelsize=labelsize)
+        ax2 = fig.add_subplot(gs[0,1])
+        #ax2.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax2.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
+        ax2.tick_params(axis='y', labelleft='off', width=2, length=6)
         cs2 = ax2.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        cbar2 = fig.colorbar(cs2, ax=ax2, shrink=0.9, format='%.2f')
-        cbar2.ax.tick_params(labelsize=labelsize2)
+
+        ax3 = fig.add_subplot(gs[0,2])
+        cbar = fig.colorbar(cs, cax=ax3, format='%.2f')
+        cbar.ax.tick_params(labelsize=labelsize2, width=2, length=6)
+
+
+        ax4 = fig.add_subplot(gs[1,0])
+        ax4.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax4.set_ylabel('$\\pi {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax4.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
+        ax4.set_xlim(2, 42)
+        ax4.set_ylim(-20, 20)
+        if smooth:
+            cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
+        else:
+            cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
+
+        ax5 = fig.add_subplot(gs[1,1])
+        ax5.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax5.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
+        ax5.tick_params(axis='y', labelleft='off', width=2, length=6)
+        cs5 = ax5.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
+        ax5.set_xlim(2, 42)
+        ax5.set_ylim(-20, 20)
 
         # save the plot
         fig.savefig('{}{}_contour.{}'.format(save_to, base_fig_name, save_extension))
