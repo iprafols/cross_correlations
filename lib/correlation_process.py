@@ -20,6 +20,7 @@ CLASSES:
     CorrModel
     CorrModelError
     CorrelationProcessError
+    CorrelationProcessWarning
     
 FUNCTIONS:
     plot
@@ -33,13 +34,20 @@ TO DO:
 import warnings
 import inspect
 import sys
+import os
 import difflib
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except RuntimeError:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
 import matplotlib.colors
 from matplotlib.colors import colorConverter
 import matplotlib.gridspec as gridspec
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, NullFormatter, ScalarFormatter
+
 
 __author__ = 'Ignasi Perez-Rafols'
 __copyright__ = 'CC by-nc-sa'
@@ -640,7 +648,7 @@ class CorrDataWarning(Warning):
     PURPOSE: 
         Manage warnings related to CorrData
     PUBLIC FUNCTIONS:
-        __init__(filename, pi, sigma)
+        __init__(filename, method, message)
         __str__()
     PRIVATE VARIABLES (should not be accessed outside the class body):
         _method (CorrData method): Mehtod of CorrData that produced the warning
@@ -1224,7 +1232,7 @@ class CorrelationProcessError(Exception):
     __init__(self, filename, pi, sigma)
     __str__(self)
     PRIVATE VARIABLES (should not be accessed outside the class body):
-    _method (CorrData method): Mehtod that produced the error
+    _method (module function): Function that produced the error
     _message (string):         Error message
     """
 
@@ -1232,14 +1240,14 @@ class CorrelationProcessError(Exception):
         """
         Initialize class instance
         
-        FUNCTION: CorrDataError.__init__
+        FUNCTION: CorrelationProcessError.__init__
         TYPE: Constructor, public
         PURPOSE: Initialize class instance
         ARGUMENTS:
-        method (CorrData method):  Function that produced the error
+        method (module function):  Function that produced the error
         message (string):          The error message
         RETURNS:
-        A initialized instance of CorrDataError
+        A initialized instance of CorrelationProcessError
         EXAMPLES:
         error = CorrDataError("this is an error")
         """
@@ -1250,17 +1258,306 @@ class CorrelationProcessError(Exception):
         """
         Returns a printable representation of the error message
         
-        FUNCTION: CorrDataWArning.__str__
+        FUNCTION: CorrelationProcessError.__str__
         TYPE: Public
         PURPOSE: Returns a printable representation of the error message
         RETURNS:
         A printable representation of the error message
         EXAMPLES:
-        print CorrDataError("this is a warning")
+        print CorrelationProcessError("this is a warning")
         """
         return 'In function {function}: {message}'.format(function=self._function, message=repr(self._message))
 
-def invCovMatFromPlate(plate_num):
+
+class CorrProcessWarning(Warning):
+    """
+    Manage warnings related to functions in the module CorrelationProcess.
+        
+    CLASS: CorrProcessWarning
+    PURPOSE:
+        Manage warnings related to functions in the module CorrelationProcess.
+    PUBLIC FUNCTIONS:
+        __init__(filename, method, message)
+        __str__()
+    PRIVATE VARIABLES (should not be accessed outside the class body):
+        _method (module function): Function that produced the warning
+        _message (string):         Warning message
+    """
+    
+    def __init__(self, method, message):
+        """
+        Initialize class instance
+            
+        FUNCTION: CorrProcessWarning.__init__
+        TYPE: Constructor, public
+        PURPOSE:
+            Initialize class instance
+        ARGUMENTS:
+            method (module function): Function that produced the warning
+            message (string):         The warning message
+        RETURNS:
+            A initialized instance of CorrDataWarning
+        EXAMPLES:
+            warning = CorrDataWarning("this is a warning")
+        """
+        self._method = method.__name__
+        self._message = message
+    
+    def __str__(self):
+        """
+        Returns a printable representation of the warning message
+            
+        FUNCTION: CorrProcessWarning.__str__
+        TYPE: Public
+        PURPOSE:
+            Returns a printable representation of the warning message
+        RETURNS:
+            A printable representation of the warning message
+        EXAMPLES:
+            print CorrProcessWarning("this is a warning")
+            """
+        return 'In method {method}: {message}'.format(method=self._method, message=repr(self._message))
+
+
+def computeCovMatFromPlates(filename="my_measurement.cov", path_to_covariance_plates="./", save_to="../"):
+    """
+    Computes the covariance matrix from the covariance matrixes computed in the different plates
+    
+    FUNCTION: computeCovMatFromPlates
+    TYPE: Regular function
+    PURPOSE:
+        Computes the covariance matrix from the covariance matrixes computed in the different plates.
+        
+        More specifically reads the list of plates that were computed, loads all the covariance matrixes, 
+        and computes their inverse. The inverse of the full covariance matrix is computed as the sum
+        of all the inverses of the covariance matrixes in each of the plates.
+        
+        The function assumes that the covariance matrixes for each of the plates are located in the same
+        folder where the code is being executed, and saves the full covariance matrix in its parent folder. 
+        This specifications may change upon options (see KEYWORD_ARGUMENTS), but all the files to be read
+        must be in the same directory
+    KEYWORD_ARGUMENTS:
+        filename (string):                  Name of the file where the covariance matrix will be saved.
+                                            Extension must be ".cov" -- Default: "my_measurement.cov"
+        path_to_covariance_plates (string): The name of the path where the covariance matrix files for the 
+                                            measurement on the different plates are found. -- Default: "./"
+        save_to (string):                   Name of the path where the full covariance matrix will be saved.
+                                            -- Default: "../"
+    EXCEPTION_SAFETY:
+        Raises a CorrelationProcessError instance if the arguments are of incorrect type
+    EXAMPLES:
+        computeCovMatFromPlates()
+        computeCovMatFromPlates(filename="my_measurement.cov")
+        computeCovMatFromPlates(path_to_covariance_plates="./")
+        computeCovMatFromPlates(filename="my_measurement.cov", path_to_covariance_plates="./")
+        computeCovMatFromPlates(save_to="../")
+        computeCovMatFromPlates(filename="my_measurement.cov", save_to="../")
+        computeCovMatFromPlates(path_to_covariance_plates="./", save_to="../")
+        computeCovMatFromPlates(filename="my_measurement.cov", path_to_covariance_plates="./", save_to="../")
+    """
+
+    # check parameters' types
+    if not (type(filename == str)):
+        raise CorrelationProcessError(computeCovMatFromPlates, 'Incorrect type of the parameter "filename".')
+    if not (filename.endwith(".cov")):
+        raise CorrelationProcessError(computeCovMatFromPlates, 'Incorrect type of the parameter "filename".')
+
+    if not (type(path_to_covariance_plates) == str):
+        raise CorrelationProcessError(computeCovMatFromPlates, 'Incorrect type of the parameter "path_to_covariance_plates".')
+    
+    if not (type(save_to) == str):
+        raise CorrelationProcessError(computeCovMatFromPlates, 'Incorrect type of the parameter "save_to".')
+
+    # get plates list
+    plate_filename_list = [file for file in os.listdir(path_to_covariance_plates) if file.endwith(".cov")]
+    plate_filename_list_size = len(plate_filename_list)
+
+    # loop over plates
+    for count, plate_filename in enumerate(plate_filename_list):
+        if count % 100 == 0:
+            print "loadded {:d} plates out of {:d}".format(count, plate_filename_list_size)
+        
+        # load inverse covariance matrixes from file
+        inv_cov_mat_plate = invCovMatFromPlate(plate_filename)
+
+        # add to inverse full covariance matrix
+        if count == 0:
+            inv_cov_mat = np.copy(inv_cov_mat_plate)
+        else:
+            inv_cov_mat += inv_cov_mat_plate
+
+    # compute the full covariance matrix
+    try:
+        cov_mat = np.linalg.inv(inv_cov_mat)
+    except LinAlgError:
+        warnings.warn(CorrProcessWarning(computeCovMatFromPlates, 'The full covariance matrix was singular, attemping \
+                                         to invert it ignoring lines full of zeros. Consider adding more plates to the \
+                                         average'))
+        remove_lines = np.array([index for index, item in enumerate(inv_cov_mat) if np.unique(item) == 0.0])
+        keep_lines = np.array([index for index in range(cov_mat.shape[0]) if index not in remove_lines])
+        inv_cov_mat_reduced = inv_cov_mat[np.meshgrid(keep_lines, keep_lines)]
+    
+        # compute inverse
+        cov_mat_reduced = np.linalg.inv(inv_cov_mat_reduced)
+    
+        # reintroduce lines and columns full of zeros
+        cov_mat = np.zeros_like(inv_cov_mat)
+        cov_mat[np.meshgrid(keep_lines, keep_lines)] = cov_mat_reduced
+
+    # save the full covariance matrix
+    file = open(save_to + filename, "w")
+    for i in range(cov_mat.size[0]):
+        for j in range(i, cov_mat.size[1]):
+            file.write("{:d} {:d} {:f}\n".format(i, j, cov_mat[i,j]))
+    file.close()
+
+    return
+
+
+def computeDistMatFromPlates(filename="my_measurement.dmat", path_to_covariance_plates="./", save_to="../"):
+    """
+    Computes the distortion matrix from the distortion matrixes computed in the different plates
+    
+    FUNCTION: computeDistMatFromPlates
+    TYPE: Regular function
+    PURPOSE:
+        Computes the distortion matrix from the distortion matrixes computed in the different plates.
+        
+        More specifically reads the list of plates that were computed and loads all the distortion matrixes.
+        The full distortion matrix is computed as the sum of all the distortion matrixes in each of the plates,
+        and is then normalized according to the total weight
+        
+        The function assumes that the distortion matrixes for each of the plates are located in the same
+        folder where the code is being executed, and saves the full distortion matrix in its parent folder.
+        This specifications may change upon options (see KEYWORD_ARGUMENTS) but all the files to be read
+        must be in the same directory
+    KEYWORD_ARGUMENTS:
+        filename (string):                  Name of the file where the distortion matrix will be saved.
+                                            Extension must be ".dmat" -- Default: "my_measurement.dmat"
+        path_to_covariance_plates (string): The name of the path where the distortion matrix files for the
+                                            measurement on the different plates are found. -- Default: "./"
+        save_to (string):                   Name of the path where the full distortion matrix will be saved.
+                                            -- Default: "../"
+    EXCEPTION_SAFETY:
+        Raises a CorrelationProcessError instance if the arguments are of incorrect type
+    EXAMPLES:
+        computeDistMatFromPlates()
+        computeDistMatFromPlates(filename="my_measurement.dmat")
+        computeDistMatFromPlates(path_to_covariance_plates="./")
+        computeDistMatFromPlates(filename="my_measurement.dmat", path_to_covariance_plates="./")
+        computeDistMatFromPlates(save_to="../")
+        computeDistMatFromPlates(filename="my_measurement.dmat", save_to="../")
+        computeDistMatFromPlates(path_to_covariance_plates="./", save_to="../")
+        computeDistMatFromPlates(filename="my_measurement.dmat", path_to_covariance_plates="./", save_to="../")
+    """
+
+    # check parameters' types
+    if not (type(filename == str)):
+        raise CorrelationProcessError(computeDistMatFromPlates, 'Incorrect type of the parameter "filename".')
+    if not (filename.endwith(".dmat")):
+        raise CorrelationProcessError(computeDistMatFromPlates, 'Incorrect type of the parameter "filename".')
+
+    if not (type(path_to_covariance_plates) == str):
+        raise CorrelationProcessError(computeDistMatFromPlates, 'Incorrect type of the parameter "path_to_covariance_plates".')
+
+    if not (type(save_to) == str):
+        raise CorrelationProcessError(computeDistMatFromPlates, 'Incorrect type of the parameter "save_to".')
+    
+    # get plates list
+    plate_filename_list = [file for file in os.listdir(path_to_covariance_plates) if file.endwith(".dmat")]
+    plate_filename_list_size = len(plate_filename_list)
+
+    # loop over plates
+    for count, plate_filename in enumerate(plate_filename_list):
+        if count % 100 == 0:
+            print "loadded {:d} plates out of {:d}".format(count, plate_filename_list_size)
+        
+        # load distortion matrix from file
+        dist_mat_plate, weight_plate = distMatFromPlate(filename)
+        
+        # add to full distortion matrix
+        if count == 0:
+            dist_mat = np.copy(dist_mat_plate)
+            weight = np.copy(weight_plate)
+        else:
+            inv_cov_mat["value"] += inv_cov_mat_plate["value"]
+            weight["value"] += weight_plate["value"]
+
+    # normalize the full distortion matrix
+    warn = False
+    for index in dist_mat["index1"]:
+        w = weight[np.where(dist_mat["index1" == index])]["value"]
+        if w.size == 1 and w != 0.0:
+            dist_mat[np.where(dist_mat["index1" == index])]["value"] /= w
+        elif w.size != 1:
+            raise CorrProcessError(computeDistMatFromPlates, 'Encountered zero or more than one values for the normalization factor for \
+                                   bin {}. At least one of the distortion matrix files is not properly formatted'.format(index))
+        else:
+            warn = True
+    
+    if warn:
+        warnings.warn(CorrProcessWarning(computeDistMatFromPlates, 'The full distortion matrix contains bins with no information. \
+                                         Consider adding more plates to the average'))
+
+    # save the full distortion matrix
+    file = open(save_to + filename, "w")
+    for i in range(dist_mat.size[0]):
+        for j in range(i, dist_mat.size[1]):
+            file.write("{:d} {:d} {:f}\n".format(i, j, dist_mat[i,j]))
+    file.close()
+
+    return
+
+
+def distMatFromPlate(filename):
+    """
+    Reads the distortion matrix in a specific plate
+        
+    FUNCTION: distMatFromPlate
+    TYPE: Regular function
+    PURPOSE:
+        Reads the distortion matrix in a specific plate and returns its values and weight.
+    ARGUMENTS:
+        filename (string):  The name of the file containing the distortion matrix. Extension
+                            must be ".dmaat"
+    RETURNS:
+        The distortion matrix and its weight
+    EXCEPTION_SAFETY:
+        Raises a CorrelationProcessError instance if the arguments are of incorrect type
+    EXAMPLES:
+        dist_mat_plate, weight_plate = distMatFromPlate("plate_3678.dmat")
+        """
+    # check parameters' types
+    if not (type(filename) == str):
+        raise CorrelationProcessError(distMatFromPlate, 'Incorrect type of the parameter "filename".')
+    if not (filename.endwith(".dmat")):
+        raise CorrelationProcessError(distMatFromPlate, 'Incorrect type of the parameter "filename".')
+    
+    dist_mat = []
+    weight = []
+    read_dmat = False
+    read_weight = False
+    for line in open(filename).xreadlines():
+        if line.startswith("#"):
+            if line.endwith("dmat"):
+                read_dmat = True
+                read_weight = False
+            elif line.endwith("weight"):
+                read_dmat = False
+                read_weight = True
+            continue
+        if read_dmat:
+            dist_mat.append(line.split())
+        if read_weight:
+            weight.append(line.split())
+
+    dist_mat = np.array(dist_mat, dtype=[("index1", int), ("index2", int), ("value", float)])
+    weight = np.array(weight, dtype=[("index1", int), ("value", float)])
+
+    return dist_mat
+
+
+def invCovMatFromPlate(filename):
     """
     Reads the covariance matrix in a specific plate and returns its inverse
     
@@ -1271,12 +1568,45 @@ def invCovMatFromPlate(plate_num):
         there is no info from one of the bins (for example if there are no pairs that
         contribute to bin 0), then this bin is not considered when computing the inverse
         of the covariance matrix.
-        
-        The covariance matrix file 
-    
+    ARGUMENTS:
+        filename (string):  The name of the file containing the covariance matrix to
+                            compute the inverse from. Extensio must be ".cov"
+    RETURNS:
+        The inverse of the covariance matrix in the specified plate
+    EXCEPTION_SAFETY:
+        Raises a CorrelationProcessError instance if the arguments are of incorrect type
+    EXAMPLES:
+        inv_cov_mat = invCovMatFromPlate("plate_3678.cov")
     """
-    # TODO: fill function
-    return
+    # check parameters' types
+    if not (type(filename) == str):
+        raise CorrelationProcessError(invCovMatFromPlate, 'Incorrect type of the parameter "filename".')
+    if not (filename.endwith(".cov")):
+        raise CorrelationProcessError(invCovMatFromPlate, 'Incorrect type of the parameter "filename".')
+
+    # read covariance matrix
+    cov = np.genfromtxt(filename, dtype=[("index1", int), ("index2", int), ("value", float)])
+
+    # format read data into a matrix
+    cov_mat = np.zeros((np.amax([cov['index1'], cov['index2']]) + 1, np.amax([cov['index1'], cov['index2']]) + 1))
+    for index1, index2, value in cov:
+        cov_mat[index1][index2] = value
+        cov_mat[index2][index1] = value
+
+    # remove lines and columns full of zeros
+    remove_lines = np.array([index for index, item in enumerate(cov_mat) if np.unique(item).size == item.size])
+    keep_lines = np.array([index for index in range(cov_mat.shape[0]) if index not in remove_lines])
+    cov_mat_reduced = cov_mat[np.meshgrid(keep_lines, keep_lines)]
+
+    # compute inverse
+    inv_cov_mat_reduced = np.linalg.inv(cov_mat_reduced)
+
+    # reintroduce lines and columns full of zeros
+    inv_cov_mat = np.zeros((np.amax([cov['index1'], cov['index2']]) + 1, np.amax([cov['index1'], cov['index2']]) + 1))
+    inv_cov_mat[np.meshgrid(keep_lines, keep_lines)] = inv_cov_mat_reduced
+
+
+    return inv_cov_mat
 
 def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = []):
     """
@@ -1292,7 +1622,6 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         separations. This function assumes that data and model instances have the same binning
         independently of whether or not they are rebinned. Unexpected behaviour might occur if
         this condition is not met.
-        
     ARGUMENTS:
         data_list (CorrData, list of CorrData, 
             or tuple of CorrData):               Data to plot. The format is either a 
@@ -1400,7 +1729,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                                                  number of elements in data_list. All values must be between
                                                  0.0 and 1.0. Ignored if contour is set to True or if 
                                                  plot_separated_errors is set to False. --- Default: []
-     EXCEPTION SAFETY:
+    EXCEPTION SAFETY:
         Raises a CorrelationProcessError instance if the arguments are of incorrect type,
         or arguments are not consistent. Assumes formats are given in valid matplotlib-format
         strings.
@@ -1708,38 +2037,44 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         vmax = np.amax(data_values)
         step = (vmax - vmin) / num_colors
         levels = np.arange(vmin, vmax + step, step)
-        gs = gridspec.GridSpec(2, 3, width_ratios=[10, 10, 1], height_ratios=[2, 1])
+        #gs = gridspec.GridSpec(2, 3, width_ratios=[10, 10, 1], height_ratios=[2, 1])
+        gs = gridspec.GridSpec(1, 3, width_ratios=[10, 10, 1])
         gs.update(bottom=0.2, wspace=0.05, hspace=0.08)
         fontsize = 32
         labelsize = 22
         labelsize2 = 18
-        figsize=(16, 26)
+        #figsize=(16, 26)
+        figsize=(16, 20)
 
         # plot the data
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(gs[0,0])
-        #ax.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
-        ax.set_ylabel('$\\pi {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        #ax.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax.set_ylabel('$\\pi {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
         if smooth:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         else:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
+        ax.set_xlim(0, 60)
+        ax.set_ylim(-60, 60)
 
         ax2 = fig.add_subplot(gs[0,1])
-        #ax2.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        #ax2.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax2.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
         ax2.tick_params(axis='y', labelleft='off', width=2, length=6)
         cs2 = ax2.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
+        ax2.set_xlim(0, 60)
+        ax2.set_ylim(-60, 60)
 
         ax3 = fig.add_subplot(gs[0,2])
         cbar = fig.colorbar(cs, cax=ax3, format='%.2f')
         cbar.ax.tick_params(labelsize=labelsize2, width=2, length=6)
 
 
-        ax4 = fig.add_subplot(gs[1,0])
-        ax4.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
-        ax4.set_ylabel('$\\pi {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        """ax4 = fig.add_subplot(gs[1,0])
+        ax4.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax4.set_ylabel('$\\pi {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax4.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
         ax4.set_xlim(2, 42)
         ax4.set_ylim(-20, 20)
@@ -1749,12 +2084,12 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
 
         ax5 = fig.add_subplot(gs[1,1])
-        ax5.set_xlabel('$\\sigma {\\rm \\left(h^{-1}Mpc\\right)}$', fontsize=fontsize)
+        ax5.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax5.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
         ax5.tick_params(axis='y', labelleft='off', width=2, length=6)
         cs5 = ax5.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         ax5.set_xlim(2, 42)
-        ax5.set_ylim(-20, 20)
+        ax5.set_ylim(-20, 20)"""
 
         # save the plot
         fig.savefig('{}{}_contour.{}'.format(save_to, base_fig_name, save_extension))
@@ -1820,8 +2155,8 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                     ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos[0]], model.model_mat(rebinned=plot_rebinned)[model_pos[0]], fmt, label=label)
                     [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos[1:] ]
 
-            ax.set_xlabel('$\\pi\\,\\left(\\rm h^{-1}Mpc\\right)$', fontsize=fontsize)
-            ax.set_ylabel('$\\xi\\left(\\pi, \\sigma\\right)$', fontsize=fontsize)
+            ax.set_xlabel('$\\pi\\,\\left[\\rm h^{-1}Mpc\\right]$', fontsize=fontsize)
+            ax.set_ylabel('$\\xi\\left[\\pi, \\sigma\\right]$', fontsize=fontsize)
             ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < \\sigma <' + str(sigma_max) + '$', fontsize=fontsize, transform=ax.transAxes)
             ax.tick_params(axis='both', pad=10, labelsize=labelsize)
             yticks = ax.yaxis.get_major_ticks()
