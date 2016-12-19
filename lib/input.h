@@ -358,7 +358,7 @@ private:
     size_t flag_verbose_quasar_dataset_;
     
     // strong_lya_dataset verbose flag
-    size_t flag_verbose_strong_lya_dataset_
+    size_t flag_verbose_strong_lya_dataset_;
     
     // flag to write partial results (ignored if flag_compute_covariance_ is set)
     size_t flag_write_partial_results_;

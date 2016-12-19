@@ -95,6 +95,9 @@
          location = "group:../../software/development/cross_correlations/src/sphere_point.cpp">
       </FileRef>
       <FileRef
+         location = "group:../../software/development/cross_correlations/src/strong_lya_dataset.cpp">
+      </FileRef>
+      <FileRef
          location = "group:../../software/development/cross_correlations/src/z_dist_interpolation_map.cpp">
       </FileRef>
    </Group>
@@ -194,6 +197,9 @@
       </FileRef>
       <FileRef
          location = "group:../../software/development/cross_correlations/lib/sphere_point.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/lib/strong_lya_dataset.h">
       </FileRef>
       <FileRef
          location = "group:../../software/development/cross_correlations/lib/z_dist_interpolation_map.h">

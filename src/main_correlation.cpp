@@ -26,6 +26,7 @@
 #include "plots_object.h"
 #include "quasar_dataset.h"
 #include "spectra_dataset.h"
+#include "strong_lya_dataset.h"
 #include "z_dist_interpolation_map.h"
 ////////
 

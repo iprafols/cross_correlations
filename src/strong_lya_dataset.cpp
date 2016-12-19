@@ -60,9 +60,9 @@ void StrongLyaDataset::Load(const double& z_min, const double& z_max, const std:
     bool read_column_names;
     size_t ra_index, dec_index, mjd_index, plate_index, fiber_index, z_abs_index, z_qso_index, lya_flux_index;
     int plate, fiber, mjd;
-    double ra, dec, z_abs, z_qso, nhi, bi, cnr, rf_wl;
+    double ra, dec, z_abs, z_qso, lya_flux;
     
-    if (flag_verbose_dla_dataset_ >= 1){
+    if (flag_verbose_strong_lya_dataset_ >= 1){
         std::cout << "Loading StrongLya dataset" << std::endl;
     }
     
