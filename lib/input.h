@@ -103,9 +103,6 @@ public:
     // access function for flag_project_deltas_
     bool flag_project_deltas() const {return flag_project_deltas_;}
     
-    // access function for flag_write_partial_results_
-    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
-
     // access function for flag_verbose_
     size_t flag_verbose() const {return flag_verbose_;}
     
@@ -151,6 +148,12 @@ public:
     // access function for flag_verbose_quasar_dataset_
     size_t flag_verbose_quasar_dataset() const {return flag_verbose_quasar_dataset_;}
     
+    // access function for flag_verbose_quasar_dataset_
+    size_t flag_verbose_strong_lya_dataset() const {return flag_verbose_strong_lya_dataset_;}
+    
+    // access function for flag_write_partial_results_
+    size_t flag_write_partial_results() const {return flag_write_partial_results_;}
+
     // access function for h_
     double h() const {return h_;}    
     
@@ -160,14 +163,20 @@ public:
     // access function for lya_auto_correlation_
     std::string lya_auto_correlation() const {return lya_auto_correlation_;}
     
+    // access function for lya_flux_max_
+    double lya_flux_max() const {return lya_flux_max_;}
+    
+    // access function for lya_flux_min_
+    double lya_flux_min() const {return lya_flux_min_;}
+    
     // access function for lya_pixel_width_
     double lya_pixel_width() const {return lya_pixel_width_;}
     
-    // access function for lya_spectra_dir_
-    std::string lya_spectra_dir() const {return lya_spectra_dir_;}
-    
     // acccess function for lya_projection_correction_
     std::string lya_projection_correction() const {return lya_projection_correction_;}
+    
+    // access function for lya_spectra_dir_
+    std::string lya_spectra_dir() const {return lya_spectra_dir_;}
     
     // access function for lya_wl_
     double lya_wl() const {return lya_wl_;}
@@ -330,7 +339,7 @@ private:
     // distortion_matrix verbose flag
     size_t flag_verbose_distortion_matrix_;
 
-    // distortion plate verbose flag
+    // distortion_plate verbose flag
     size_t flag_verbose_distortion_plate_;
 
     // lya_spectra_dataset flag
@@ -347,6 +356,9 @@ private:
 
     // quasar_dataset verbose flag
     size_t flag_verbose_quasar_dataset_;
+    
+    // strong_lya_dataset verbose flag
+    size_t flag_verbose_strong_lya_dataset_
     
     // flag to write partial results (ignored if flag_compute_covariance_ is set)
     size_t flag_write_partial_results_;
@@ -530,6 +542,13 @@ private:
     
     // forbidden interval in the quasar interval wavelength at which the DLA is found (in angs)
     std::pair<double, double> rf_wl_forbidden_interval_;
+    
+    // minimum lyman alpha flux at which the strong Lyman alpha absorber is accepted
+    double lya_flux_min_;
+    
+    // maximum lyman alpha flux at which the strong Lyman alpha absorber is accepted
+    double lya_flux_max_;
+    
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants

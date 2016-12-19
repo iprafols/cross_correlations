@@ -86,6 +86,9 @@ int main(int argc, char *argv[]){
     else if (input.dataset1_type() == "dla"){
         object_list.reset(new DLADataset(input));
     }
+    else if (input.dataset1_type() == "strong_lya"){
+        object_list.reset(new StrongLyaDataset(input));
+    }
     else{
         std::cout << "Error : The selected type for dataset1 is not enabled. Current options are: " << input.dataset1_type_options() << std::endl;
         return 1;

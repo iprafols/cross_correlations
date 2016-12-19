@@ -182,6 +182,7 @@ void Input::SetDefaultValues(){
     flag_verbose_pair_dataset_ = flag_verbose_;
     flag_verbose_plate_neighbours_ = flag_verbose_;
     flag_verbose_quasar_dataset_ = flag_verbose_;
+    flag_verbose_strong_lya_dataset_ = flag_verbose_;
     flag_write_partial_results_ = 0;
     
     
@@ -191,7 +192,7 @@ void Input::SetDefaultValues(){
     dataset1_ = input_ + "DR12Q.fits";
     dataset1_name_ = "DR11Q";
     dataset1_type_ = "quasar";
-    dataset1_type_options_ = "quasar, dla";
+    dataset1_type_options_ = "quasar, dla, strong_lya";
     plate_neighbours_ = input_ + "plate_neighbours.dat";
     skip_plates_ = 0;
     lya_spectra_dir_ = input_ + "spectrum_fits_files/";
@@ -261,6 +262,8 @@ void Input::SetDefaultValues(){
     rf_wl_max_ = 1195.395; // in angs
     rf_wl_forbidden_interval_.first = 1005.0; // in angs
     rf_wl_forbidden_interval_.second = 1037.0; // in angs
+    lya_flux_min_ = -0.05;
+    lya_flux_min_ = 0.25;
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants
@@ -745,6 +748,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_strong_lya_dataset"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_strong_lya_dataset_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1361,6 +1375,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     if (it != input_flag.end() and it2 == input_flag.end()){
         flag_verbose_quasar_dataset_ = flag_verbose_;
     }
+    
+    // updating flag_verbose_strong_lya_dataset_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_strong_lya_dataset");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_strong_lya_dataset_ = flag_verbose_;
+    }
 
     // updating lya_auto_correlation_ if necessary
     it = input_flag.find("input");
@@ -1568,6 +1589,7 @@ void Input::WriteLog(){
         log << "flag_verbose_pair_dataset = " << flag_verbose_pair_dataset_ << std::endl;
         log << "flag_verbose_plate_neighbours = " << flag_verbose_plate_neighbours_ << std::endl;
         log << "flag_verbose_quasar_dataset = " << flag_verbose_quasar_dataset_ << std::endl;
+        log << "flag_verbose_strong_lya_dataset = " << flag_verbose_strong_lya_dataset_ << std::endl;
         log << "flag_write_partial_results = " << flag_write_partial_results_ << std::endl;
         log << std::endl;
         
