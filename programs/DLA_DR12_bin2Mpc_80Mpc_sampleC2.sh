@@ -1,14 +1,12 @@
 #!/bin/bash
 
-START=$(time)
-echo date
-echo $START
+START=$(date)
 
-export OMP_NUM_THREADS=3
+export OMP_NUM_THREADS=8
 
-#./correlation.run ../config/DLA_DR12_bin2Mpc_80Mpc_sampleC2.ini
+time ./compute_projection_correction.run ../config/DLA_DR12_bin2Mpc_80Mpc_sampleC2.ini
+time ./compute_lya1d.run ../config/DLA_DR12_bin2Mpc_80Mpc_sampleC2.ini
+time ./correlation.run ../config/DLA_DR12_bin2Mpc_80Mpc_sampleC2.ini
 
-END=$(time)
-
-echo date
-echo $END
+echo 'start: '+$START
+echo 'end: '+$(date)
