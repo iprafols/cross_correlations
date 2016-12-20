@@ -1,0 +1,13 @@
+** ADD REDSHIFT BINS
+- General bin number set to k = (i*N_sigma+j)*N_z+l where l stands for the redshift pixel
+- Redshift of the pair equals to the unweighted average of the component's redshifts
+
+** MERGE AUXILIAR CODES AS FUNCTIONS
+- main_compute_lya_1d.cpp
+- main_compute_projection_correction.cpp
+- Add options to activate/ignore this
+
+** AUTOMATIZE COMPILATION, ADD INSTALL OPTION
+- Create configure file
+
+** DO PROPER DOCUMENTATION

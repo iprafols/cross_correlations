@@ -222,6 +222,15 @@
       location = "group:makefile">
    </FileRef>
    <FileRef
+      location = "group:README">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/iprafols/software/development/cross_correlations/TODO">
+   </FileRef>
+   <FileRef
+      location = "group:LICENCE">
+   </FileRef>
+   <FileRef
       location = "group:config/explanatory.ini">
    </FileRef>
 </Workspace>

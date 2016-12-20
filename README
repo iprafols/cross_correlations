@@ -1,0 +1,50 @@
+Cross-correlations
+===================
+
+** DESCRIPTION AND USAGE **
+This code comuputes the cross-correlation of a continuous dataset,
+such as the Lyman-alpha forest, and a discrete dataset, such as DLAs.
+Among options computes the covariance matrix of the measurement
+and/or the distortion matrix.
+
+For further details of the behaviour of the code, refer to
+Pérez-Ràfols et al. In Prep.
+
+To use the code check one of the provided shell scripts in programs/
+and use it as an example. Please cite the original paper
+(Pérez-Ràfols et al. In Prep.) whenever the usage of this code
+results in a publication of any type.
+
+
+** PRE-REQUISITES **
+The following standard packages are required:
+- cfitsio
+- CCFits
+
+** COMPILATION **
+Follow these instructions to compile the
+1. Open the makefile
+2. Change the variables INCLUDE and LIBRARY to specify the path
+   to your CCfits and cfitsio installations. Maintain the options
+   -I./lib in INCLUDE and -L./lib in LIBRARY.
+3. Run make
+
+Inclusion of a configure script to manage compilation or install
+is left for future version of the code.
+
+** INTALLATION **
+This option is currently unabalable, check future versions
+
+** DOCUMENTATION **
+There is currently no documentation page per se, it will be
+included in future versions of the code.
+
+For a description of the code options and their default
+values, refer to config/explanatory.ini
+
+** UPDATES & CONTRIBUTORS **
+This code is available at github.com/iprafols/cross_correlations.
+Official updates will be uploaded to this public repository.
+
+Contributors are welcome and encouraged to perform "pull requests"
+to include their modifications to the official version of the code.
