@@ -234,7 +234,12 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // lya autocorrelation and projection correction settings
     lya_projection_correction_ = output_ + "projection_correction.dat";
-    lya_auto_correlation_ = input_ + "lya_auto_correlation.dat";
+    if (flag_project_deltas_){
+        lya_auto_correlation_ = output_ + "lya_auto_correlation_1d_projected.dat";
+    }
+    else{
+        lya_auto_correlation_ = output_ + "lya_auto_correlation_1d.dat";
+    }
     lya_pixel_width_ = 210.0; // (in km/s)
     sigma_psf_ = 70.0; // (in km/s)
     pixels_separation_ = 5; // (in number of pixels)
@@ -811,32 +816,10 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "lya_auto_correlation"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            lya_auto_correlation_ = value;
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
     else if (name == "lya_pixel_width"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             lya_pixel_width_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
-    else if (name == "lya_projection_correction"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            lya_projection_correction_ = value;
             input_flag[name] = true;
         }
         else{
@@ -1271,7 +1254,7 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_plot_catalog_info_ = flag_load_only_;
     }
     
-    // updating flag_plot_catalog_info_ if necessary
+    // updating flag_project_deltas_ if necessary
     it = input_flag.find("flag_compute_distortion");
     it2 = input_flag.find("flag_project_deltas");
     if (it != input_flag.end() and it2 == input_flag.end()){
@@ -1384,28 +1367,22 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     }
 
     // updating lya_auto_correlation_ if necessary
-    it = input_flag.find("input");
-    it2 = input_flag.find("lya_auto_correlation");
-    if (it != input_flag.end() and it2 == input_flag.end()){
+    it = input_flag.find("output");
+    it2 = input_flag.find("flag_project_deltas");
+    it3 = input_flag.fing("flag_compute_distortion");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
         if (flag_project_deltas_){
-            lya_auto_correlation_ = input_ + "lya_auto_correlation_projected.dat";
+            lya_auto_correlation_ = output_ + "lya_auto_correlation_1d_projected.dat";
         }
         else{
-            lya_auto_correlation_ = input_ + "lya_auto_correlation.dat";
+            lya_auto_correlation_ = output_ + "lya_auto_correlation_1d.dat";
         }
     }
-    else if (it2 != input_flag.end() and lya_auto_correlation_[0] != '/'){
-        lya_auto_correlation_ = input_ + lya_auto_correlation_;
-    }
-
-    // updating lya_spectra_dir_ if necessary
-    it = input_flag.find("input");
-    it2 = input_flag.find("lya_projection_correction");
-    if (it != input_flag.end() and it2 == input_flag.end()){
+    
+    // updating lya_projection_correction_ if necessary
+    it = input_flag.find("output");
+    if (it != input_flag.end()){
         lya_projection_correction_ = output_ + "projection_correction.dat";
-    }
-    else if (it2 != input_flag.end() and lya_spectra_dir_[0] != '/'){
-        lya_projection_correction_ = output_ + lya_projection_correction_;
     }
     
     // updating lya_spectra_dir_ if necessary
