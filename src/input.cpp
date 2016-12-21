@@ -216,10 +216,10 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // bin setting
     neighbours_max_distance_ = 4.0*acos(-1.0)/180.0; // (in radians)
-    max_pi_ = 50.0; // (in Mpc/h)
-    max_sigma_ = 50.0; // (in Mpc/h)
-    step_pi_ = 5.0; // (in Mpc/h)
-    step_sigma_ = 5.0; // (in Mpc/h)
+    max_pi_ = 80.0; // (in Mpc/h)
+    max_sigma_ = 80.0; // (in Mpc/h)
+    step_pi_ = 2.0; // (in Mpc/h)
+    step_sigma_ = 2.0; // (in Mpc/h)
     num_pi_bins_ = int(2.0*max_pi_/step_pi_);
     num_sigma_bins_ = int(max_sigma_/step_sigma_);
     num_bins_ = num_pi_bins_*num_sigma_bins_;
@@ -235,17 +235,24 @@ void Input::SetDefaultValues(){
     // lya autocorrelation and projection correction settings
     lya_projection_correction_ = output_ + "projection_correction.dat";
     if (flag_project_deltas_){
-        lya_auto_correlation_ = output_ + "lya_auto_correlation_1d_projected.dat";
+        lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d_projected.dat";
+        lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d_projected.dat";
     }
     else{
-        lya_auto_correlation_ = output_ + "lya_auto_correlation_1d.dat";
+        lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d.dat";
+        lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d.dat";
     }
-    lya_pixel_width_ = 210.0; // (in km/s)
-    sigma_psf_ = 70.0; // (in km/s)
     pixels_separation_ = 5; // (in number of pixels)
     z_min_interpolation_ = 1.96;
     z_max_interpolation_ = 3.44;
     num_points_interpolation_ = 400;
+    max_pi_auto_ = 50.0; // (in Mpc/h)
+    max_sigma_auto_ = 50.0; // (in Mpc/h)
+    step_pi_auto_ = 5.0; // (in Mpc/h)
+    step_sigma_auto_ = 5.0; // (in Mpc/h)
+    num_pi_bins_auto_ = int(max_pi_auto_/step_pi_auto_);
+    num_sigma_bins_auto_ = int(max_sigma_auto_/step_sigma_auto_);
+    num_bins_auto_ = num_pi_bins_auto_*num_sigma_bins_auto_;
     
     
     // -------------------------------------------------------------
@@ -816,17 +823,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "lya_pixel_width"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            lya_pixel_width_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
     else if (name == "lya_spectra_dir"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -860,6 +856,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "max_pi_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            max_pi_auto_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "max_sigma"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -868,6 +875,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "max_sigma_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            max_sigma_auto_ = double(atof(value.c_str()));
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -933,6 +951,24 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "num_pi_bins_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            it = input_flag.find("step_pi_auto");
+            if (it == input_flag.end()){
+                num_pi_bins_auto_ = atoi(value.c_str());
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit(EXIT_FAILURE);
+            }
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." <<    std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "num_plates"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -970,6 +1006,24 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "num_sigma_bins_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            it = input_flag.find("step_sigma_auto");
+            if (it == input_flag.end()){
+                num_sigma_bins_auto_ = atoi(value.c_str());
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit(EXIT_FAILURE);
+            }
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1067,17 +1121,6 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
-    else if (name == "sigma_psf"){
-        InputFlag::iterator it = input_flag.find(name);
-        if (it == input_flag.end()){
-            sigma_psf_ = double(atof(value.c_str()));
-            input_flag[name] = true;
-        }
-        else{
-            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
-            std::exit(EXIT_FAILURE);
-        }
-    }
     else if (name == "skip_plates"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1108,6 +1151,25 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             std::exit(EXIT_FAILURE);
         }
     }
+    else if (name == "step_pi_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            it = input_flag.find("num_pi_bins_auto");
+            if (it == input_flag.end()){
+                step_pi_auto_ = double(atof(value.c_str()));
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_pi_bins and step_pi, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit(EXIT_FAILURE);
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
     else if (name == "step_sigma"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
@@ -1123,6 +1185,24 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "step_sigma_auto"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            it = input_flag.find("num_sigma_bins_auto");
+            if (it == input_flag.end()){
+                step_sigma_auto_ = double(atof(value.c_str()));
+                input_flag[name] = true;
+            }
+            else{
+                std::cout << "Input file contains an entry for both num_sigma_bins and step_sigma, pick one" << std::endl << "quiting..." << std::endl;
+                std::exit(EXIT_FAILURE);
+            }
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1369,13 +1449,15 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     // updating lya_auto_correlation_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("flag_project_deltas");
-    it3 = input_flag.fing("flag_compute_distortion");
+    it3 = input_flag.find("flag_compute_distortion");
     if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
         if (flag_project_deltas_){
-            lya_auto_correlation_ = output_ + "lya_auto_correlation_1d_projected.dat";
+            lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d_projected.dat";
+            lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d_projected.dat";
         }
         else{
-            lya_auto_correlation_ = output_ + "lya_auto_correlation_1d.dat";
+            lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d.dat";
+            lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d.dat";
         }
     }
     
@@ -1416,6 +1498,28 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
             num_bins_ = int(2.0*max_pi_/step_pi_)*int(max_sigma_/step_sigma_);
         }
     }
+    
+    // updating num_bins_auto_ if necessary
+    it = input_flag.find("max_pi_auto");
+    it2 = input_flag.find("step_pi_auto");
+    it3 = input_flag.find("num_pi_bins_auto");
+    it4 = input_flag.find("max_sigma_auto");
+    it5 = input_flag.find("step_sigma_auto");
+    it6 = input_flag.find("num_sigma_bins_auto");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end() or it4 != input_flag.end() or it5 != input_flag.end() or it6 != input_flag.end()){
+        if (it3 != input_flag.end() and it6 != input_flag.end()){
+            num_bins_auto_ = num_pi_bins_auto_*num_sigma_bins_auto_;
+        }
+        else if (it3 != input_flag.end()){
+            num_bins_auto_ = num_pi_bins_auto_*int(max_sigma_auto_/step_sigma_auto_);
+        }
+        else if (it6 != input_flag.end()){
+            num_bins_auto_ = int(2.0*max_pi_auto_/step_pi_auto_)*num_sigma_bins_auto_;
+        }
+        else{
+            num_bins_auto_ = int(2.0*max_pi_auto_/step_pi_auto_)*int(max_sigma_auto_/step_sigma_auto_);
+        }
+    }
 
     // updating num_pi_bins_ and step_pi_ if necessary
     it = input_flag.find("max_pi");
@@ -1423,10 +1527,23 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it3 = input_flag.find("num_pi_bins");
     if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
         if (it3 != input_flag.end()){
-            step_pi_ = max_pi_/double(num_pi_bins_);
+            step_pi_ = 2.0*max_pi_/double(num_pi_bins_);
         }
         else{
             num_pi_bins_ = int(2.0*max_pi_/step_pi_);
+        }
+    }
+    
+    // updating num_pi_bins_auto and step_pi_auto if necessary
+    it = input_flag.find("max_pi_auto");
+    it2 = input_flag.find("step_pi_auto");
+    it3 = input_flag.find("num_pi_bins_auto");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_pi_auto_ = max_pi_auto_/double(num_pi_bins_auto_);
+        }
+        else{
+            num_pi_bins_auto_ = int(max_pi_auto_/step_pi_auto_);
         }
     }
     
@@ -1440,6 +1557,19 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         }
         else{
             num_sigma_bins_ = int(max_sigma_/step_sigma_);
+        }
+    }
+    
+    // updating num_sigma_bins_auto and step_sigma_auto if necessary
+    it = input_flag.find("max_sigma_auto");
+    it2 = input_flag.find("step_sigma_auto");
+    it3 = input_flag.find("num_sigma_bins_auto");
+    if (it != input_flag.end() or it2 != input_flag.end() or it3 != input_flag.end()){
+        if (it3 != input_flag.end()){
+            step_sigma_auto_ = max_sigma_auto_/double(num_sigma_bins_auto_);
+        }
+        else{
+            num_sigma_bins_auto_ = int(max_sigma_auto_/step_sigma_auto_);
         }
     }
     
@@ -1619,11 +1749,11 @@ void Input::WriteLog(){
         log << std::endl;
         log << "// -------------------------------------------------------------" << std::endl;
         log << "// lya autocorrelation and projection correction settings" << std::endl;
-        log << "lya_projection_correction = " << lya_projection_correction_ << std::endl;
-        log << "lya_auto_correlation = " << lya_auto_correlation_ << std::endl;
-        log << "lya_pixel_width = " << lya_pixel_width_ << std::endl;
-        log << "sigma_psf = " << sigma_psf_ << std::endl;
         log << "pixels_separation = " << pixels_separation_ << std::endl;
+        log << "max_pi_auto = " << max_pi_auto_ << std::endl;
+        log << "max_sigma_auto = " << max_sigma_auto_ << std::endl;
+        log << "step_pi_auto = " << step_pi_auto_ << std::endl;
+        log << "step_sigma_auto = " << step_sigma_auto_ << std::endl;
         log << std::endl;
         
         log << std::endl;

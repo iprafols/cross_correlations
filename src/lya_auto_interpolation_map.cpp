@@ -39,7 +39,7 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
     std::string line;
     bool header = true;
     
-    std::ifstream file (input.lya_auto_correlation().c_str());
+    std::ifstream file (input.lya_auto_correlation_1d().c_str());
     if (file.is_open()){
         while (getline(file,line)){
             std::vector<std::string> cols = Split(line," ");
@@ -53,36 +53,12 @@ LyaAutoInterpolationMap::LyaAutoInterpolationMap(const Input& input, const int& 
             }
             interpolation_map_[atof(cols[0].c_str())] = atof(cols[n + 1].c_str());
             
-            
-            // TODO: remove old stuff
-            /*if (double(atof(cols[0].c_str())) != aux_z){
-                // integrate pk and add autocorrelation to interpolation map
-                if (not k_pk.empty()){
-                    value = IntegratePk(k_pk, n, lya_pixel_width, sigma_psf);
-                    if (value != _BAD_DATA_){
-                        interpolation_map_[aux_z] = value;
-                    }
-                    k_pk.clear();
-                }
-                // update redshift value
-                aux_z = double(atof(cols[0].c_str()));
-            
-            }
-            
-            // add pair of (k, p(k)) to vector
-            k_pk.push_back(std::pair<double, double>(double(atof(cols[1].c_str())), double(atof(cols[2].c_str()))));
-            */
-            
         }
-        
-        // TODO: remove old stuff
-        /*if (input.flag_project_deltas()){
-            ProjectLyaAuto();
-        }*/
+
     }
     else{
         std::cout << "Error: in LyaAutoInterpolationMap::LyaAutoInterpolationMap : Could not read file" << std::endl;
-        std::cout << input.lya_auto_correlation() << std::endl;
+        std::cout << input.lya_auto_correlation_1d() << std::endl;
     }
 }
 

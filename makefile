@@ -22,12 +22,14 @@ LIBRARY = -lCCfits -lcfitsio -L/usr/local/lib/ -L./lib
 # this variables sets the name of the executable
 EXECUTABLE_CORRELATION = programs/correlation.run
 EXECUTABLE_LYA1D = programs/compute_lya1d.run
+EXECUTABLE_LYA3D = programs/compute_lya3d.run
 EXECUTABLE_PROJECTION_CORRECTION = programs/compute_projection_correction.run
 EXECUTABLE_TEST_LYA_DELTAS = programs/test_lya_deltas.run
 
 # this variable contains the list of sources
 SOURCES_CORRELATION = main_correlation.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp correlation_plate.cpp correlation_results.cpp covariance_matrix.cpp covariance_plate.cpp dataset.cpp distortion_matrix.cpp distortion_plate.cpp dla_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp pair.cpp pair_dataset.cpp plate.cpp plate_neighbours.cpp plots_object.cpp quasar_dataset.cpp spectra_dataset.cpp sphere_point.cpp strong_lya_dataset.cpp z_dist_interpolation_map.cpp
-SOURCES_LYA1D = main_compute_lya_1d.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
+SOURCES_LYA1D = main_compute_lya_1d.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
+SOURCES_LYA3D = main_compute_lya_3d.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
 SOURCES_PROJECTION_CORRECTION = main_compute_projection_correction.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_mean_projected_deltas_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
 SOURCES_PLOT = $(wildcard ./output/plots/*.py)
 SOURCES_TEST_LYA_DELTAS = test_lya_deltas.cpp astro_object.cpp astro_object_dataset.cpp civ_spectra_dataset.cpp function_compute_plate_neighbours.cpp input.cpp interpolation_map.cpp lya_auto_interpolation_map.cpp lya_pixel.cpp lya_spectra_dataset.cpp lya_spectrum.cpp plate.cpp plate_neighbours.cpp plots_object.cpp spectra_dataset.cpp sphere_point.cpp
@@ -35,6 +37,7 @@ SOURCES_TEST_LYA_DELTAS = test_lya_deltas.cpp astro_object.cpp astro_object_data
 # this variable contains the list of object files
 OBJECTS_CORRELATION = $(patsubst %.cpp,build/%.o,$(SOURCES_CORRELATION))
 OBJECTS_LYA1D = $(patsubst %.cpp,build/%.o,$(SOURCES_LYA1D))
+OBJECTS_LYA3D = $(patsubst %.cpp,build/%.o,$(SOURCES_LYA3D))
 OBJECTS_PROJECTION_CORRECTION = $(patsubst %.cpp,build/%.o,$(SOURCES_PROJECTION_CORRECTION))
 OBJECTS_PLATE_NEIGHBOURS = $(patsubst %.cpp,build/%.o,$(SOURCES_PLATE_NEIGHBOURS))
 OBJECTS_PLOT = $(patsubst %.py,%.pyc,$(SOURCES_PLOT))
@@ -51,11 +54,13 @@ LFLAGS = $(INCLUDE) $(LIBRARY) -fopenmp -Wall
 # TARGETS:
 #
 
-all: correlation lya_1d projection_correction
+all: correlation lya_1d lya_3d projection_correction
 
 correlation: $(EXECUTABLE_CORRELATION)
 
 lya_1d: $(EXECUTABLE_LYA1D)
+
+lya_3d: $(EXECUTABLE_LYA3D)
 
 projection_correction: $(EXECUTABLE_PROJECTION_CORRECTION)
 
@@ -80,9 +85,11 @@ $(EXECUTABLE_CORRELATION): $(OBJECTS_CORRELATION)
 $(EXECUTABLE_LYA1D): $(OBJECTS_LYA1D)
 	$(CC) $(LFLAGS) $(OBJECTS_LYA1D) -o $(EXECUTABLE_LYA1D)
 
+$(EXECUTABLE_LYA3D): $(OBJECTS_LYA3D)
+	$(CC) $(LFLAGS) $(OBJECTS_LYA3D) -o $(EXECUTABLE_LYA3D)
+
 $(EXECUTABLE_PROJECTION_CORRECTION): $(OBJECTS_PROJECTION_CORRECTION)
 	$(CC) $(LFLAGS) $(OBJECTS_PROJECTION_CORRECTION) -o $(EXECUTABLE_PROJECTION_CORRECTION)
-
 
 $(EXECUTABLE_TEST_LYA_DELTAS): $(OBJECTS_TEST_LYA_DELTAS)
 	$(CC) $(LFLAGS) $(OBJECTS_TEST_LYA_DELTAS) -o $(EXECUTABLE_TEST_LYA_DELTAS)

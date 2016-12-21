@@ -160,17 +160,17 @@ public:
     // access function for H0_
     double h0() const {return h0_;}
     
-    // access function for lya_auto_correlation_
-    std::string lya_auto_correlation() const {return lya_auto_correlation_;}
+    // access function for lya_auto_correlation_1d_
+    std::string lya_auto_correlation_1d() const {return lya_auto_correlation_1d_;}
+    
+    // access function for lya_auto_correlation_3d_
+    std::string lya_auto_correlation_3d() const {return lya_auto_correlation_3d_;}
     
     // access function for lya_flux_max_
     double lya_flux_max() const {return lya_flux_max_;}
     
     // access function for lya_flux_min_
     double lya_flux_min() const {return lya_flux_min_;}
-    
-    // access function for lya_pixel_width_
-    double lya_pixel_width() const {return lya_pixel_width_;}
     
     // acccess function for lya_projection_correction_
     std::string lya_projection_correction() const {return lya_projection_correction_;}
@@ -184,8 +184,14 @@ public:
     // access function for max_pi_
     double max_pi() const {return max_pi_;}
     
+    // access function for max_pi_auto_
+    double max_pi_auto() const {return max_pi_auto_;}
+    
     // access function for max_sigma_
     double max_sigma() const {return max_sigma_;}
+    
+    // access function for max_sigma_auto_
+    double max_sigma_auto() const {return max_sigma_auto_;}
     
     // access function for neighbours_max_distance_
     double neighbours_max_distance() const {return neighbours_max_distance_;}
@@ -202,9 +208,15 @@ public:
     // access function for num_bins_
     int num_bins() const {return num_bins_;}
     
+    // access function for num_bins_auto_
+    int num_bins_auto() const {return num_bins_auto_;}
+    
     // access function for num_pi_bins_
     int num_pi_bins() const {return num_pi_bins_;}
         
+    // access function for num_pi_bins_auto_
+    int num_pi_bins_auto() const {return num_pi_bins_auto_;}
+    
     // access function for num_plates_
     int num_plates() const {return num_plates_;}
     
@@ -213,6 +225,9 @@ public:
     
     // access function for num_sigma_bins_
     int num_sigma_bins() const {return num_sigma_bins_;}
+    
+    // access function for num_sigma_bins_auto_
+    int num_sigma_bins_auto() const {return num_sigma_bins_auto_;}
     
     // access function for output_
     std::string output() const {return output_;}
@@ -250,17 +265,20 @@ public:
     // access function for running_pwd_
     std::string running_pwd() const {return running_pwd_;}
     
-    // access function for sigma_psf_
-    double sigma_psf() const {return sigma_psf_;}
-    
     // access function for skip_plates_
     int skip_plates() const {return skip_plates_;}
     
     // access function for step_pi_
     double step_pi() const {return step_pi_;}
     
+    // access function for step_pi_auto_
+    double step_pi_auto() const {return step_pi_auto_;}
+    
     // access function for step_sigma_
     double step_sigma() const {return step_sigma_;}
+    
+    // access function for step_sigma_auto_
+    double step_sigma_auto() const {return step_sigma_auto_;}
     
     // access function for wm_
     double wm() const {return wm_;}
@@ -478,18 +496,33 @@ private:
     // name of the file containing the correction to be applied to the projected delta field
     std::string lya_projection_correction_;
     
-    // name of the file containing the lyman-alpha auto-correlation
-    std::string lya_auto_correlation_;
+    // name of the files containing the lyman-alpha auto-correlation
+    std::string lya_auto_correlation_1d_;
+    std::string lya_auto_correlation_3d_;
 
-    // lya pixel's width (in km/s)
-    double lya_pixel_width_;
-    
     // maximum separation between pixels (in number of pixels)
     size_t pixels_separation_;
     
-    // PSF of the Lyman alpha auto-correlation measurement (in km/s)
-    double sigma_psf_;
-
+    // maximum value of parallel separation (in Mpc/h) to compute the covariance matrix
+    double max_pi_auto_;
+    
+    // maximum value of perpendicular separation (in Mpc/h)  to compute the covariance matrix
+    double max_sigma_auto_;
+    
+    // number of bins in parallel separation  to compute the covariance matrix
+    int num_pi_bins_auto_;
+    
+    // number of bins in perpendicular separation  to compute the covariance matrix
+    int num_sigma_bins_auto_;
+    
+    // Total number of bins  to compute the covariance matrix
+    int num_bins_auto_;
+    
+    // step value of parallel separation (in Mpc/h)  to compute the covariance matrix
+    double step_pi_auto_;
+    
+    // step value of perpendicular separation (in Mpc/h)  to compute the covariance matrix
+    double step_sigma_auto_;
     
     // -------------------------------------------------------------
     // Fidutial model

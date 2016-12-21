@@ -9,6 +9,7 @@
 // libraries used
 #include <iostream>
 #include <time.h>
+#include <vector>
 #include "omp.h"
 ////////
 
@@ -81,7 +82,7 @@ int main(int argc, char *argv[]){
     if (input.flag_compute_plate_neighbours()){
         ComputePlateNeighbours(input);
     }
-    // load plate list
+    // load plate neighbours
     const PlateNeighbours kPlateNeighbours(input);
     
     // load spectra dataset
@@ -199,7 +200,7 @@ int main(int argc, char *argv[]){
     }
     
     // save results
-    std::string filename = input.lya_auto_correlation();
+    std::string filename = input.lya_auto_correlation_1d();
     std::cout << "Saving results to " << filename << std::endl;
     std::ofstream file;
     file.open(filename.c_str(),std::ofstream::trunc); // opens the file erasing the previous contents

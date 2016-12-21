@@ -628,7 +628,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     continue;
                 }
                 
-                double pair_max_pi = spectrum.back().dist() - object.dist(); // minimum distance obtained for lowest redshift pixel
+                double pair_max_pi = spectrum.back().dist() - object.dist(); // maximum distance obtained for highest redshift pixel
                 if (pair_max_pi < -max_pi) { // if maximum value for pi (r_par) is too small, the whole spectra is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)
@@ -647,7 +647,7 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     continue;
                 }
                 
-                double pair_min_pi = spectrum[0].dist() - object.dist(); // maximum distance obtained for highest redshift pixel
+                double pair_min_pi = spectrum[0].dist() - object.dist(); // minimum distance obtained for lowest redshift pixel
                 if (pair_min_pi > max_pi){ // if minimum value for pi (r_par) is too high, the whole spectrum is discarded
                     if (flag_verbose_correlation_plate_ >= 2){
                         #pragma omp critical (cout)

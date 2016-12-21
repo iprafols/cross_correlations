@@ -8,6 +8,9 @@
       location = "group:src/main_compute_lya_1d.cpp">
    </FileRef>
    <FileRef
+      location = "group:src/main_compute_lya_3d.cpp">
+   </FileRef>
+   <FileRef
       location = "group:src/main_compute_projection_correction.cpp">
    </FileRef>
    <FileRef
