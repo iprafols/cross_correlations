@@ -1621,7 +1621,12 @@ void Input::WriteLog(){
      NONE
      */
     std::ofstream log;
-    log.open((output_ + "log.param").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+    if (flag_project_deltas_){
+        log.open((output_ + "log_projected.param").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+    }
+    else{
+        log.open((output_ + "log.param").c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
+    }
     if (log.is_open()){
         
         log << std::endl;
