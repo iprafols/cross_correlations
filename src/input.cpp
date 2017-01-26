@@ -233,13 +233,12 @@ void Input::SetDefaultValues(){
     
     // -------------------------------------------------------------
     // lya autocorrelation and projection correction settings
+    lya_projection_correction_ = output_ + "projection_correction.dat";
     if (flag_project_deltas_){
-        lya_projection_correction_ = output_ + "projection_correction_projected.dat";
         lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d_projected.dat";
         lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d_projected.dat";
     }
     else{
-        lya_projection_correction_ = output_ + "projection_correction.dat";
         lya_auto_correlation_1d_ = output_ + "lya_auto_correlation_1d.dat";
         lya_auto_correlation_3d_ = output_ + "lya_auto_correlation_3d.dat";
     }

@@ -77,6 +77,12 @@ int main(int argc, char *argv[]){
     size_t flag_verbose_main = input.flag_verbose_main();
     const PlotsObject kPlots(input);
 
+    // check whether or not this comuputation is necessary
+    if (not input.flag_project_deltas()){
+        std::cout << "Deltas are not projected, correction unnecessary" << std::endl;
+        return 0;
+    }
+    
     // check whether or not the plate list needs to be computed
     if (input.flag_compute_plate_neighbours()){
         ComputePlateNeighbours(input);
