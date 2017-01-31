@@ -451,7 +451,7 @@ void CorrelationResults::SaveCrossCorrelation(){
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc); 
         if (file.is_open()){
-            file << "# bin_index " << CorrelationPlate::InfoHeader() << std::endl;
+            file << "# bin_index " << CorrelationPlate::InfoHeader(flag_projection_correction_) << std::endl;
         
             for (size_t i = 0; i < num_bins_; i++){
             

@@ -167,7 +167,7 @@ void Input::SetDefaultValues(){
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
     flag_project_deltas_ = true;
-    flag_projection_correction_ = flag_project_deltas_
+    flag_projection_correction_ = flag_project_deltas_;
     flag_verbose_ = 1;
     flag_verbose_civ_spectra_dataset_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;

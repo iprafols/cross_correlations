@@ -160,7 +160,7 @@ public:
     std::string Info(size_t bin);
     
     //returns a string with the column information
-    static std::string InfoHeader();
+    static std::string InfoHeader(const bool& flag_projection_correction);
     
     // Normalizes the cross correlation results
     void Normalize();
@@ -241,7 +241,7 @@ private:
     std::vector<double> xi_;
     
     // correction to the cross correlation in bin
-    std::vector<double> xi_correction;
+    std::vector<double> xi_correction_;
 
     
     // -------------------------------------------------------------

@@ -561,7 +561,7 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
     if (flag_projection_correction_){
-        xi_correction_[index] += mean_proj_deltas_.LinearInterpolation(pixel.z())*pixel.weight();
+        xi_correction_[k_index] += mean_proj_deltas_.LinearInterpolation(pixel.z())*pixel.weight();
     }
 }
 
@@ -888,13 +888,13 @@ std::string CorrelationPlate::Info(size_t bin){
     return out;
 }
 
-std::string CorrelationPlate::InfoHeader(){
+std::string CorrelationPlate::InfoHeader(const bool& flag_projection_correction){
     /**
      EXPLANATION:
      Returns a string with the columns information
      
      INPUTS:
-     NONE
+     flag_projection_correction - a boolean specifying of the correction to the cross-correlation due to projecting deltas is being computed
      
      OUTPUTS:
      a string with the information
@@ -906,7 +906,7 @@ std::string CorrelationPlate::InfoHeader(){
      NONE
      */
     
-    if (flag_projection_correction_){
+    if (flag_projection_correction){
         return "xi xi_correction xi_uncorrected mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
     }
     else{
@@ -1276,7 +1276,7 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
     // check that both instances have the same value for flag_projection_correction
     if (flag_projection_correction_ != other.flag_projection_correction()){
         std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
-        return;
+        return temp;
     }
     
     for (size_t i = 0; i < xi_.size(); i ++){
@@ -1325,7 +1325,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     // check that both instances have the same value for flag_projection_correction
     if (flag_projection_correction_ != other.flag_projection_correction()){
         std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
-        return;
+        return temp;
     }
     
     for (size_t i = 0; i < xi_.size(); i ++){
