@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
     // load spectra dataset
     std::auto_ptr<SpectraDataset> spectra_list;
     if (input.dataset2_type() == "lya"){
-        spectra_list.reset(new LyaSpectraDataset(input, true));
+        spectra_list.reset(new LyaSpectraDataset(input));
     }
     else if (input.dataset2_type() == "civ"){
         spectra_list.reset(new CIVSpectraDataset(input));

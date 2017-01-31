@@ -35,6 +35,7 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     flag_verbose_correlation_results_ = input.flag_verbose_correlation_results();
     flag_write_partial_results_ = input.flag_write_partial_results();
     flag_compute_covariance_ =  input.flag_compute_covariance();
+    flag_projection_correction_ = input.flag_projection_correction();
     
     // setting the number of bins from input
     if (flag_verbose_correlation_results_ >= 3){
@@ -382,19 +383,68 @@ void CorrelationResults::SaveCrossCorrelation(){
     if (flag_verbose_correlation_results_ >= 1){
         std::cout << "Saving cross-correlation" << std::endl;
     }
-    filename = output_base_name_ + ".data";
-    {
-        std::ofstream file(filename.c_str(),std::ofstream::trunc); 
-        if (file.is_open()){
-            for (size_t i = 0; i < num_bins_; i++){
+    if (flag_projection_correction_){
+        filename = output_base_name_ + ".data";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    file << i << " " << normalized_correlation_.xi(i) - normalized_correlation_.xi(i) << std::endl;
+                }
                 
-                file << i << " " << normalized_correlation_.xi(i) << std::endl;
+                file.close();
             }
-            
-            file.close();
+            else{
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
         }
-        else{
-            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+        filename = output_base_name_ + ".uncorrected.data";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    file << i << " " << normalized_correlation_.xi(i) << std::endl;
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+        filename = output_base_name_ + ".correction.data";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    file << i << " " << normalized_correlation_.xi_correction(i) << std::endl;
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
+        }
+    }
+    else{
+        filename = output_base_name_ + ".data";
+        {
+            std::ofstream file(filename.c_str(),std::ofstream::trunc);
+            if (file.is_open()){
+                for (size_t i = 0; i < num_bins_; i++){
+                    
+                    file << i << " " << normalized_correlation_.xi(i) << std::endl;
+                }
+                
+                file.close();
+            }
+            else{
+                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            }
         }
     }
     filename = output_base_name_ + ".full.data";
@@ -414,6 +464,8 @@ void CorrelationResults::SaveCrossCorrelation(){
             std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
         }
     }
+    
+    // save grid
     filename = output_base_name_ + ".grid";
     {
         std::ofstream file(filename.c_str(),std::ofstream::trunc);

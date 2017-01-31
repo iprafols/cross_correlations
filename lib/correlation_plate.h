@@ -23,6 +23,7 @@
 #include "astro_object.h"
 #include "astro_object_dataset.h"
 #include "lya_auto_interpolation_map.h"
+#include "lya_mean_projected_deltas_interpolation_map.h"
 #include "lya_pixel.h"
 #include "lya_spectrum.h"
 #include "pair.h"
@@ -65,6 +66,9 @@ public:
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
     
+    // access function for flag_projection_correction_
+    bool flag_projection_correction() const {return flag_projection_correction_;}
+    
     // access functions for mean_pi_
     std::vector<double> mean_pi() const {return mean_pi_;}
     double mean_pi(size_t index) const;
@@ -106,6 +110,10 @@ public:
     // access functions for xi_
     std::vector<double> xi() const {return xi_;}
     double xi(size_t index) const;
+    
+    // access functions for xi_correction_
+    std::vector<double> xi_correction() const {return xi_correction_;}
+    double xi_correction(size_t index) const;
 
     
     // -------------------------------------------------------------
@@ -137,6 +145,9 @@ public:
     
     // set xi_
     void set_xi(size_t index, double value);
+    
+    // set xi_correction_
+    void set_xi_correction(size_t index, double value);
     
     
     // -------------------------------------------------------------
@@ -177,9 +188,15 @@ private:
 
     // flag to write partial results
     size_t flag_write_partial_results_;
+    
+    // flag to compute the projection correction
+    bool flag_projection_correction_;
 
     // maximum number of pairs stored in each bin
     size_t max_pairs_;
+    
+    // mean value of the projected deltas as a function of redshift
+    LyaMeanProjectedDeltasInterpolationMap mean_proj_deltas_;
     
     // mean value of parallel separation in bin
     std::vector<double> mean_pi_;
@@ -222,6 +239,9 @@ private:
     
     // cross correlation in bin
     std::vector<double> xi_;
+    
+    // correction to the cross correlation in bin
+    std::vector<double> xi_correction;
 
     
     // -------------------------------------------------------------

@@ -121,6 +121,9 @@ private:
     
     // boolean to specify whether or not to compute the covariance matrix
     bool flag_compute_covariance_;
+    
+    // boolean to specify whether or not the correction to the cross-correlation due to the projection of the delta field is computed
+    bool flag_projection_correction_;
 
     // correlation_results verbose flag
     size_t flag_verbose_correlation_results_;

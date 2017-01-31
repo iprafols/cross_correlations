@@ -166,7 +166,8 @@ void Input::SetDefaultValues(){
     flag_load_only_ = false;
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
-    flag_project_deltas_ = flag_compute_distortion_;
+    flag_project_deltas_ = true;
+    flag_projection_correction_ = flag_project_deltas_
     flag_verbose_ = 1;
     flag_verbose_civ_spectra_dataset_ = flag_verbose_;
     flag_verbose_compute_plate_neighbours_ = flag_verbose_;
@@ -575,6 +576,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
             }
             else if (value == "false" or value == "FALSE" or value == "False"){
                 flag_project_deltas_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_projection_correction"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_projection_correction_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_projection_correction_ = false;
             }
             else{
                 unused_params_ += name + " = " + value + "\n";
@@ -1334,12 +1355,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
         flag_plot_catalog_info_ = flag_load_only_;
     }
     
-    // updating flag_project_deltas_ if necessary
-    it = input_flag.find("flag_compute_distortion");
-    it2 = input_flag.find("flag_project_deltas");
+    // updating flag_projection_correction if necessary
+    it = input_flag.find("flag_project_deltas");
+    it2 = input_flag.find("flag_compute_distortion");
     if (it != input_flag.end() and it2 == input_flag.end()){
-        flag_project_deltas_ = flag_compute_distortion_;
+        flag_projection_correction_ = flag_project_deltas_;
     }
+    flag_projection_correction_ = flag_projection_correction_ and flag_project_deltas_;
     
     // updating flag_verbose_compute_plate_neighbours_ if necessary
     it = input_flag.find("flag_verbose");
@@ -1685,6 +1707,12 @@ void Input::WriteLog(){
         }
         else{
             log << "flag_project_deltas = false" << std::endl;
+        }
+        if (flag_projection_correction_){
+            log << "flag_projection_correction = true" << std::endl;
+        }
+        else{
+            log << "flag_projection_correction = false" << std::endl;
         }
         log << "flag_verbose = " << flag_verbose_ << std::endl;
         log << "flag_verbose_civ_spectra_dataset = " << flag_verbose_civ_spectra_dataset_ << std::endl;

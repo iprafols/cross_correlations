@@ -62,7 +62,7 @@ public:
     // other methods
     
     // project the delta field
-    void ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas, const bool ignore_correction = false);
+    void ProjectDeltas();
     
     // set the distance to object
     void SetDistance(const InterpolationMap& redshift_distance_map);

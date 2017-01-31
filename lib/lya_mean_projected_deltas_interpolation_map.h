@@ -36,6 +36,9 @@ public:
     // -------------------------------------------------------------
     // constructors
     
+    // constructs empty object
+    LyaMeanProjectedDeltasInterpolationMap(){};
+    
     // constructs object and initializes its variables
     LyaMeanProjectedDeltasInterpolationMap(const Input& input);
     

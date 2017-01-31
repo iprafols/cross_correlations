@@ -99,6 +99,15 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
         pairs_information_.resize(num_bins_, aux);
         
     }
+    
+    // correction to the projection of deltas
+    flag_projection_correction_ = input.flag_projection_correction();
+    if (flag_projection_correction_){
+        // load the average of the projected deltas as a function of redshift
+        mean_proj_deltas_ = LyaMeanProjectedDeltasInterpolationMap(input);
+        // initialize cross-correlation
+        xi_correction_.resize(num_bins_,0.0);
+    }
 }
 
 CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
@@ -307,6 +316,33 @@ double CorrelationPlate::xi(size_t index) const {
     }
 }
 
+double CorrelationPlate::xi_correction(size_t index) const {
+    /**
+     EXPLANATION:
+     Access function for xi_correction_
+     
+     INPUTS:
+     index - index of the selected xi_correction_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < xi_correction_.size()){
+        return xi_correction_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
+
 void CorrelationPlate::set_mean_pi(size_t index, double value){
     /**
      EXPLANATION:
@@ -469,6 +505,33 @@ void CorrelationPlate::set_xi(size_t index, double value){
     }
 }
 
+void CorrelationPlate::set_xi_correction(size_t index, double value){
+    /**
+     EXPLANATION:
+     Set function for xi_correction_
+     
+     INPUTS:
+     index - index of the selected xi_correction_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < xi_.size()){
+        xi_correction_[index] = value;
+    }
+    else{
+        std::cout << "Warining: in CorrelationPlate::set_xi_correction(index, value): The given index is out of bouds, ignoring..." << std::endl;
+    }
+}
+
 void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma){
     /**
      EXPLANATION:
@@ -497,7 +560,9 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     mean_z_in_bin_[k_index] += pixel.z()*pixel.weight();
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
-
+    if (flag_projection_correction_){
+        xi_correction_[index] += mean_proj_deltas_.LinearInterpolation(pixel.z())*pixel.weight();
+    }
 }
 
 void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
@@ -815,6 +880,9 @@ std::string CorrelationPlate::Info(size_t bin){
      */
     string out = "";
     
+    if (flag_projection_correction_){
+        out += ToStr(xi_[bin] - xi_correction_[bin]) + " " + ToStr(xi_correction_[bin]) + " ";
+    }
     out += ToStr(xi_[bin]) + " " + ToStr(mean_pi_[bin]) + " " + ToStr(mean_sigma_[bin]) + " " + ToStr(mean_z_in_bin_[bin]) + " " + ToStr(weight_[bin]) + " " + ToStr(num_averaged_pairs_[bin]) + " " + ToStr(plate_number_);
     
     return out;
@@ -838,7 +906,12 @@ std::string CorrelationPlate::InfoHeader(){
      NONE
      */
     
-    return "xi mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
+    if (flag_projection_correction_){
+        return "xi xi_correction xi_uncorrected mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
+    }
+    else{
+        return "xi mean_pi mean_sigma mean_z weight num_averaged_pairs plate";
+    }
 }
 
 void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t obj_plate, const size_t obj_num){
@@ -924,7 +997,9 @@ void CorrelationPlate::Normalize(){
                 mean_pi_[i] /= weight_[i];
                 mean_sigma_[i] /= weight_[i];
                 mean_z_in_bin_[i] /= weight_[i];
-                //weight_[i] = 1.0;
+                if (flag_projection_correction_){
+                    xi_correction_[i] /= weight_[i];
+                }
             }
             
         }
@@ -967,26 +1042,91 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
         if (flag_verbose_correlation_plate_ >= 1){
             std::cout << "Saving cross-correlation for plate " << pairs_file_name_ << std::endl;
         }
-        filename = input.results() + "plate_" + pairs_file_name_ + ".data";
-        {
-            std::ofstream file(filename.c_str(),std::ofstream::trunc);
-            if (file.is_open()){
-                for (size_t i = 0; i < num_bins_; i++){
+        if (flag_projection_correction_){
+            filename = input.results() + "plate_" + pairs_file_name_ + ".data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    for (size_t i = 0; i < num_bins_; i++){
+                        
+                        if (weight_[i] != 0.0){
+                            file << i << " " << (xi_[i]-xi_correction_[i])/weight_[i] << std::endl;
+                        }
+                        else{
+                            file << i << " NaN" << std::endl;
+                        }
+                    }
                     
-                    if (weight_[i] != 0.0){
-                        file << i << " " << xi_[i]/weight_[i] << std::endl;
-                    }
-                    else{
-                        file << i << " NaN" << std::endl;
-                    }
+                    file.close();
                 }
-                
-                file.close();
+                else{
+                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
             }
-            else{
-                std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+            filename = input.results() + "plate_" + pairs_file_name_ + ".uncorrected.data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    for (size_t i = 0; i < num_bins_; i++){
+                        
+                        if (weight_[i] != 0.0){
+                            file << i << " " << xi_[i]/weight_[i] << std::endl;
+                        }
+                        else{
+                            file << i << " NaN" << std::endl;
+                        }
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
+            }
+            filename = input.results() + "plate_" + pairs_file_name_ + ".correction.data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    for (size_t i = 0; i < num_bins_; i++){
+                        
+                        if (weight_[i] != 0.0){
+                            file << i << " " << xi_correction_[i]/weight_[i] << std::endl;
+                        }
+                        else{
+                            file << i << " NaN" << std::endl;
+                        }
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
             }
         }
+        else{
+            filename = input.results() + "plate_" + pairs_file_name_ + ".data";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    for (size_t i = 0; i < num_bins_; i++){
+                        
+                        if (weight_[i] != 0.0){
+                            file << i << " " << xi_[i]/weight_[i] << std::endl;
+                        }
+                        else{
+                            file << i << " NaN" << std::endl;
+                        }
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
+            }
+        }
+        // save normalized grid
         filename = input.results() + "plate_" + pairs_file_name_ + ".grid";
         {
             std::ofstream file(filename.c_str(),std::ofstream::trunc);
@@ -1085,6 +1225,11 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
         std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
         return;
     }
+    // check that both instances have the same value for flag_projection_correction
+    if (flag_projection_correction_ != other.flag_projection_correction()){
+        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        return;
+    }
     
     for (size_t i = 0; i < xi_.size(); i ++){
         xi_[i] += other.xi(i);
@@ -1093,6 +1238,9 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
         mean_z_in_bin_[i] += other.mean_z_in_bin(i);
         weight_[i] += other.weight(i);
         num_averaged_pairs_[i] += other.num_averaged_pairs(i);
+        if (flag_projection_correction_){
+            xi_correction_[i] += other.xi_correction(i);
+        }
     }
     mean_z_ += other.mean_z();
     weight_z_ += other.weight_z();
@@ -1122,8 +1270,13 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
         return temp;
+    }
+    // check that both instances have the same value for flag_projection_correction
+    if (flag_projection_correction_ != other.flag_projection_correction()){
+        std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        return;
     }
     
     for (size_t i = 0; i < xi_.size(); i ++){
@@ -1133,6 +1286,9 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
         temp.set_mean_z_in_bin(i, mean_z_in_bin_[i] - other.mean_z_in_bin(i));
         temp.set_weight(i, weight_[i] - other.weight(i));
         temp.set_num_averaged_pairs(i, num_averaged_pairs_[i] - other.num_averaged_pairs(i));
+        if (flag_projection_correction_){
+            temp.set_xi_correction(i, xi_correction_[i] - other.xi_correction(i));
+        }
     }
     temp.set_mean_z(mean_z_ - other.mean_z());
     temp.set_weight_z(weight_z_ - other.weight_z());
@@ -1163,8 +1319,13 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
         return temp;
+    }
+    // check that both instances have the same value for flag_projection_correction
+    if (flag_projection_correction_ != other.flag_projection_correction()){
+        std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        return;
     }
     
     for (size_t i = 0; i < xi_.size(); i ++){
@@ -1174,6 +1335,9 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
         temp.set_mean_z_in_bin(i, mean_z_in_bin_[i]*other.mean_z_in_bin(i));
         temp.set_weight(i, weight_[i]*other.weight(i));
         temp.set_num_averaged_pairs(i, num_averaged_pairs_[i]*other.num_averaged_pairs(i));
+        if (flag_projection_correction_){
+            temp.set_xi_correction(i, xi_correction_[i]*other.xi_correction(i));
+        }
     }
     temp.set_mean_z(mean_z_*other.mean_z());
     temp.set_weight_z(weight_z_*other.weight_z());

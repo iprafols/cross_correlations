@@ -215,14 +215,13 @@ LyaPixel LyaSpectrum::spectrum(size_t i) const {
     
 }
 
-void LyaSpectrum::ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas, const bool ignore_correction){
+void LyaSpectrum::ProjectDeltas(){
     /**
      EXPLANATION:
      Projects the delta field
      
      INPUTS:
-     mean_proj_deltas - a LyaMeanProjectedDeltasInterpolationMap instance with the correction to apply after projecting the deltas
-     ignore_correction - a boolean specifying if the correction needs to be ignored
+     NONE
      
      OUTPUTS:
      NONE
@@ -235,8 +234,8 @@ void LyaSpectrum::ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& me
      */
     
     // compute forest variables (loop over forest pixels, twice)
-    double forest_aux1 = 0.0; //forest_aux: sum of (loglam-forest_mean_loglam)**2*weigth of all the pixels in the forest
-    double forest_aux2 = 0.0; //forest_aux: sum of delta*(loglam-forest_mean_loglam)*weigth of all the pixels in the forest
+    double forest_aux1 = 0.0; //forest_aux1: sum of (loglam-forest_mean_loglam)**2*weigth of all the pixels in the forest
+    double forest_aux2 = 0.0; //forest_aux2: sum of delta*(loglam-forest_mean_loglam)*weigth of all the pixels in the forest
     double forest_total_weight = 0.0;
     double forest_mean_loglam = 0.0;
     double forest_mean_delta = 0.0;
@@ -272,15 +271,7 @@ void LyaSpectrum::ProjectDeltas(const LyaMeanProjectedDeltasInterpolationMap& me
     double projected_delta;
     for (size_t pixel = 0; pixel < spectrum_.size(); pixel ++){
         projected_delta = spectrum_[pixel].delta()-forest_mean_delta-forest_aux*(spectrum_[pixel].loglam()-forest_mean_loglam);
-        if (not ignore_correction){
-            double correction = mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
-            if (correction != _BAD_DATA_){
-                projected_delta -= mean_proj_deltas.LinearInterpolation(spectrum_[pixel].z());
-            }
-        }
         spectrum_[pixel].set_delta(projected_delta);
-        
-
     }
     
     

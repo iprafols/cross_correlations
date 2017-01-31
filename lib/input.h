@@ -103,6 +103,9 @@ public:
     // access function for flag_project_deltas_
     bool flag_project_deltas() const {return flag_project_deltas_;}
     
+    // access function for flag_projection_correction_
+    bool flag_projection_correction() const {return flag_projection_correction_;}
+    
     // access function for flag_verbose_
     size_t flag_verbose() const {return flag_verbose_;}
     
@@ -329,6 +332,9 @@ private:
     
     // flag to project the delta field
     bool flag_project_deltas_;
+    
+    // flag to compute the correction to the cross-correlation due to the projection of the delta field
+    bool flag_projection_correction_;
     
     // verbose flag
     size_t flag_verbose_;
