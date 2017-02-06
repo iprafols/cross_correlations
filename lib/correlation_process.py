@@ -1802,7 +1802,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             or type(labels_model_list) == tuple or contour):
         raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_model_list".')
     if type(labels_model_list) == list or type(labels_model_list) == tuple:
-        for item in labels_list:
+        for item in labels_model_list:
             if not (type(item) == str or contour):
                 raise CorrelationProcessError(plot, 'Incorrect type of the parameter "labels_model_list.')
 
@@ -2161,7 +2161,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             ax.tick_params(axis='both', pad=10, labelsize=labelsize)
             yticks = ax.yaxis.get_major_ticks()
             yticks[0].label1.set_visible(False)
-            if labels_list != None:
+            if labels_list != None or labels_model_list != None:
                 ax.legend(numpoints=1, loc=4)
             
             # save the plot

@@ -136,6 +136,9 @@ private:
     
     
     
+    // mean value of the projected deltas as a function of redshift
+    LyaMeanProjectedDeltasInterpolationMap mean_proj_deltas_;
+    
     // number of bins
     size_t num_bins_;
     

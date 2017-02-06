@@ -188,13 +188,18 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
         }
     }
 
+    // load the average of the projected deltas as a function of redshift
+    if (flag_projection_correction_){
+        mean_proj_deltas_ = LyaMeanProjectedDeltasInterpolationMap(input);
+    }
+    
     
     // loop over plates
     size_t plates_computed = 0;
     #pragma omp parallel for ordered schedule(dynamic)
     for (size_t i = skip_plates_; i < plates_list_.size(); i++){
         
-        if (input.flag_verbose() >= 3){
+        if (flag_verbose_correlation_results_ >= 3){
             std::cout << "Loading plate " << plates_list_[i] << std::endl;
         }
         CorrelationPlate plate(input, plates_list_[i], kPlateNeighbours.GetNeighboursList(plates_list_[i]));
@@ -214,12 +219,15 @@ void CorrelationResults::ComputeCrossCorrelation(const AstroObjectDataset& objec
         }
         
         // compute cross-correlation in selected plate
-        plate.ComputeCrossCorrelation(object_list, spectra_list, input);
+        plate.ComputeCrossCorrelation(object_list, spectra_list, input, mean_proj_deltas_);
         
         // save the cross-correlation in selected plate
         if (flag_write_partial_results_ >= 1){
             if (input.flag_verbose() >= 1){
-                std::cout << "saving the cross-correlation" << std::endl;
+                #pragma omp critical (cout)
+                {
+                    std::cout << "saving the cross-correlation" << std::endl;
+                }
             }
             plate.SaveCrossCorrelation(input);
         }
@@ -267,18 +275,19 @@ void CorrelationResults::AddToBootstrapRealizations(const std::vector<std::vecto
         std::cout << "Adding plate to bootstrap realizations" << std::endl;
     }
     
-    #pragma omp parallel for ordered schedule(dynamic)
-    for (size_t i = 0; i < bootstrap_.size(); i ++){
-        
-        for (size_t j = 0; j < picked_plates[i].size(); j ++){
+    #pragma omp critical (bootstrap)
+    {
+        for (size_t i = 0; i < bootstrap_.size(); i ++){
             
-            // add plate to bootstrap realization
-            if (picked_plates[i][j] == plate.plate_number()){
-                bootstrap_[i] += plate;
+            for (size_t j = 0; j < picked_plates[i].size(); j ++){
+                
+                // add plate to bootstrap realization
+                if (picked_plates[i][j] == plate.plate_number()){
+                    bootstrap_[i] += plate;
+                }
             }
         }
     }
-    
     
 }
 
@@ -390,7 +399,7 @@ void CorrelationResults::SaveCrossCorrelation(){
             if (file.is_open()){
                 for (size_t i = 0; i < num_bins_; i++){
                     
-                    file << i << " " << normalized_correlation_.xi(i) - normalized_correlation_.xi(i) << std::endl;
+                    file << i << " " << normalized_correlation_.xi(i) - normalized_correlation_.xi_correction(i) << std::endl;
                 }
                 
                 file.close();

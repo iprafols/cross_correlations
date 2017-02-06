@@ -55,7 +55,7 @@ public:
     CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results);
+    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction);
     
     // -------------------------------------------------------------
     // access methods
@@ -154,7 +154,7 @@ public:
     // other methods
     
     // compute cross-correlation
-    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input);
+    void ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas);
     
     //returns a string with the information for the selected bin
     std::string Info(size_t bin);
@@ -194,10 +194,7 @@ private:
 
     // maximum number of pairs stored in each bin
     size_t max_pairs_;
-    
-    // mean value of the projected deltas as a function of redshift
-    LyaMeanProjectedDeltasInterpolationMap mean_proj_deltas_;
-    
+        
     // mean value of parallel separation in bin
     std::vector<double> mean_pi_;
     
@@ -248,7 +245,7 @@ private:
     // other methods
     
     // adding contribution to xi in the specified bin
-    void AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma);
+    void AddPair(const size_t& k_index, const LyaPixel& pixel, const double& pi, const double& sigma, const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas);
 
     // keeps the pair information for latter storage
     void KeepPair(const int& k_index, const LyaSpectrum& lya_spectrum, const size_t& pixel_number, const size_t obj_plate, const size_t obj_num);

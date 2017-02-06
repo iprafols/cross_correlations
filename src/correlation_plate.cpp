@@ -26,7 +26,10 @@ CorrelationPlate::CorrelationPlate(int bad_data){
      ToStr
      */
     if (bad_data != _BAD_DATA_INT_){
+        #pragma omp critical (cout)
+        {
         std::cout << "Error while initializing a CorrelationPlate 'bad data' instance" << std::endl;
+        }
         std::exit(EXIT_FAILURE);
     }
     
@@ -72,7 +75,10 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     
     // initialize cross-correlation computations
     if (flag_verbose_correlation_plate_ >= 3){
-        std::cout << "CorrelationPlate: initialize cross-correlation" << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "CorrelationPlate: initialize cross-correlation" << std::endl;
+        }
     }
     xi_.resize(num_bins_,0.0);
     mean_pi_.resize(num_bins_,0.0);
@@ -86,12 +92,18 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     // pair storage settings
     if (flag_write_partial_results_ >= 2){
         if (flag_verbose_correlation_plate_ >= 3){
-            std::cout << "CorrelationPlate: pair storage settings" << std::endl;
+            #pragma omp critical (cout)
+            {
+                std::cout << "CorrelationPlate: pair storage settings" << std::endl;
+            }
         }
         max_pairs_ = 100;
         position_.resize(num_bins_, 0);
         if (flag_verbose_correlation_plate_ >= 3){
+            #pragma omp critical (cout)
+            {
             std::cout << "CorrelationPlate: reserving space" << std::endl;
+            }
         }
         
         std::vector<Pair> aux;
@@ -103,14 +115,12 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     // correction to the projection of deltas
     flag_projection_correction_ = input.flag_projection_correction();
     if (flag_projection_correction_){
-        // load the average of the projected deltas as a function of redshift
-        mean_proj_deltas_ = LyaMeanProjectedDeltasInterpolationMap(input);
         // initialize cross-correlation
         xi_correction_.resize(num_bins_,0.0);
     }
 }
 
-CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, size_t flag_verbose_correlation_plate, size_t flag_write_partial_results){
+CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction){
     /**
      EXPLANATION:
      Cosntructs a CorrelationPlate instance and initializes all its variables
@@ -122,6 +132,7 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
      plate_neighbours - a vector containing the plate numbers of the neighbouring plates
      flag_verbose_correlation_plate - correlation_plate verbose flag
      flag_write_partial_results - flag to write partial results
+     flag_projection_correction - flag to compute the correction to the cross-correlation due to the projection of the delta field
      
      OUTPUTS:
      NONE
@@ -157,6 +168,13 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
     num_averaged_pairs_.resize(num_bins_,0);
     mean_z_ = 0.0;
     weight_z_ = 0.0;
+    
+    // correction to the projection of deltas
+    flag_projection_correction_ = flag_projection_correction;
+    if (flag_projection_correction_){
+        // initialize cross-correlation
+        xi_correction_.resize(num_bins_,0.0);
+    }
     
 }
 
@@ -366,7 +384,10 @@ void CorrelationPlate::set_mean_pi(size_t index, double value){
         mean_pi_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_mean_pi(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -393,7 +414,10 @@ void CorrelationPlate::set_mean_sigma(size_t index, double value){
         mean_sigma_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_mean_sigma(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -420,7 +444,10 @@ void CorrelationPlate::set_mean_z_in_bin(size_t index, double value){
         mean_z_in_bin_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_mean_z_in_bin(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -447,7 +474,10 @@ void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
         num_averaged_pairs_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_num_average_pairs(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -474,7 +504,10 @@ void CorrelationPlate::set_weight(size_t index, double value){
         weight_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_weight(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -501,7 +534,10 @@ void CorrelationPlate::set_xi(size_t index, double value){
         xi_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_xi(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
@@ -528,11 +564,14 @@ void CorrelationPlate::set_xi_correction(size_t index, double value){
         xi_correction_[index] = value;
     }
     else{
+        #pragma omp critical (cout)
+        {
         std::cout << "Warining: in CorrelationPlate::set_xi_correction(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
     }
 }
 
-void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const double& pi, const double& sigma){
+void CorrelationPlate::AddPair(const size_t& k_index, const LyaPixel& pixel, const double& pi, const double& sigma, const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas){
     /**
      EXPLANATION:
      Adds pair contribution to xi in the specified bin
@@ -542,6 +581,8 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      pixel - an LyaPixel instance to add the contribution from
      pi - a double specifying the parallel separation of the pair
      sigma - a double specifying the perpendicular separation of the pair
+     mean_proj_deltas - a LyaMeanProjectedDeltasInterpolationMap with the correction to the cross-correlation due to the projection
+                        of the delta field. Ignored if flag_projection_correction_ is set to 'false'
      
      OUTPUTS:
      NONE
@@ -554,6 +595,19 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
      NONE
      */
     
+    if (k_index > xi_.size()){
+        #pragma omp critical (cout)
+        {
+        std::cout << "In function CorrelationPlate::AddPair, the given index is out of bounds. Ignoring..." << std::endl;
+        }
+    }
+    if (k_index > xi_correction_.size()){
+        #pragma omp critical (cout)
+        {
+        std::cout << "In function CorrelationPlate::AddPair, something strange is going on... Ignoring..." << std::endl;
+        }
+    }
+    
     xi_[k_index] += pixel.delta()*pixel.weight();
     mean_pi_[k_index] += pi*pixel.weight();
     mean_sigma_[k_index] += sigma*pixel.weight();
@@ -561,11 +615,11 @@ void CorrelationPlate::AddPair(const int& k_index, const LyaPixel& pixel, const 
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
     if (flag_projection_correction_){
-        xi_correction_[k_index] += mean_proj_deltas_.LinearInterpolation(pixel.z())*pixel.weight();
+        xi_correction_[k_index] += mean_proj_deltas.LinearInterpolation(pixel.z())*pixel.weight();
     }
 }
 
-void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input){
+void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_list, const SpectraDataset& spectra_list, const Input& input, const LyaMeanProjectedDeltasInterpolationMap& mean_proj_deltas){
     /**
      EXPLANATION:
      Computes the cross-correlation
@@ -574,6 +628,8 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
      object_list - an AstroObjectDataset instance
      spectra_list - a SpectraDataset instance
      input - a Input instance to load bin settings
+     mean_proj_deltas - a LyaMeanProjectedDeltasInterpolationMap with the correction to the cross-correlation due to the projection
+                        of the delta field. Ignored if flag_projection_correction_ is set to 'false'
      
      OUTPUTS:
      NONE
@@ -808,16 +864,16 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     if (flag_verbose_correlation_plate_ >= 3){
                         #pragma omp critical (cout)
                         {
-                            std::cout << "Pixel accepted: addign contribution to bin " << k_index << std::endl;
+                            std::cout << "Pixel accepted: assign contribution to bin " << k_index << std::endl;
                         }
                     }
-                    AddPair(k_index, spectrum[p], pi, sigma);
+                    AddPair(k_index, spectrum[p], pi, sigma, mean_proj_deltas);
                     
                     // add contribution to mean redshift
                     if (flag_verbose_correlation_plate_ >= 3){
                         #pragma omp critical (cout)
                         {
-                            std::cout << "Pixel accepted: addign contribution to mean redshift " << k_index << std::endl;
+                            std::cout << "Pixel accepted: assign contribution to mean redshift " << k_index << std::endl;
                         }
                     }
                     mean_z_ += spectrum[p].z()*spectrum[p].weight();
@@ -839,14 +895,20 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
         }
     }
     if (flag_verbose_correlation_plate_ >= 3){
+        #pragma omp critical (cout)
+        {
         std::cout << "CorrelationPlate: correlation computed" << std::endl;
+        }
     }
     
     if (flag_write_partial_results_ >= 2){
         for (size_t i = 0; i < num_bins_; i++){
             if (position_[i] > 0){
                 if (flag_verbose_correlation_plate_ >= 3){
+                    #pragma omp critical (cout)
+                    {
                     std::cout << "CorrelationPlate: saving pairs" << std::endl;
+                    }
                 }
                 SavePairs(i);
             }
@@ -941,7 +1003,10 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
      */
     
     if (flag_verbose_correlation_plate_ >= 3){
-        std::cout << "CorrelationPlate: format pair to store" << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "CorrelationPlate: format pair to store" << std::endl;
+        }
     }
     
     LyaPixel pixel = lya_spectrum.spectrum(pixel_number);
@@ -949,7 +1014,10 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
     Pair pair(obj_plate, obj_num, lya_spectrum.plate(), lya_spectrum.fiber(), lya_spectrum.mjd(), pixel_number, pixel.delta(), pixel.z(), pixel.weight());
     
     if (flag_verbose_correlation_plate_ >= 3){
-        std::cout << "CorrelationPlate: store pair" << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "CorrelationPlate: store pair" << std::endl;
+        }
     }
     
     pairs_information_[k_index][position_[k_index]] = pair;
@@ -957,7 +1025,10 @@ void CorrelationPlate::KeepPair(const int& k_index, const LyaSpectrum& lya_spect
     
     if (position_[k_index] == max_pairs_){
         if (flag_verbose_correlation_plate_ >= 3){
-            std::cout << "CorrelationPlate: saving pairs" << std::endl;
+            #pragma omp critical (cout)
+            {
+                std::cout << "CorrelationPlate: saving pairs" << std::endl;
+            }
         }
         SavePairs(k_index);
     }
@@ -993,12 +1064,15 @@ void CorrelationPlate::Normalize(){
             // if the weight is 1.0, normalization is not needed
             else if (weight_[i] != 1.0){
                 
+                #pragma opm critical (normalize)
+                {
                 xi_[i] /= weight_[i];
                 mean_pi_[i] /= weight_[i];
                 mean_sigma_[i] /= weight_[i];
                 mean_z_in_bin_[i] /= weight_[i];
                 if (flag_projection_correction_){
                     xi_correction_[i] /= weight_[i];
+                }
                 }
             }
             
@@ -1008,7 +1082,10 @@ void CorrelationPlate::Normalize(){
     }
     else{
         // if plate number is not _NORM_, the instance is not supposed to normalize
-        std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+        }
     }
     
 }
@@ -1035,12 +1112,18 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
     
     if (plate_number_ == _NORM_){
         // if plate number is _NORM_, the instance is not supposed to be saved using this function
-        std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::Normalize : Plate number is not set to _NORM_. This CorrelationPlate instance should not be normalized. Ignoring..." << std::endl;
+        }
     }
     else{
         // save normalized cross-correlation
         if (flag_verbose_correlation_plate_ >= 1){
-            std::cout << "Saving cross-correlation for plate " << pairs_file_name_ << std::endl;
+            #pragma omp critical (cout)
+            {
+                std::cout << "Saving cross-correlation for plate " << pairs_file_name_ << std::endl;
+            }
         }
         if (flag_projection_correction_){
             filename = input.results() + "plate_" + pairs_file_name_ + ".data";
@@ -1060,7 +1143,10 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                     file.close();
                 }
                 else{
-                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    #pragma omp critical (cout)
+                    {
+                        std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    }
                 }
             }
             filename = input.results() + "plate_" + pairs_file_name_ + ".uncorrected.data";
@@ -1080,7 +1166,10 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                     file.close();
                 }
                 else{
-                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    #pragma omp critical (cout)
+                    {
+                        std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    }
                 }
             }
             filename = input.results() + "plate_" + pairs_file_name_ + ".correction.data";
@@ -1100,7 +1189,10 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                     file.close();
                 }
                 else{
-                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    #pragma omp critical (cout)
+                    {
+                        std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    }
                 }
             }
         }
@@ -1122,7 +1214,10 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                     file.close();
                 }
                 else{
-                    std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    #pragma omp critical (cout)
+                    {
+                        std::cout << "Error : In CorrelationPlate::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                    }
                 }
             }
         }
@@ -1145,7 +1240,10 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                 file.close();
             }
             else{
-                std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                #pragma omp critical (cout)
+                {
+                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
             }
         }
 
@@ -1196,7 +1294,10 @@ void CorrelationPlate::SavePairs(const int& k_index){
         bin_file.close();
     }
     else{
-        std::cout << "Error : In CorrelationPlate::SavePairs : Unable to open file:" << std::endl << filename << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Error : In CorrelationPlate::SavePairs : Unable to open file:" << std::endl << filename << std::endl;
+        }
     }
     
     CorrelationPlate::position_[k_index] = 0;
@@ -1222,12 +1323,18 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different number of bins. Ignoring..." << std::endl;
+        }
         return;
     }
     // check that both instances have the same value for flag_projection_correction
     if (flag_projection_correction_ != other.flag_projection_correction()){
-        std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator+= : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        }
         return;
     }
     
@@ -1266,16 +1373,22 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
      */
 
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
-        std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        }
         return temp;
     }
     // check that both instances have the same value for flag_projection_correction
     if (flag_projection_correction_ != other.flag_projection_correction()){
-        std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator- : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        }
         return temp;
     }
     
@@ -1315,16 +1428,22 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
-        std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different number of bins. Returning zero filled CorrelationPlates..." << std::endl;
+        }
         return temp;
     }
     // check that both instances have the same value for flag_projection_correction
     if (flag_projection_correction_ != other.flag_projection_correction()){
-        std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warning : In CorrelationPlate::operator* : Trying to add CorrelationPlates with different flag_projection_correction. Ignoring..." << std::endl;
+        }
         return temp;
     }
     

@@ -167,7 +167,7 @@ void LyaSpectraDataset::ProjectDeltas(const Input& input){
     for (PlatesMapVector<LyaSpectrum>::map::iterator it = list_.begin(); it != list_.end(); it ++){
         
         plates_computed ++;
-        if (flag_verbose_lya_spectra_dataset_ >= 2 or (flag_verbose_lya_spectra_dataset_ >= 1 and plates_computed == plates_computed/100*100)){
+        if (flag_verbose_lya_spectra_dataset_ >= 3 or (flag_verbose_lya_spectra_dataset_ >= 2 and plates_computed == plates_computed/100*100)){
             #pragma omp critical (cout)
             {
                 std::cout << plates_computed << " out of " << list_.size() << " plates computed" << std::endl;
