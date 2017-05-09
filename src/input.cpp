@@ -276,7 +276,7 @@ void Input::SetDefaultValues(){
     rf_wl_forbidden_interval_.first = 1005.0; // in angs
     rf_wl_forbidden_interval_.second = 1037.0; // in angs
     lya_flux_min_ = -0.05;
-    lya_flux_min_ = 0.25;
+    lya_flux_max_ = 0.25;
     
     // -------------------------------------------------------------
     // Some mathematical and physical constants
@@ -1812,6 +1812,9 @@ void Input::WriteLog(){
         log << "rf_wl_min = " << rf_wl_min_ << std::endl;
         log << "rf_wl_max = " << rf_wl_max_ << std::endl;
         log << "rf_wl_forbidden_interval = (" << rf_wl_forbidden_interval_.first << ", " << rf_wl_forbidden_interval_.second << ")" << std::endl;
+        log << "lya_flux_min = " << lya_flux_min_ << std::endl;
+        log << "lya_flux_max = " << lya_flux_max_ << std::endl;
+        
         log << std::endl;
         
         
