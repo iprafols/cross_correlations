@@ -2039,18 +2039,18 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         levels = np.arange(vmin, vmax + step, step)
         #gs = gridspec.GridSpec(2, 3, width_ratios=[10, 10, 1], height_ratios=[2, 1])
         gs = gridspec.GridSpec(1, 3, width_ratios=[10, 10, 1])
-        gs.update(bottom=0.2, wspace=0.05, hspace=0.08)
-        fontsize = 32
-        labelsize = 22
+        gs.update(bottom=0.15, wspace=0.05, hspace=0.08)
+        fontsize = 34
+        labelsize = 26
         labelsize2 = 18
         #figsize=(16, 26)
-        figsize=(16, 20)
+        figsize=(20, 20)
 
         # plot the data
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(gs[0,0])
-        #ax.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax.set_ylabel('$\\pi {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax.set_ylabel('$r_{\\parallel} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
         if smooth:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
@@ -2058,14 +2058,21 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         ax.set_xlim(0, 60)
         ax.set_ylim(-60, 60)
+        xticks = ax.xaxis.get_major_ticks()
+        xticks[0].label1.set_visible(False)
+        xticks[-1].label1.set_visible(False)
 
         ax2 = fig.add_subplot(gs[0,1])
-        #ax2.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax2.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax2.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
         ax2.tick_params(axis='y', labelleft='off', width=2, length=6)
         cs2 = ax2.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         ax2.set_xlim(0, 60)
         ax2.set_ylim(-60, 60)
+        xticks2 = ax2.xaxis.get_major_ticks()
+        xticks2[0].label1.set_visible(False)
+        xticks2[-1].label1.set_visible(False)
+
 
         ax3 = fig.add_subplot(gs[0,2])
         cbar = fig.colorbar(cs, cax=ax3, format='%.2f')
@@ -2073,8 +2080,8 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
 
 
         """ax4 = fig.add_subplot(gs[1,0])
-        ax4.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax4.set_ylabel('$\\pi {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax4.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax4.set_ylabel('$r_{\\parallel} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax4.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
         ax4.set_xlim(2, 42)
         ax4.set_ylim(-20, 20)
@@ -2084,7 +2091,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
 
         ax5 = fig.add_subplot(gs[1,1])
-        ax5.set_xlabel('$\\sigma {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
+        ax5.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax5.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
         ax5.tick_params(axis='y', labelleft='off', width=2, length=6)
         cs5 = ax5.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
@@ -2100,12 +2107,12 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         # figure settings
         if plot_separated_errors:
             gs = gridspec.GridSpec(1, 2, width_ratios=[10,1])
-            gs.update(left=0.2, bottom=0.2, wspace=0.01)
+            gs.update(left=0.25, bottom=0.2, wspace=0.01)
         else:
             gs = gridspec.GridSpec(1, 1)
-            gs.update(left=0.2, bottom=0.2)
+            gs.update(left=0.25, bottom=0.2)
         fontsize = 32
-        labelsize = 22
+        labelsize = 24
         figsize = (9, 7)
         
         for bin_num, sigma_min in enumerate(sigma_bins[:-1]):
@@ -2155,9 +2162,9 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                     ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos[0]], model.model_mat(rebinned=plot_rebinned)[model_pos[0]], fmt, label=label)
                     [ ax.plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos[1:] ]
 
-            ax.set_xlabel('$\\pi\\,\\left[\\rm h^{-1}Mpc\\right]$', fontsize=fontsize)
-            ax.set_ylabel('$\\xi\\left[\\pi, \\sigma\\right]$', fontsize=fontsize)
-            ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < \\sigma <' + str(sigma_max) + '$', fontsize=fontsize, transform=ax.transAxes)
+            ax.set_xlabel('$r_{\\parallel}\\,\\left[\\rm h^{-1}Mpc\\right]$', fontsize=fontsize)
+            ax.set_ylabel('$\\xi\\left[r_{\\parallel}, r_{\\perp}\\right]$', fontsize=fontsize)
+            ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < r_{\\perp} <' + str(sigma_max) + '$', fontsize=labelsize, transform=ax.transAxes)
             ax.tick_params(axis='both', pad=10, labelsize=labelsize)
             yticks = ax.yaxis.get_major_ticks()
             yticks[0].label1.set_visible(False)
