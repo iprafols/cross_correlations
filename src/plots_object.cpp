@@ -180,7 +180,7 @@ void PlotsObject::PlotCrossCorrelation(const CorrelationResults& res, const Inpu
             script << "    cp.plot(data, './rebinned/', fmt_list='k.', sigma_bins=sigma_new, plot_rebinned_list=True, single_plot=True)" << std::endl;
             script << std::endl;
             script << "    # plot contours" << std::endl;
-            script << "    #cp.plot(data, "./", model_list=model2, plot_rebinned_list=False, plot_model_rebinned_list=False, contour=True)" << std::endl;
+            script << "    #cp.plot(data, './', model_list=model2, plot_rebinned_list=False, plot_model_rebinned_list=False, contour=True)" << std::endl;
             script << std::endl;
             script << std::endl;
             script << "if __name__ == '__main__':" << std::endl;
