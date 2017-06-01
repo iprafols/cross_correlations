@@ -37,10 +37,10 @@ import sys
 import os
 import difflib
 import numpy as np
+import matplotlib
 try:
     import matplotlib.pyplot as plt
 except RuntimeError:
-    import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
 import matplotlib.colors
@@ -1608,7 +1608,7 @@ def invCovMatFromPlate(filename):
 
     return inv_cov_mat
 
-def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = []):
+def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = [], single_plot=False):
     """
     Plots the cross-correlation
     
@@ -1719,16 +1719,22 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                                                  is performed with the two adjacent bins. Otherwise does
                                                  nothing. Ignored if contour is set to False.
                                                  --- Default: True
-        plot_separated_errors (bool):            If True, plots the average errors outside the plot chart
-                                                 at the positions specified by error_pos_list. The datapoints
-                                                 are plotted without errorbars. Otherwise does nothing. 
-                                                 Ignored if contour is set to True. --- Default: False
+        plot_separated_errors (bool):            If True, plots the average errors outside the plot 
+                                                 chart at the positions specified by error_pos_list. 
+                                                 The datapoints are plotted without errorbars. Otherwise 
+                                                 does nothing. Ignored if contour is set to True. 
+                                                 --- Default: False
         error_pos_list (float, list of floats or
             tuple of floats):                    Position to plot the average errorbars relative to the 
                                                  axis size. Its number of elements must be equal to the
                                                  number of elements in data_list. All values must be between
                                                  0.0 and 1.0. Ignored if contour is set to True or if 
                                                  plot_separated_errors is set to False. --- Default: []
+        single_plot (bool):                      If True, save all the plots into a single figure, in
+                                                 as well as individually. Otherwise, just save them 
+                                                 individually. Ignored if contour is set to True. 
+                                                 Plots on a single figure ignore the value of
+                                                 plot_separated_errors. --- Default: False
     EXCEPTION SAFETY:
         Raises a CorrelationProcessError instance if the arguments are of incorrect type,
         or arguments are not consistent. Assumes formats are given in valid matplotlib-format
@@ -1843,6 +1849,9 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         for item in error_pos_list:
             if not (type(item) == float or contour or (not plot_separated_errors)):
                 raise CorrelationProcessError(plot, 'Incorrect type of the parameter "error_pos_list".')
+
+    if not (type(single_plot) == bool):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "single_plot".')
 
     # check parameters' consistency
     try:
@@ -2111,10 +2120,20 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         else:
             gs = gridspec.GridSpec(1, 1)
             gs.update(left=0.25, bottom=0.2)
+        major_locator = MultipleLocator(20)
+        minor_locator = MultipleLocator(10)
         fontsize = 32
         labelsize = 24
         figsize = (9, 7)
-        
+        # single figure settings
+        if single_plot:
+            figsize_singleplot = (18, 7*sigma_bins.size//2)
+            print "number of rows = {}".format(sigma_bins.size//2)
+            gs_singleplot = gridspec.GridSpec(sigma_bins.size//2, 2)
+            gs_singleplot.update(left=0.15, bottom=0.15, hspace=0, wspace=0.3)
+            fig_singleplot = plt.figure(figsize=figsize_singleplot)
+            axes_singleplot = np.empty((sigma_bins.size//2, 2), dtype=matplotlib.axes.Axes)
+    
         for bin_num, sigma_min in enumerate(sigma_bins[:-1]):
             sigma_max = sigma_bins[bin_num + 1]
             print 'plotting sigma bin {}'.format(bin_num)
@@ -2165,7 +2184,9 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             ax.set_xlabel('$r_{\\parallel}\\,\\left[\\rm h^{-1}Mpc\\right]$', fontsize=fontsize)
             ax.set_ylabel('$\\xi\\left[r_{\\parallel}, r_{\\perp}\\right]$', fontsize=fontsize)
             ax.text(0.05, 0.05, '$' + str(sigma_min) + ' < r_{\\perp} <' + str(sigma_max) + '$', fontsize=labelsize, transform=ax.transAxes)
-            ax.tick_params(axis='both', pad=10, labelsize=labelsize)
+            ax.tick_params(axis='both', pad=10, labelsize=labelsize, size=labelsize//2, top='on', right='on')
+            ax.xaxis.set_minor_locator(minor_locator)
+            ax.xaxis.set_major_locator(major_locator)
             yticks = ax.yaxis.get_major_ticks()
             yticks[0].label1.set_visible(False)
             if labels_list != None or labels_model_list != None:
@@ -2175,6 +2196,44 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             fig.savefig('{}{}_sigma_bin_{}.{}'.format(save_to, base_fig_name, bin_num, save_extension))
             plt.close(fig)
 
+            # plot all of the plots into a single figure if necessary
+            if single_plot:
+                # determine position in the figure
+                subplot_row = bin_num//2
+                subplot_column = bin_num % 2
+                print "bin num = {}, row = {}, column = {}, shape = {}".format(bin_num, subplot_row, subplot_column, axes_singleplot.shape)
+                axes_singleplot[subplot_row, subplot_column] = fig_singleplot.add_subplot(gs_singleplot[subplot_row, subplot_column])
+                # plot data
+                if labels_list == None:
+                    [ axes_singleplot[subplot_row, subplot_column].errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt) for data, fmt, plot_rebinned, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, pos_list, shifts_list) ]
+                else:
+                    [ axes_singleplot[subplot_row, subplot_column].errorbar(data.grid_pi_mat(rebinned=plot_rebinned)[pos] + shift, data.data_mat(rebinned=plot_rebinned)[pos], yerr=data.error(rebinned=plot_rebinned)[pos], fmt=fmt, label=label) for data, fmt, plot_rebinned, label, pos, shift in zip(data_list, fmt_list, plot_rebinned_list, labels_list, pos_list, shifts_list) ]
+                # plot model
+                if labels_model_list == None:
+                    for model, fmt, plot_rebinned, model_pos in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list):
+                        [axes_singleplot[subplot_row, subplot_column].plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos]
+                else:
+                    for model, fmt, plot_rebinned, model_pos, label in zip(model_list, fmt_model_list, plot_model_rebinned_list, model_pos_list, labels_model_list):
+                        axes_singleplot[subplot_row, subplot_column].plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos[0]], model.model_mat(rebinned=plot_rebinned)[model_pos[0]], fmt, label=label)
+                        [ axes_singleplot[subplot_row, subplot_column].plot(model.grid_pi_mat(rebinned=plot_rebinned)[model_pos_item], model.model_mat(rebinned=plot_rebinned)[model_pos_item], fmt) for model_pos_item in model_pos[1:] ]
+
+                if subplot_row == axes_singleplot.shape[0] - 1:
+                    axes_singleplot[subplot_row, subplot_column].set_xlabel('$r_{\\parallel}\\,\\left[\\rm h^{-1}Mpc\\right]$', fontsize=fontsize)
+                    axes_singleplot[subplot_row, subplot_column].tick_params(axis='both', pad=10, labelsize=labelsize, size=labelsize//2, top='on', right='on', direction='inout')
+                else:
+                    axes_singleplot[subplot_row, subplot_column].tick_params(axis='both', pad=10, labelsize=labelsize, size=labelsize//2, top='on', right='on', labelbottom='off', direction='inout')
+                if subplot_column == 0:
+                    axes_singleplot[subplot_row, subplot_column].set_ylabel('$\\xi\\left[r_{\\parallel}, r_{\\perp}\\right]$', fontsize=fontsize)
+                axes_singleplot[subplot_row, subplot_column].text(0.05, 0.05, '$' + str(sigma_min) + ' < r_{\\perp} <' + str(sigma_max) + '$', fontsize=labelsize, transform=axes_singleplot[subplot_row, subplot_column].transAxes)
+                axes_singleplot[subplot_row, subplot_column].yaxis.get_major_ticks()[0].label1.set_visible(False)
+                axes_singleplot[subplot_row, subplot_column].xaxis.set_minor_locator(minor_locator)
+                axes_singleplot[subplot_row, subplot_column].xaxis.set_major_locator(major_locator)
+                if labels_list != None or labels_model_list != None:
+                    axes_singleplot[subplot_row, subplot_column].legend(numpoints=1, loc=4)
+
+        if single_plot:
+            fig_singleplot.savefig('{}{}_sigma_bins_all.{}'.format(save_to, base_fig_name, save_extension))
+            plt.close(fig_singleplot)
 
 def rebinIgnoringCovMat(data, pi, sigma):
     """
