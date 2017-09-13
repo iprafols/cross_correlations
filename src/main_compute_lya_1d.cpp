@@ -10,6 +10,7 @@
 #include <iostream>
 #include <time.h>
 #include <vector>
+#include <cstdlib>
 #include "omp.h"
 ////////
 
@@ -191,7 +192,8 @@ int main(int argc, char *argv[]){
             // check that the weight is not zero
             if (total_weight[pixel_separation][index] == 0.0){
                 std::cerr << "Warning : In compute_lya_1d : For pixel separation " << pixel_separation << " index " << index;
-                std::cerr << " shows zero weight. Consider reducing the num_points_interpolation or pixels_separation." << std::endl;
+                std::cerr << " shows zero weight. Consider reducing the num_points_interpolation or pixels_separation. Value set to 0" << std::endl;
+                correlation[pixel_separation][index] = 0.0;
             }
             else{
                 correlation[pixel_separation][index] /= total_weight[pixel_separation][index];

@@ -415,7 +415,7 @@ class CorrData(object):
             if self._has_grid:
                 grid_z_mat_new = np.dot(id_cov_mat_new, np.dot(transformation_matrix.transpose(), self._grid_z_mat))
 
-        # TODO: finally rebin the distortion matrix
+        # TODO:
 
         # keep rebinned instances
         if keep_results:
@@ -1027,14 +1027,15 @@ class CorrModel(object):
         
         return (model_mat_new, data_mat_new, grid_pi_mat_new, grid_sigma_mat_new, grid_z_mat_new, index_mat_new)
 
-    def whichBins(self, sigma_min, sigma_max, subset='all', rebinned = False):
+    def whichBins(self, sigma_min, sigma_max, rmin, subset='all', rebinned = False):
         """
         Determines which bins have perpedicular separations between sigma_min and sigma_max
         
         FUNCTION: CorrModel.whichBins
         TYPE: Public
         PURPOSE:
-            Determines which bins have perpedicular separations between sigma_min and sigma_max.
+            Determines which bins have perpedicular separations between sigma_min and sigma_max,
+            and have r bigger or equal to rmin.
             Bins with perpendicular separations equal to sigma_min are included and bins with
             perpendicular separations equal to sigma_max are excluded. Upon options only bins
             with positive or negative values of pi are included.
@@ -1043,6 +1044,7 @@ class CorrModel(object):
                                return list
             sigma_max (float): Maximum value of perpendicular separation to include a bin in the
                                return list.
+            rmin (float):      Minimum r for the bin to be included
         KEYWORD ARGUMENTS:
             subset (string):   A string specifying whether or not there is an additional constrain
                                on the value of the parallel separation. It can have the values 
@@ -1054,9 +1056,9 @@ class CorrModel(object):
                                is ignored. -- Default: False
         RETURNS: a np.where output with the position of the selected bins
         EXAMPLES:
-            pos = model.whichBins(1.0, 3.0)
-            pos = model.whichBins(1.0, 3.0, rebinned=True)
-            pos = model.whichBins(1.0, 3.0, subset="neg")
+            pos = model.whichBins(1.0, 3.0, 0.0)
+            pos = model.whichBins(1.0, 3.0, 0.0, rebinned=True)
+            pos = model.whichBins(1.0, 3.0, 0.0, subset="neg")
             
         """
         # check parameters' types
@@ -1064,6 +1066,8 @@ class CorrModel(object):
             raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "sigma_min".')
         if not (type(sigma_max) == float or isinstance(sigma_max, np.float64)):
             raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "sigma_max".')
+        if not (type(rmin) == float or isinstance(rmin, np.float64)):
+            raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "rmin".')
         if not (type(subset) == str):
             raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "subset".')
         if not (subset == "pos" or subset == "neg" or subset == "all"):
@@ -1072,25 +1076,25 @@ class CorrModel(object):
             raise CorrModelError(self.whichBins, 'Incorrect type of the parameter "rebinned".')
         
         # check parameters consistency
-        try:
-            assert sigma_max > sigma_min
-        except AssertionError:
+        if not (sigma_max > sigma_min):
             raise CorrModelError(self.whichBins, 'sigma_max is lower than sigma_min')
+        if not (rmin >= 0.0):
+            raise CorrModelError(self.whichBins, 'rmin is lower than 0')
 
         if rebinned:
             if hasattr(self, '_grid_sigma_mat_new') and hasattr(self, '_grid_pi_mat_new'):
                 if subset == "all":
-                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max))
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_sigma_mat_new*self._grid_sigma_mat_new + self._grid_pi_mat_new*self._grid_pi_mat_new >= rmin*rmin))
                 elif subset == "pos":
-                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new >= 0))
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new >= 0) & (self._grid_sigma_mat_new*self._grid_sigma_mat_new + self._grid_pi_mat_new*self._grid_pi_mat_new >= rmin*rmin))
                 else:
-                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new <= 0))
+                    return np.where((self._grid_sigma_mat_new >= sigma_min) & (self._grid_sigma_mat_new < sigma_max) & (self._grid_pi_mat_new <= 0) & (self._grid_sigma_mat_new*self._grid_sigma_mat_new + self._grid_pi_mat_new*self._grid_pi_mat_new >= rmin*rmin))
         if subset == "all":
-            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max))
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_sigma_mat*self._grid_sigma_mat + self._grid_pi_mat*self._grid_pi_mat >= rmin*rmin))
         elif subset == "pos":
-            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat >= 0))
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat >= 0) & (self._grid_sigma_mat*self._grid_sigma_mat + self._grid_pi_mat*self._grid_pi_mat >= rmin*rmin))
         else:
-            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat <= 0))
+            return np.where((self._grid_sigma_mat >= sigma_min) & (self._grid_sigma_mat < sigma_max) & (self._grid_pi_mat <= 0) & (self._grid_sigma_mat*self._grid_sigma_mat + self._grid_pi_mat*self._grid_pi_mat >= rmin*rmin))
 
     def index_mat(self, rebinned = False):
         """
@@ -1608,7 +1612,7 @@ def invCovMatFromPlate(filename):
 
     return inv_cov_mat
 
-def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = [], single_plot=False):
+def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = [], sigma_bins = None, contour = False, plot_rebinned_list = False, plot_model_rebinned_list = False, labels_list = None, labels_model_list = None, shifts_list = None, save_extension = 'eps', base_fig_name = 'cross_correlation', rmin_list= 10.0, smooth = True, plot_separated_errors = False, error_pos_list = [], single_plot=False, max_sigma_plot=40.0, max_pi_plot=60.0):
     """
     Plots the cross-correlation
     
@@ -1735,6 +1739,12 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                                                  individually. Ignored if contour is set to True. 
                                                  Plots on a single figure ignore the value of
                                                  plot_separated_errors. --- Default: False
+        max_sigma_plot (float):                  Maximum perpendicular distance to plot when plotting
+                                                 the contour plots. Must be positive and is ignored if
+                                                 contour is set to False. --- Default: 60
+        max_pi_plot (float):                     Maximum parallel distance to plot when plotting
+                                                 the contour plots. Must be positive and is ignored if
+                                                 Ignored if contour is set to False. --- Default: 40
     EXCEPTION SAFETY:
         Raises a CorrelationProcessError instance if the arguments are of incorrect type,
         or arguments are not consistent. Assumes formats are given in valid matplotlib-format
@@ -1853,6 +1863,12 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
     if not (type(single_plot) == bool):
         raise CorrelationProcessError(plot, 'Incorrect type of the parameter "single_plot".')
 
+    if not (type(max_sigma_plot) == float):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "max_sigma_plot".')
+
+    if not (type(max_pi_plot) == float):
+        raise CorrelationProcessError(plot, 'Incorrect type of the parameter "max_pi_plot".')
+
     # check parameters' consistency
     try:
         if contour:
@@ -1868,11 +1884,15 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             if type(model_list) == list or type(model_list) == tuple:
                 if not (len(model_list) == 1):
                     raise CorrelationProcessError(plot, 'Parameter "model_list" is not consistent with the requirements.')
-                shifts_list == shifts_list[0]
+                model_list = model_list[0]
             if type(plot_model_rebinned_list) == list or type(plot_model_rebinned_list) == tuple:
                 if not (len(plot_model_rebinned_list) == 1):
                     raise CorrelationProcessError(plot, 'Parameter "plot_model_rebinned_list" is not consistent with the requirements.')
                 plot_model_rebinned_list == plot_model_rebinned_list[0]
+            if max_sigma_plot <= 0.0:
+                raise CorrelationProcessError(plot, 'Parameter "max_sigma_plot" is not consistent with the requirements.')
+            if max_pi_plot <= 0.0:
+                raise CorrelationProcessError(plot, 'Parameter "max_pi_plot" is not consistent with the requirements.')
 
         else:
             # convert all relevant parameters to one element lists if necessary
@@ -2048,36 +2068,36 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         levels = np.arange(vmin, vmax + step, step)
         #gs = gridspec.GridSpec(2, 3, width_ratios=[10, 10, 1], height_ratios=[2, 1])
         gs = gridspec.GridSpec(1, 3, width_ratios=[10, 10, 1])
-        gs.update(bottom=0.15, wspace=0.05, hspace=0.08)
-        fontsize = 34
-        labelsize = 26
+        gs.update(bottom=0.2, wspace=0.05, hspace=0.08)
+        fontsize = 32
+        labelsize = 24
         labelsize2 = 18
-        #figsize=(16, 26)
-        figsize=(20, 20)
+        figsize=(18, 14)
+        #figsize=(20, 20)
 
         # plot the data
         fig = plt.figure(figsize=figsize)
         ax = fig.add_subplot(gs[0,0])
         ax.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
         ax.set_ylabel('$r_{\\parallel} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
+        ax.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6, top=True, right=True)
         if smooth:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
         else:
             cs = ax.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        ax.set_xlim(0, 60)
-        ax.set_ylim(-60, 60)
+        ax.set_xlim(0, max_pi_plot)
+        ax.set_ylim(-max_sigma_plot, max_sigma_plot)
         xticks = ax.xaxis.get_major_ticks()
         xticks[0].label1.set_visible(False)
         xticks[-1].label1.set_visible(False)
 
         ax2 = fig.add_subplot(gs[0,1])
         ax2.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax2.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
-        ax2.tick_params(axis='y', labelleft='off', width=2, length=6)
+        ax2.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6, top=True)
+        ax2.tick_params(axis='y', labelleft='off', width=2, length=6, right=True)
         cs2 = ax2.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        ax2.set_xlim(0, 60)
-        ax2.set_ylim(-60, 60)
+        ax2.set_xlim(0, max_pi_plot)
+        ax2.set_ylim(-max_sigma_plot, max_sigma_plot)
         xticks2 = ax2.xaxis.get_major_ticks()
         xticks2[0].label1.set_visible(False)
         xticks2[-1].label1.set_visible(False)
@@ -2085,27 +2105,7 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
 
         ax3 = fig.add_subplot(gs[0,2])
         cbar = fig.colorbar(cs, cax=ax3, format='%.2f')
-        cbar.ax.tick_params(labelsize=labelsize2, width=2, length=6)
-
-
-        """ax4 = fig.add_subplot(gs[1,0])
-        ax4.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax4.set_ylabel('$r_{\\parallel} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax4.tick_params(axis='both', pad=10, labelsize=labelsize, width=2, length=6)
-        ax4.set_xlim(2, 42)
-        ax4.set_ylim(-20, 20)
-        if smooth:
-            cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_averaged, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        else:
-            cs4 = ax4.contourf(sigma_mid_bins, pi_mid_bins, data_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-
-        ax5 = fig.add_subplot(gs[1,1])
-        ax5.set_xlabel('$r_{\\perp} {\\rm \\left[h^{-1}Mpc\\right]}$', fontsize=fontsize)
-        ax5.tick_params(axis='x', pad=10, labelsize=labelsize, width=2, length=6)
-        ax5.tick_params(axis='y', labelleft='off', width=2, length=6)
-        cs5 = ax5.contourf(sigma_mid_bins, pi_mid_bins, model_values, levels, cmap=cmap, vmin=vmin, vmax=vmax, fontsize=labelsize)
-        ax5.set_xlim(2, 42)
-        ax5.set_ylim(-20, 20)"""
+        cbar.ax.tick_params(axis='both', labelsize=labelsize, width=2, length=6, pad=10)
 
         # save the plot
         fig.savefig('{}{}_contour.{}'.format(save_to, base_fig_name, save_extension))
@@ -2128,7 +2128,6 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
         # single figure settings
         if single_plot:
             figsize_singleplot = (18, 7*sigma_bins.size//2)
-            print "number of rows = {}".format(sigma_bins.size//2)
             gs_singleplot = gridspec.GridSpec(sigma_bins.size//2, 2)
             gs_singleplot.update(left=0.15, bottom=0.15, hspace=0, wspace=0.3)
             fig_singleplot = plt.figure(figsize=figsize_singleplot)
@@ -2141,11 +2140,11 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
             # check if the model is continuus or discontinuus in this region
             model_pos_list = []
             for model, plot_rebinned, rmin in zip(model_list, plot_model_rebinned_list, rmin_list):
-                if sigma_max >= rmin:
-                    model_pos_list.append([model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="all")])
+                if sigma_min >= rmin:
+                    model_pos_list.append([model.whichBins(sigma_min, sigma_max, rmin, rebinned=plot_rebinned, subset="all")])
                 else:
-                    model_pos_list.append([model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="pos") ,
-                                           model.whichBins(sigma_min, sigma_max, rebinned=plot_rebinned, subset="neg")])
+                    model_pos_list.append([model.whichBins(sigma_min, sigma_max, rmin, rebinned=plot_rebinned, subset="pos") ,
+                                           model.whichBins(sigma_min, sigma_max, rmin, rebinned=plot_rebinned, subset="neg")])
             
             # plot the data
             fig = plt.figure(figsize=figsize)
@@ -2201,7 +2200,6 @@ def plot(data_list, save_to, fmt_list = "k.", model_list=[], fmt_model_list = []
                 # determine position in the figure
                 subplot_row = bin_num//2
                 subplot_column = bin_num % 2
-                print "bin num = {}, row = {}, column = {}, shape = {}".format(bin_num, subplot_row, subplot_column, axes_singleplot.shape)
                 axes_singleplot[subplot_row, subplot_column] = fig_singleplot.add_subplot(gs_singleplot[subplot_row, subplot_column])
                 # plot data
                 if labels_list == None:

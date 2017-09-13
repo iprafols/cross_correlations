@@ -11,6 +11,7 @@
 #include <iostream>
 #include <time.h>
 #include <vector>
+#include <cstdlib>
 #include "omp.h"
 ////////
 
@@ -125,14 +126,24 @@ int main(int argc, char *argv[]){
     // define copies of correlation and total_weight for each of the threads
     int num_threads = atoi(std::getenv("OMP_NUM_THREADS"));
     std::vector<std::vector<double> > correlation_thread;
+    correlation_thread.resize(num_threads, correlation);
     std::vector<std::vector<double> > total_weight_thread;
-    
+    total_weight_thread.resize(num_threads, total_weight);
     
     // compute the correlation as a function of parallel and perpendicular separation
     std::cout << "Computing the correlation as a function of parallel and perpendicular separation" << std::endl;
     // loop over plates
+    size_t plates_computed = 0;
     #pragma omp parallel for schedule(dynamic)
     for (size_t plate_number = 0; plate_number < plates_list.size(); plate_number ++){
+        if (flag_verbose_main >= 2 or (flag_verbose_main >= 1 and plates_computed == plates_computed/100*100)){
+            #pragma omp critical (cout)
+            {
+                std::cout << plates_computed << " out of " << plates_list.size() << " plates computed" << std::endl;
+            }
+        }
+        plates_computed ++;
+        
         // get the thread number
         int thread_num = omp_get_thread_num();
         double weight;
@@ -333,6 +344,9 @@ int main(int argc, char *argv[]){
     }
 
     // combine the measurements from the different threads
+    if (flag_verbose_main >= 1){
+        std::cout << "Combine contribution from the different threads" << std::endl;
+    }
     for (size_t index = 0; index < num_bins; index ++){
         for (size_t thread_num = 0; thread_num < correlation_thread.size(); thread_num ++){
             correlation[index] += correlation_thread[thread_num][index];
@@ -341,6 +355,9 @@ int main(int argc, char *argv[]){
     }
     
     // normalize the correlation
+    if (flag_verbose_main >= 1){
+        std::cout << "Normalize cross-correlation" << std::endl;
+    }
     for (int index =  0; index < num_bins; index ++){
         // check that the weight is not zero
         if (total_weight[index] == 0.0){
@@ -354,7 +371,9 @@ int main(int argc, char *argv[]){
     
     // save results
     std::string filename = input.lya_auto_correlation_3d();
-    std::cout << "Saving results to " << filename << std::endl;
+    if (flag_verbose_main >= 1){
+        std::cout << "Saving results to " << filename << std::endl;
+    }
     std::ofstream file;
     file.open(filename.c_str(),std::ofstream::trunc); // opens the file erasing the previous contents
     if (file.is_open()){
