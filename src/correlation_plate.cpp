@@ -615,7 +615,10 @@ void CorrelationPlate::AddPair(const size_t& k_index, const LyaPixel& pixel, con
     weight_[k_index] += pixel.weight();
     num_averaged_pairs_[k_index] ++;
     if (flag_projection_correction_){
-        xi_correction_[k_index] += mean_proj_deltas.LinearInterpolation(pixel.z())*pixel.weight();
+        double correction = mean_proj_deltas.LinearInterpolation(pixel.z());
+        if (correction != _BAD_DATA_){
+            xi_correction_[k_index] += correction*pixel.weight();
+        }
     }
 }
 
