@@ -11,10 +11,10 @@
 CorrelationPlate::CorrelationPlate(int bad_data){
     /**
      EXPLANATION:
-     Cosntructs a CorrelationPlate instance and initializes all its variables
+     Constructs a CorrelationPlate instance and initializes all its variables
      
      INPUTS:
-     bad_data - a double valued _BAD_DATA_INT_
+     bad_data - an int valued _BAD_DATA_INT_
      
      OUTPUTS:
      NONE
@@ -40,7 +40,7 @@ CorrelationPlate::CorrelationPlate(int bad_data){
 CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours){
     /**
      EXPLANATION:
-     Cosntructs a CorrelationPlate instance and initializes all its variables
+     Constructs a CorrelationPlate instance and initializes all its variables
      
      INPUTS:
      input - a Input instance
@@ -60,6 +60,7 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
     // set flags from input
     flag_verbose_correlation_plate_ = input.flag_verbose_correlation_plate();
     flag_write_partial_results_ = input.flag_write_partial_results();
+    flag_metal_grids_ = input.flag_metal_grids();
     
     plate_number_ = plate_number;
     plate_neighbours_ = plate_neighbours;
@@ -118,12 +119,23 @@ CorrelationPlate::CorrelationPlate(const Input& input, const int plate_number, c
         // initialize cross-correlation
         xi_correction_.resize(num_bins_,0.0);
     }
+    
+    // metal contamination grids
+    if (flag_metal_grids_){
+        alt_metals_ = input.alt_metals();
+        alt_wl_ = input.alt_wl();
+        metal_grids_.reserve(alt_wl_.size());
+        // loop over metal grids
+        for (size_t index=0; index < metal_grids_.size(); index ++){
+            metal_grids_.push_back(MetalGrid(num_bins_, alt_wl_[index], alt_metals_[index], input.flag_verbose_metal_grid()));
+        }
+    }
 }
 
-CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction){
+CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction, const bool& flag_metal_grids, const std::vector<double>& alt_wl, const std::vector<std::string>& alt_metals){
     /**
      EXPLANATION:
-     Cosntructs a CorrelationPlate instance and initializes all its variables
+     Constructs a CorrelationPlate instance and initializes all its variables
      
      INPUTS:
      input - a Input instance
@@ -133,6 +145,9 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
      flag_verbose_correlation_plate - correlation_plate verbose flag
      flag_write_partial_results - flag to write partial results
      flag_projection_correction - flag to compute the correction to the cross-correlation due to the projection of the delta field
+     flag_metal_grids - flag to compute the metal contamination grids
+     alt_wl - a vector with the wavelength of the metal lines to compute the contamination grid
+     alt_metals - a vector with the names of the metal lines to compute the contamination grid
      
      OUTPUTS:
      NONE
@@ -174,6 +189,18 @@ CorrelationPlate::CorrelationPlate(const int plate_number, const int num_bins, c
     if (flag_projection_correction_){
         // initialize cross-correlation
         xi_correction_.resize(num_bins_,0.0);
+    }
+    
+    // metal contamination grids
+    flag_metal_grids_ = flag_metal_grids;
+    if (flag_metal_grids_){
+        alt_metals_ = alt_metals;
+        alt_wl_ = alt_wl;
+        metal_grids_.reserve(alt_wl_.size());
+        // loop over metal grids
+        for (size_t i = 0; i < alt_metals_.size(); i ++){
+            metal_grids_.push_back(MetalGrid(num_bins_, alt_wl_[i], alt_metals_[i], 0));
+        }
     }
     
 }
@@ -236,7 +263,7 @@ double CorrelationPlate::mean_z_in_bin(size_t index) const {
      Access function for mean_z_in_bin_
      
      INPUTS:
-     index - index of the selected mean_sigma_ element
+     index - index of the selected mean_z_in_bin_ element
      
      OUTPUTS:
      NONE
@@ -276,6 +303,34 @@ int CorrelationPlate::num_averaged_pairs(size_t index) const {
     
     if (index < num_averaged_pairs_.size()){
         return num_averaged_pairs_[index];
+    }
+    else{
+        return _BAD_DATA_INT_;
+    }
+}
+
+MetalGrid CorrelationPlate::metal_grids(size_t index) const{
+    /**
+     EXPLANATION:
+     Access function for metal_grids_
+     
+     INPUTS:
+     index - index of the selected num_average_pairs_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     MetalGrid
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < metal_grids_.size()){
+        return metal_grids_[index];
     }
     else{
         return _BAD_DATA_INT_;
@@ -440,7 +495,7 @@ void CorrelationPlate::set_mean_z_in_bin(size_t index, double value){
      NONE
      */
     
-    if (index < mean_sigma_.size()){
+    if (index < mean_z_in_bin_.size()){
         mean_z_in_bin_[index] = value;
     }
     else{
@@ -450,6 +505,37 @@ void CorrelationPlate::set_mean_z_in_bin(size_t index, double value){
         }
     }
 }
+
+void CorrelationPlate::set_metal_grids(size_t index, MetalGrid& value){
+    /**
+     EXPLANATION:
+     Set function for metal_grids_
+     
+     INPUTS:
+     index - index of the selected num_average_pairs_ element
+     value - element's new value
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     CorrelationPlate
+     MetalGrid
+     
+     FUNCITONS USED:
+     NONE
+     */
+    if (index < metal_grids_.size()){
+        metal_grids_[index] = value;
+    }
+    else{
+        #pragma omp critical (cout)
+        {
+            std::cout << "Warining: in CorrelationPlate::set_metal_grids(index, value): The given index is out of bouds, ignoring..." << std::endl;
+        }
+    }
+}
+
 
 void CorrelationPlate::set_num_averaged_pairs(size_t index, int value){
     /**
@@ -882,6 +968,19 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
                     mean_z_ += spectrum[p].z()*spectrum[p].weight();
                     weight_z_ += spectrum[p].weight();
                     
+                    // add contribution to metal contamination grid
+                    if (flag_verbose_correlation_plate_ >= 3){
+                        #pragma omp critical (cout)
+                        {
+                            std::cout << "Pixel accepted: assign contribution to metal grid " << k_index << std::endl;
+                        }
+                    }
+                    for (size_t i_alt = 0; i_alt < metal_grids_.size(); i_alt ++){
+                        double sigma_alt = sqrt(sigma_aux*spectrum[p].dist_alt(i_alt));
+                        double pi_alt = spectrum[p].dist_alt(i_alt)-object.dist();
+                        metal_grids_[i_alt].AddPair(k_index, spectrum[p].weight(), pi_alt, sigma_alt, spectrum[p].z_alt(i_alt));
+                    }
+                    
                     // write down pair information in bin file
                     if (flag_write_partial_results_ >= 2){
                         if (flag_verbose_correlation_plate_ >= 3){
@@ -905,14 +1004,14 @@ void CorrelationPlate::ComputeCrossCorrelation(const AstroObjectDataset& object_
     }
     
     if (flag_write_partial_results_ >= 2){
+        if (flag_verbose_correlation_plate_ >= 3){
+            #pragma omp critical (cout)
+            {
+                std::cout << "CorrelationPlate: saving pairs" << std::endl;
+            }
+        }
         for (size_t i = 0; i < num_bins_; i++){
             if (position_[i] > 0){
-                if (flag_verbose_correlation_plate_ >= 3){
-                    #pragma omp critical (cout)
-                    {
-                    std::cout << "CorrelationPlate: saving pairs" << std::endl;
-                    }
-                }
                 SavePairs(i);
             }
         }
@@ -1067,7 +1166,7 @@ void CorrelationPlate::Normalize(){
             // if the weight is 1.0, normalization is not needed
             else if (weight_[i] != 1.0){
                 
-                #pragma opm critical (normalize)
+                #pragma omp critical (normalize)
                 {
                 xi_[i] /= weight_[i];
                 mean_pi_[i] /= weight_[i];
@@ -1081,6 +1180,12 @@ void CorrelationPlate::Normalize(){
             
         }
         mean_z_ /= weight_z_;
+        
+        if (flag_projection_correction_){
+            for (size_t index = 0; index < metal_grids_.size(); index ++){
+                metal_grids_[index].Normalize();
+            }
+        }
         
     }
     else{
@@ -1249,7 +1354,7 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                 }
             }
         }
-
+        // TODO: save metal contamination grids
     }
     
 }
@@ -1355,6 +1460,11 @@ void CorrelationPlate::operator+= (const CorrelationPlate& other){
     mean_z_ += other.mean_z();
     weight_z_ += other.weight_z();
     
+    if (flag_projection_correction_){
+        for (size_t index = 0; index < metal_grids_.size(); index ++){
+            metal_grids_[index] += other.metal_grids(index);
+        }
+    }
 }
 
 CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
@@ -1376,7 +1486,7 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
      */
 
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_, flag_metal_grids_, alt_wl_, alt_metals_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
@@ -1409,6 +1519,13 @@ CorrelationPlate CorrelationPlate::operator- (const CorrelationPlate& other){
     temp.set_mean_z(mean_z_ - other.mean_z());
     temp.set_weight_z(weight_z_ - other.weight_z());
     
+    if (flag_projection_correction_){
+        for (size_t index = 0; index < metal_grids_.size(); index ++){
+            MetalGrid aux = metal_grids_[index] - other.metal_grids(index);
+            temp.set_metal_grids(index, aux);
+        }
+    }
+    
     return temp;
     
 }
@@ -1431,7 +1548,7 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
      NONE
      */
     CorrelationPlate temp;
-    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_);
+    temp = CorrelationPlate(plate_number_, num_bins_, results_, pairs_file_name_, plate_neighbours_, flag_verbose_correlation_plate_, flag_write_partial_results_, flag_projection_correction_, flag_metal_grids_, alt_wl_, alt_metals_);
     
     // check that both instances have the same number of bins
     if (num_bins_ != other.num_bins()){
@@ -1464,6 +1581,12 @@ CorrelationPlate CorrelationPlate::operator* (const CorrelationPlate& other){
     temp.set_mean_z(mean_z_*other.mean_z());
     temp.set_weight_z(weight_z_*other.weight_z());
 
+    if (flag_projection_correction_){
+        for (size_t index = 0; index < metal_grids_.size(); index ++){
+            MetalGrid aux = metal_grids_[index]*other.metal_grids(index);
+            temp.set_metal_grids(index, aux);
+        }
+    }
             
     return temp;
     

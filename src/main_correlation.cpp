@@ -9,6 +9,7 @@
 // libraries used
 #include <iostream>
 #include <time.h>
+#include <string>
 ////////
 
 // classes used
@@ -64,7 +65,7 @@ int main(int argc, char *argv[]){
 
     // load global variables and plot object
     std::cout << "Initializing variables" << std::endl;
-    string input_filename = "";
+    std::string input_filename = "";
     if (argc > 1){
         input_filename += argv[1];
     }

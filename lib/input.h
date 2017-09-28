@@ -17,6 +17,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <string>
+#include <vector>
 ////////
 
 // classes needed
@@ -24,6 +25,7 @@
 
 // functions needed
 #include "function_remove_blank_spaces.hpp"
+#include "function_split.hpp"
 ////////
 
 #include "typedefs.h"
@@ -39,6 +41,12 @@ public:
     
     // -------------------------------------------------------------
     // access methods
+    
+    // access function for alt_metals_
+    std::vector<std::string> alt_metals() const {return alt_metals_;}
+    
+    // access function for alt_wl_;
+    std::vector<double> alt_wl() const {return alt_wl_;}
     
     // access function for bootstrap_results_
     std::string bootstrap_results() const {return bootstrap_results_;}
@@ -94,6 +102,9 @@ public:
     // access function for flag_load_only_
     bool flag_load_only() const {return flag_load_only_;}
     
+    // access function for flag_metal_grids_
+    bool flag_metal_grids() const {return flag_metal_grids_;}
+    
     // access function for flag_plot_
     bool flag_plot() const {return flag_plot_;}
     
@@ -141,6 +152,9 @@ public:
     
     // access function for flag_verbose_main_
     size_t flag_verbose_main() const {return flag_verbose_main_;}
+    
+    // access function for flag_verbose_metal_grid_
+    size_t flag_verbose_metal_grid() const {return flag_verbose_metal_grid_;}
     
     // access function for flag_verbose_pair_dataset_
     size_t flag_verbose_pair_dataset() const {return flag_verbose_pair_dataset_;}
@@ -324,6 +338,9 @@ private:
     // flag to end program after loading the catalogs and plotting their information
     bool flag_load_only_;
     
+    // flag to compute the metal contamination's grid
+    bool flag_metal_grids_;
+    
     // flag to plot results
     bool flag_plot_;
     
@@ -371,6 +388,9 @@ private:
     
     // main verbose flag
     size_t flag_verbose_main_;
+    
+    // metal_grid verbose flag
+    size_t flag_verbose_metal_grid_;
 
     // pairs dataset verbose flag
     size_t flag_verbose_pair_dataset_;
@@ -548,6 +568,12 @@ private:
     
     // lyman-alpha wavelength (in Angstroms)
     double lya_wl_;
+    
+    // alternative metal line names
+    std::vector<std::string> alt_metals_;
+    
+    // alternative metal line wavelengths (in Angstroms)
+    std::vector<double> alt_wl_;
     
     // minimum redshift values for accepting a quasar
     double z_min_;

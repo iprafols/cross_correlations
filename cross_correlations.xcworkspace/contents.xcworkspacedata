@@ -74,6 +74,9 @@
          location = "group:../../software/development/cross_correlations/src/lya_spectrum.cpp">
       </FileRef>
       <FileRef
+         location = "group:../../software/development/cross_correlations/src/metal_grid.cpp">
+      </FileRef>
+      <FileRef
          location = "group:../../software/development/cross_correlations/src/pair_dataset.cpp">
       </FileRef>
       <FileRef
@@ -176,6 +179,9 @@
       </FileRef>
       <FileRef
          location = "group:../../software/development/cross_correlations/lib/lya_spectrum.h">
+      </FileRef>
+      <FileRef
+         location = "group:../../software/development/cross_correlations/lib/metal_grid.h">
       </FileRef>
       <FileRef
          location = "group:../../software/development/cross_correlations/lib/pair_dataset.h">

@@ -164,6 +164,7 @@ void Input::SetDefaultValues(){
     flag_compute_distortion_ = true;
     flag_compute_plate_neighbours_ = false;
     flag_load_only_ = false;
+    flag_metal_grids_ = false;
     flag_plot_ = true;
     flag_plot_catalog_info_ = flag_load_only_;
     flag_project_deltas_ = true;
@@ -180,6 +181,7 @@ void Input::SetDefaultValues(){
     flag_verbose_distortion_plate_ = flag_verbose_;
     flag_verbose_lya_spectra_dataset_ = flag_verbose_;
     flag_verbose_main_ = flag_verbose_;
+    flag_verbose_metal_grid_ = flag_verbose_;
     flag_verbose_pair_dataset_ = flag_verbose_;
     flag_verbose_plate_neighbours_ = flag_verbose_;
     flag_verbose_quasar_dataset_ = flag_verbose_;
@@ -266,6 +268,8 @@ void Input::SetDefaultValues(){
     // -------------------------------------------------------------
     // line and redshift settings
     lya_wl_ = 1215.67; // in angs
+    alt_metals_ = std::vector<std::string>();
+    alt_wl_ = std::vector<double>();
     z_min_ = 2.0;
     z_max_ = 3.5;
     nhi_min_ = 20.0;
@@ -306,10 +310,42 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
      Input
      
      FUNCITONS USED:
-     NONE
+     function_split
      */
     
-    if (name == "bootstrap_results"){
+    if (name == "alt_metals"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            size_t lead_pos = value.find_first_of("(");
+            size_t end_pos = value.find_last_of(")");
+            std::string aux = value.substr(lead_pos + 1, end_pos - lead_pos - 1);
+            alt_metals_ = Split(aux, " ");
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    if (name == "alt_wl"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            size_t lead_pos = value.find_first_of("(");
+            size_t end_pos = value.find_last_of(")");
+            std::string aux = value.substr(lead_pos + 1, end_pos - lead_pos - 1);
+            std::vector<std::string> aux2 = Split(aux, " ");
+            alt_wl_.reserve(aux2.size());
+            for (size_t i = 0; i < aux2.size(); i ++){
+                alt_wl_.push_back(double(atof(aux2[i].c_str())));
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "bootstrap_results"){
         InputFlag::iterator it = input_flag.find(name);
         if (it == input_flag.end()){
             bootstrap_results_ = value;
@@ -525,6 +561,26 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_metal_grids"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            if (value == "true" or value == "TRUE" or value == "True"){
+                flag_metal_grids_ = true;
+            }
+            else if (value == "false" or value == "FALSE" or value == "False"){
+                flag_metal_grids_ = false;
+            }
+            else{
+                unused_params_ += name + " = " + value + "\n";
+                return;
+            }
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -748,6 +804,17 @@ void Input::SetValue(const std::string& name, const std::string& value, InputFla
         }
         else{
             std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl; 
+            std::exit(EXIT_FAILURE);
+        }
+    }
+    else if (name == "flag_verbose_metal_grid"){
+        InputFlag::iterator it = input_flag.find(name);
+        if (it == input_flag.end()){
+            flag_verbose_metal_grid_ = atoi(value.c_str());
+            input_flag[name] = true;
+        }
+        else{
+            std::cout << "Repeated line in input file: " << name << std::endl << "quiting..." << std::endl;
             std::exit(EXIT_FAILURE);
         }
     }
@@ -1309,6 +1376,19 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     
     InputFlag::const_iterator it, it2, it3, it4, it5, it6;
     
+    // updating alt_metals_, alt_wl_ and flag_metal_grids if necessary
+    it = input_flag.find("alt_metals");
+    it2 = input_flag.find("alt_wl_");
+    it3 = input_flag.find("flag_metal_grids");
+    if ((it != input_flag.end() and it2 == input_flag.end()) or (it == input_flag.end() and it2 != input_flag.end()) or (alt_metals_.size() != alt_wl_.size())){
+        alt_metals_ = std::vector<std::string>();
+        alt_wl_ = std::vector<double>();
+        flag_metal_grids_ = false;
+    }
+    else if (it != input_flag.end() and it2 != input_flag.end() and it == input_flag.end()){
+        flag_metal_grids_ = true;
+    }
+    
     // updating bootstrap_results_ if necessary
     it = input_flag.find("output");
     it2 = input_flag.find("bootstrap_results");
@@ -1438,6 +1518,13 @@ void Input::UpdateComposedParams(const InputFlag& input_flag){
     it2 = input_flag.find("flag_verbose_main");
     if (it != input_flag.end() and it2 == input_flag.end()){
         flag_verbose_main_ = flag_verbose_;
+    }
+    
+    // updating flag_verbose_main_ if necessary
+    it = input_flag.find("flag_verbose");
+    it2 = input_flag.find("flag_verbose_metal_grid");
+    if (it != input_flag.end() and it2 == input_flag.end()){
+        flag_verbose_metal_grid_ = flag_verbose_;
     }
     
     // updating flag_verbose_pair_dataset_ if necessary
@@ -1690,6 +1777,12 @@ void Input::WriteLog(){
         else{
             log << "flag_load_only = false" << std::endl;
         }
+        if (flag_metal_grids_){
+            log << "flag_metal_grids = true" << std::endl;
+        }
+        else{
+            log << "flag_metal_grids = false" << std::endl;
+        }
         if (flag_plot_){
             log << "flag_plot = true" << std::endl;
         }
@@ -1726,6 +1819,7 @@ void Input::WriteLog(){
         log << "flag_verbose_distortion_plate_ = " << flag_verbose_distortion_plate_ << std::endl;
         log << "flag_verbose_lya_spectra_dataset = " << flag_verbose_lya_spectra_dataset_ << std::endl;
         log << "flag_verbose_main = " << flag_verbose_main_ << std::endl;
+        log << "flag_verbose_metal_grid = " << flag_verbose_metal_grid_ << std::endl;
         log << "flag_verbose_pair_dataset = " << flag_verbose_pair_dataset_ << std::endl;
         log << "flag_verbose_plate_neighbours = " << flag_verbose_plate_neighbours_ << std::endl;
         log << "flag_verbose_quasar_dataset = " << flag_verbose_quasar_dataset_ << std::endl;
@@ -1801,6 +1895,16 @@ void Input::WriteLog(){
         log << "// -------------------------------------------------------------" << std::endl;
         log << "// line and redshift settings" << std::endl;
         log << "lya_wl = " << lya_wl_ << std::endl;
+        log << "alt_metals_ = (";
+        for (size_t i = 0; i < alt_metals_.size(); i++){
+            log << alt_metals_[i] << " ";
+        }
+        log << ")" << std::endl;
+        log << "alt_wl_ = (";
+        for (size_t i = 0; i < alt_wl_.size(); i++){
+            log << alt_wl_[i] << " ";
+        }
+        log << ")" << std::endl;
         log << "z_min = " << z_min_ << std::endl;
         log << "z_max = " << z_max_ << std::endl;
         log << "z_min_interpolation = " << z_min_interpolation_ << std::endl;

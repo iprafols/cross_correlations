@@ -29,11 +29,11 @@ CIVSpectraDataset::CIVSpectraDataset(const Input& input){
     
     flag_verbose_civ_spectra_dataset_ = input.flag_verbose_civ_spectra_dataset();
     name_ = input.dataset2_name();
-    Load(input.dataset2(), "", input.lya_wl());
+    Load(input.dataset2(), "", input.lya_wl(), input.alt_wl());
     
 }
 
-void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl){
+void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl, const std::vector<double>& alt_wl){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
@@ -42,6 +42,7 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
      lya_spectra_catalog - a string with the name of the list of fits files containing the spectra
      lya_spectra_dir - a string with the directory where the ly-a spectrum files are stored
      lya_wl - a double with the wavelength of the lyman-alpha line (in Angstroms)
+     alt_wl - a vector of doubles with the wavelength of several metals lines (in Angstroms)
      
      OUTPUTS:
      NONE
@@ -120,7 +121,7 @@ void CIVSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
         if ( not (ra[i] == 0.0 and dec[i] == 0.0)){
             
             // create LyaSpectrum
-            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs[i], delta[i], weight[i], lya_wl, false);
+            LyaSpectrum object(ra[i], dec[i], plate[i], fiber[i], mjd[i], z[i], lobs[i], delta[i], weight[i], lya_wl, alt_wl, false);
             
             // adding object to list_
             (*list_.find(plate[i])).second.push_back(object);

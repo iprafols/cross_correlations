@@ -14,6 +14,7 @@
 
 // libraries needed
 #include <cmath>
+#include <vector>
 ////////
 
 // classes needed
@@ -35,13 +36,17 @@ public:
     LyaPixel(double bad_data);
     
     // constructs object and initializes its variables
-    LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const bool loglambda = true);
+    LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const std::vector<double>& alt_wl, const bool loglambda = true);
     
     // -------------------------------------------------------------
     // access methods
     
     // access method for dist_
     double dist() const {return dist_;}
+    
+    // access method for dist_alt_
+    std::vector<double> dist_alt() const {return dist_alt_;}
+    double dist_alt(const size_t& index) const;
     
     // access method for delta_
     double delta() const {return delta_;}
@@ -54,6 +59,10 @@ public:
     
     // access method for z_
     double z() const {return z_;}
+    
+    // access method for z_alt_
+    std::vector<double> z_alt() const {return z_alt_;}
+    double z_alt(const size_t& index) const;
     
     // -------------------------------------------------------------
     // set methods
@@ -71,6 +80,9 @@ private:
     // distance to pixel
     double dist_;
     
+    // alternative distance to pixel (considering alternative wavelengths)
+    std::vector<double> dist_alt_;
+    
     // ly-alpha delta field
     double delta_;
     
@@ -82,6 +94,9 @@ private:
     
     // redshift
     double z_;
+    
+    // alternative redshift (considering alternative wavelengths)
+    std::vector<double> z_alt_;
     
 };    
 

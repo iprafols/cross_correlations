@@ -48,8 +48,8 @@ public:
     LyaSpectrum(double bad_data);
 
     // constructs object and initializes its variables
-    LyaSpectrum(const std::string& filename, const double& lya_wl, const size_t extension = 1, const bool radians = true);
-    LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::valarray<double>& lobs, std::valarray<double>& delta, std::valarray<double>& weight, const double& lya_wl, const bool radians = true);
+    LyaSpectrum(const std::string& filename, const double& lya_wl, const std::vector<double>& alt_wl, const size_t extension = 1, const bool radians = true);
+    LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::valarray<double>& lobs, std::valarray<double>& delta, std::valarray<double>& weight, const double& lya_wl, const std::vector<double>& alt_wl, const bool radians = true);
     
     // -------------------------------------------------------------
     // access methods

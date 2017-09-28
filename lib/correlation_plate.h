@@ -26,6 +26,7 @@
 #include "lya_mean_projected_deltas_interpolation_map.h"
 #include "lya_pixel.h"
 #include "lya_spectrum.h"
+#include "metal_grid.h"
 #include "pair.h"
 #include "plate.h"
 #include "spectra_dataset.h"
@@ -55,19 +56,28 @@ public:
     CorrelationPlate(const Input& input, const int plate_number, const std::vector<int>& plate_neighbours);
     
     // constructs object and initializes its variables
-    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction);
+    CorrelationPlate(const int plate_number, const int num_bins, const std::string& results, const std::string& pairs_file_name, const std::vector<int>& plate_neighbours, const size_t& flag_verbose_correlation_plate, const size_t& flag_write_partial_results, const bool& flag_projection_correction, const bool& flag_metal_grids, const std::vector<double>& alt_wl, const std::vector<std::string>& alt_metals);
     
     // -------------------------------------------------------------
     // access methods
+    
+    // access function for alt_metals_
+    std::vector<std::string> alt_metals() const {return alt_metals_;}
+    
+    // access function for alt_wl_
+    std::vector<double> alt_wl() const {return alt_wl_;}
+    
+    // access function for flag_projection_correction_
+    bool flag_projection_correction() const {return flag_projection_correction_;}
+    
+    // access function for flag_metal_grids_
+    bool flag_metal_grids() const {return flag_metal_grids_;}
     
     // access function for flag_verbose_correlation_plate_
     size_t flag_verbose_correlation_plate() const {return flag_verbose_correlation_plate_;}
     
     // access function for flag_write_partial_results_
     size_t flag_write_partial_results() const {return flag_write_partial_results_;}
-    
-    // access function for flag_projection_correction_
-    bool flag_projection_correction() const {return flag_projection_correction_;}
     
     // access functions for mean_pi_
     std::vector<double> mean_pi() const {return mean_pi_;}
@@ -83,6 +93,10 @@ public:
     // access function for mean_z_in_bin_
     std::vector<double> mean_z_in_bin() const {return mean_z_in_bin_;}
     double mean_z_in_bin(size_t index) const;
+    
+    // access function for metal_grids_
+    std::vector<MetalGrid> metal_grids() const {return metal_grids_;}
+    MetalGrid metal_grids(size_t index) const;
     
     // access function for num_bins_
     size_t num_bins() const {return num_bins_;}
@@ -134,6 +148,9 @@ public:
     // set mean_z_in_bin_
     void set_mean_z_in_bin(size_t index, double value);
     
+    // set metal_grids_
+    void set_metal_grids(size_t index, MetalGrid& value);
+
     // set num_averaged_pairs_
     void set_num_averaged_pairs(size_t index, int value);
     
@@ -183,6 +200,12 @@ public:
 
 
 private:
+    // name of metal contaminants to compute grids from
+    std::vector<string> alt_metals_;
+
+    // wavelength of metal contaminants to compute grids from (in Angstroms)
+    std::vector<double> alt_wl_;
+
     // verbose flag
     size_t flag_verbose_correlation_plate_;
 
@@ -191,6 +214,9 @@ private:
     
     // flag to compute the projection correction
     bool flag_projection_correction_;
+    
+    // flag to compute the metal contamination grids
+    bool flag_metal_grids_;
 
     // maximum number of pairs stored in each bin
     size_t max_pairs_;
@@ -206,6 +232,9 @@ private:
     
     // mean redshift in bin
     std::vector<double> mean_z_in_bin_;
+    
+    // metal contaminants' grids
+    std::vector<MetalGrid> metal_grids_;
     
     // number of bins
     size_t num_bins_;
@@ -230,7 +259,7 @@ private:
     
     // weight
     std::vector<double> weight_;
-
+    
     // mean redshift weight
     double weight_z_;
     

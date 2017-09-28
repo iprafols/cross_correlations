@@ -54,7 +54,7 @@ public:
     // other methods
     
     // load the dataset
-    void Load(const std::string& object_list, const std::string& lya_spectra_dir, const double& lya_wl);
+    void Load(const std::string& object_list, const std::string& lya_spectra_dir, const double& lya_wl, const std::vector<double>& alt_wl);
 
     
     

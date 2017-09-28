@@ -29,7 +29,7 @@ LyaSpectraDataset::LyaSpectraDataset(const Input& input){
     
     flag_verbose_lya_spectra_dataset_ = input.flag_verbose_lya_spectra_dataset();
     name_ = input.dataset2_name();
-    Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl());
+    Load(input.dataset2(), input.lya_spectra_dir(), input.lya_wl(), input.alt_wl());
     if (input.flag_project_deltas()){
         ProjectDeltas(input);
     }
@@ -65,7 +65,7 @@ int LyaSpectraDataset::FindCatalogLength(const std::string& lya_spectra_catalog)
     return length;
 }
 
-void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl){
+void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::string& lya_spectra_dir, const double& lya_wl, const std::vector<double>& alt_wl){
     /**
      EXPLANATION:
      Loads the object dataset from a catalog file
@@ -74,6 +74,7 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
      lya_spectra_catalog - a string with the name of the list of fits files containing the spectra
      lya_spectra_dir - a string with the directory where the ly-a spectrum files are stored
      lya_wl - a double with the wavelength of the lyman-alpha line (in Angstroms)
+     alt_wl - a vector of doubles with the wavelength of several metals lines (in Angstroms)
      
      OUTPUTS:
      NONE
@@ -103,7 +104,7 @@ void LyaSpectraDataset::Load(const std::string& lya_spectra_catalog, const std::
             while (extension != 0){
                 try{
                     // create LyaSpectrum
-                    LyaSpectrum object(lya_spectra_dir + file, lya_wl, extension);
+                    LyaSpectrum object(lya_spectra_dir + file, lya_wl, alt_wl, extension);
                     
                     // adding object to list_
                     if (list_.find(object.plate()) == list_.end()){

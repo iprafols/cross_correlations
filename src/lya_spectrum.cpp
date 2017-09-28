@@ -34,14 +34,15 @@ LyaSpectrum::LyaSpectrum(double bad_data){
     dist_ = _BAD_DATA_;
 }
 
-LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, const size_t extension, const bool radians){
+LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, const std::vector<double>& alt_wl, const size_t extension, const bool radians){
     /**
      EXPLANATION:
      Cosntructs a LyaSpectrum instance
      
      INPUTS:
      filename - a string containing the spectrum's fits file name
-     lya_wl - restframe lyman alpha wavelength
+     lya_wl - restframe lyman alpha wavelength (in Angstroms)
+     alt_wl - restframe wavelength of several metals (in Angstroms)
      extension - an unsigned integer specifying which extension to read
      radians - a boolean specifying if angles are given in radians (true) or deg (false)
      
@@ -92,7 +93,7 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     
     for (int i=0;i<nobj;i++){
         // create LyaPixel
-        LyaPixel object(loglam[i], lya_wl, delta[i], weight[i]);
+        LyaPixel object(loglam[i], lya_wl, delta[i], weight[i], alt_wl);
             
         // adding object to spectrum_
         spectrum_.push_back(object);
@@ -133,7 +134,7 @@ LyaSpectrum::LyaSpectrum(const std::string& filename, const double& lya_wl, cons
     fiber_ = atoi(strtok(NULL,"-"));
 }
 
-LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::valarray<double>& lobs, std::valarray<double>& delta, std::valarray<double>& weight, const double& lya_wl, const bool radians){
+LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, const int& fiber, const int& mjd, const double& z, const std::valarray<double>& lobs, std::valarray<double>& delta, std::valarray<double>& weight, const double& lya_wl, const std::vector<double>& alt_wl, const bool radians){
     /**
      EXPLANATION:
      Cosntructs a LyaSpectrum instance
@@ -148,7 +149,8 @@ LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, 
      lobs - observed wavelengths
      delta - measured overdensities (deltas)
      weight - weights
-     lya_wl - restframe lyman alpha wavelength
+     lya_wl - restframe lyman alpha wavelength (in Angstroms)
+     alt_wl - restframe wavelength of several metals (in Angstroms)
      radians - a boolean specifying if angles are given in radians (true) or deg (false)
      
      OUTPUTS:
@@ -179,7 +181,7 @@ LyaSpectrum::LyaSpectrum(const double& ra, const double& dec, const int& plate, 
     
     for (int i=0; i < lobs.size(); i++){
         // create LyaPixel
-        LyaPixel object(lobs[i], lya_wl, delta[i], weight[i], false);
+        LyaPixel object(lobs[i], lya_wl, delta[i], weight[i], alt_wl, false);
         
         // adding object to spectrum_
         spectrum_.push_back(object);

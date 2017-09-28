@@ -54,7 +54,7 @@ public:
     void GiveZ(std::ostream& out) const;
     
     // load the dataset
-    virtual void Load(const std::string& object_list, const std::string& lya_spectra_dir, const double& lya_wl) =0;
+    virtual void Load(const std::string& object_list, const std::string& lya_spectra_dir, const double& lya_wl, const std::vector<double>& alt_wl) =0;
     
     // set the distance to every object in the dataset
     void SetDistances(const ZDistInterpolationMap& redshift_distance_map);

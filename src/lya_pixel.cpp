@@ -36,7 +36,7 @@ LyaPixel::LyaPixel(double bad_data){
     
 }
 
-LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const bool loglambda){
+LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& delta, const double& weight, const std::vector<double>& alt_wl,  const bool loglambda){
     /**
      EXPLANATION:
      Cosntructs a LyaPixel instance
@@ -46,6 +46,7 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& del
      lya_wl - a double with the wavelength of the lyman-alpha line (in Angstroms)
      delta - a double with the ly-alpha delta field
      weight - a double with the weight
+     alt_wl - a vector of doubles with the (alternative) metal wavelength to be considered
      loglambda - a boolean specifying if loglam is given as the logarithm of the of the wavelength (true) or the wavelength itself (false)
      
      OUTPUTS:
@@ -63,9 +64,17 @@ LyaPixel::LyaPixel(const double& loglam, const double& lya_wl, const double& del
     loglam_ = loglam;
     if (loglambda){
         z_ = pow(10, loglam) / lya_wl - 1.0;
+        z_alt_.reserve(alt_wl.size());
+        for (size_t i = 0; i < alt_wl.size(); i++){
+            z_alt_.push_back(pow(10, loglam) / alt_wl[i] - 1.0);
+        }
     }
     else{
         z_ = loglam / lya_wl - 1.0;
+        z_alt_.reserve(alt_wl.size());
+        for (size_t i = 0; i < alt_wl.size(); i++){
+            z_alt_.push_back(loglam / alt_wl[i] - 1.0);
+        }
     }
     
 }
@@ -89,5 +98,62 @@ void LyaPixel::SetDistance(const InterpolationMap& redshift_distance_map){
      */
     
     dist_ = redshift_distance_map.LinearInterpolation(z_);
+    dist_alt_.reserve(z_alt_.size());
+    for (size_t i = 0; i < z_alt_.size(); i++){
+        dist_alt_.push_back(redshift_distance_map.LinearInterpolation(z_alt_[i]));
+    }
 
 }
+
+double LyaPixel::z_alt(const size_t& index) const{
+    /**
+     EXPLANATION:
+     Access function for z_alt_
+     
+     INPUTS:
+     index - index of the selected z_alt_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaPixel
+     
+     FUNCITONS USED:
+     NONE
+     */
+    
+    if (index < z_alt_.size()){
+        return z_alt_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
+double LyaPixel::dist_alt(const size_t& index) const{
+    /**
+     EXPLANATION:
+     Access function for dist_alt_
+     
+     INPUTS:
+     index - index of the selected dist_alt_ element
+     
+     OUTPUTS:
+     NONE
+     
+     CLASSES USED:
+     LyaPixel
+     
+     FUNCITONS USED:
+     NONE
+     */
+
+    if (index < dist_alt_.size()){
+        return dist_alt_[index];
+    }
+    else{
+        return _BAD_DATA_;
+    }
+}
+
