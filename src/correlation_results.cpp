@@ -36,12 +36,21 @@ CorrelationResults::CorrelationResults(const Input& input, const PlateNeighbours
     flag_write_partial_results_ = input.flag_write_partial_results();
     flag_compute_covariance_ =  input.flag_compute_covariance();
     flag_projection_correction_ = input.flag_projection_correction();
+    flag_metal_grids_ = input.flag_metal_grids();
     
     // setting the number of bins from input
     if (flag_verbose_correlation_results_ >= 3){
         std::cout << "CorrelationResults: setting the number of bins" << std::endl;
     }
     num_bins_ = input.num_bins();
+    
+    // setting the name of the metals that we'll be computing a grid from
+    if (flag_metal_grids_){
+        if (flag_verbose_correlation_results_ >= 3){
+            std::cout << "CorrelationResults: setting the name of the metals that we'll be computing a grid from " << std::endl;
+        }
+        alt_metals_ = input.alt_metals();
+    }
     
     // setting the results directory and the pairs file name from input
     if (flag_verbose_correlation_results_ >= 3){
@@ -489,6 +498,28 @@ void CorrelationResults::SaveCrossCorrelation(){
         }
         else{
             std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+        }
+    }
+    
+    // save metal contamination grid
+    if (flag_metal_grids_){
+        for (size_t i = 0; i < alt_metals_.size(); i ++){
+            filename = output_base_name_ + "_QSO_" + alt_metals_[i] + ".grid";
+            {
+                std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                if (file.is_open()){
+                    MetalGrid metal_grid = normalized_correlation_.metal_grids(i);
+                    for (size_t j = 0; j < num_bins_; j++){
+                        
+                        file << j << " " << metal_grid.mean_pi(j) << " " << metal_grid.mean_sigma(i) << " " << metal_grid.mean_z(i) << std::endl;
+                    }
+                    
+                    file.close();
+                }
+                else{
+                    std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                }
+            }
         }
     }
     

@@ -1354,7 +1354,35 @@ void CorrelationPlate::SaveCrossCorrelation(const Input& input){
                 }
             }
         }
-        // TODO: save metal contamination grids
+        // save metal contamination grids
+        if (flag_metal_grids_){
+            for (size_t i = 0; i < alt_metals_.size(); i++){
+                filename = input.results() + "plate_" + pairs_file_name_ + "_QSO_" + alt_metals_[i] + ".grid";
+                {
+                    std::ofstream file(filename.c_str(),std::ofstream::trunc);
+                    if (file.is_open()){
+                        
+                        for (size_t j = 0; j < num_bins_; j++){
+                            double w = metal_grids_[i].weight(j);
+                            if (w != 0.0){
+                                file << j << " " <<  metal_grids_[i].mean_pi(j)/w << " " << metal_grids_[i].mean_sigma(i)/w << " " << metal_grids_[i].mean_z(j)/w << std::endl;
+                            }
+                            else{
+                                file << j << " NaN NaN Nan" << std::endl;
+                            }
+                        }
+                        
+                        file.close();
+                    }
+                    else{
+                        #pragma omp critical (cout)
+                        {
+                            std::cout << "Error : In CorrelationResults::SaveCrossCorrelation : Unable to open file:" << std::endl << filename << std::endl;
+                        }
+                    }
+                }
+            }
+        }
     }
     
 }

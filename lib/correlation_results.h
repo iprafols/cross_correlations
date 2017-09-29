@@ -104,6 +104,9 @@ public:
     
     
 private:
+    // alternative metal line names
+    std::vector<std::string> alt_metals_;
+    
     // bootstrap variables
     std::vector<CorrelationPlate> bootstrap_;
     
@@ -122,9 +125,12 @@ private:
     // boolean to specify whether or not to compute the covariance matrix
     bool flag_compute_covariance_;
     
+    // boolean to compute the metal contamination's grid
+    bool flag_metal_grids_;
+    
     // boolean to specify whether or not the correction to the cross-correlation due to the projection of the delta field is computed
     bool flag_projection_correction_;
-
+    
     // correlation_results verbose flag
     size_t flag_verbose_correlation_results_;
     
@@ -133,8 +139,6 @@ private:
     
     // output base name
     std::string output_base_name_;
-    
-    
     
     // mean value of the projected deltas as a function of redshift
     LyaMeanProjectedDeltasInterpolationMap mean_proj_deltas_;
